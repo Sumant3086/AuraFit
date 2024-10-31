@@ -1,0 +1,120 @@
+.navbar {
+  background-color: transparent;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 1rem;
+  position: sticky;
+  top: 0px;
+  z-index: 100;
+  gap: 100px;
+  padding-top: 15px;
+  padding-bottom: 15px;
+  transition: var(--transition);
+  width: 100%;
+  max-width: 100%;
+}
+
+.navbar-active-color {
+  background-color: #000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 1rem;
+  position: sticky;
+  top: 0px;
+  z-index: 10;
+  gap: 100px;
+  padding-top: 15px;
+  padding-bottom: 15px;
+  transition: var(--transition);
+  width: 100%;
+}
+
+.strike {
+  width: 70px;
+  transition: var(--transition);
+}
+
+.menu-items {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-transform: uppercase;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #fff;
+  padding-top: 15px;
+  padding-bottom: 5px;
+  transition: 0.1s ease;
+}
+
+.menu-items:hover {
+  border-bottom: #fff solid 2px;
+}
+
+.menu-bars {
+  display: none;
+}
+
+/* DROPDOWN */
+
+.dropdown-menu {
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: repeat(4);
+  text-align: center;
+  gap: 70px;
+}
+
+.dropdown-items {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  text-transform: uppercase;
+  font-size: 40px;
+  font-weight: 500;
+  transition: var(--transition);
+}
+
+.dropdown-items:hover {
+  color: var(--color-cyan);
+}
+
+.menu-close {
+  position: absolute;
+  top: 1.2rem;
+  right: 1.5rem;
+  color: #fff;
+  width: 40px;
+  height: 40px;
+  cursor: pointer;
+  position: absolute;
+}
+
+/* TABLET MEDIA QUERY */
+
+@media screen and (max-width: 1024px) {
+}
+
+/* MOBILE MEDIA QUERY */
+
+@media screen and (max-width: 768px) {
+  .menu-items {
+    display: none;
+  }
+
+  .menu-bars {
+    display: block;
+    background-size: contain;
+    color: #fff;
+    width: 40px;
+    height: 40px;
+    cursor: pointer;
+    position: absolute;
+    top: 0;
+    right: 0;
+    transform: translate(-60%, 70%);
+  }
+}

@@ -1,0 +1,175 @@
+.classes-title {
+    font-size: 60px;
+    margin-top: 20px;
+    color: #fff;
+    text-transform: uppercase;
+    text-align: center;
+}
+
+.classes-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    min-height: 100vh;
+    margin-bottom: 100px;
+}
+
+.classes-container button {
+    font-size: 18px;
+    font-weight: 300;
+    padding: 5px 20px 5px 20px;
+    margin: 20px 20px 20px 0;
+    color: #fff;
+    background-color: transparent;
+    border: 2px solid #fff;
+    border-radius: 10px;
+    transition: 0.4s;
+    cursor: pointer;
+}
+
+.classes-container button:hover {
+    background-color: #fff;
+    color: #000;
+}
+
+.classes-container .active {
+    background-color: #fff;
+    color: #000;
+}
+
+.classes-list {
+    margin-top: 30px;
+}
+
+.class-info {
+    position: relative;
+    display: flex;
+    flex-direction: row;
+    width: 1000px;
+    height: 100px;
+    margin-bottom: 30px;
+    align-items: center;
+    justify-content: space-around;
+    background-size: cover;
+    background-position: center -200px;
+    background-repeat: no-repeat;
+}
+
+.class-info::before {
+    position: absolute;
+    content: "";
+    z-index: 5;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.4);
+}
+
+.class-info p {
+    z-index: 8;
+    flex: 1;
+    font-size: 20px;
+    color: #fff;
+    text-transform: uppercase;
+}
+
+.class-info .class-name {
+    text-transform: uppercase;
+    font-size: 30px;
+    font-weight: 600;
+    margin-left: 60px;
+}
+
+.class-info .reserve-btn {
+    z-index: 8;
+    background-color: #fff;
+    color: #000;
+}
+
+.class-logo {
+    z-index: 8;
+    width: 30px;
+    margin-right: 12px;
+}
+  
+  /* TABLET MEDIA QUERY */
+  
+  @media screen and (max-width: 1024px) {
+
+    .classes-days {
+        display: flex;
+        flex-direction: row;
+        padding: 20px;
+        flex-wrap: wrap;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .class-info {
+        width: 700px;
+        height: 100px;
+        background-position: center -140px;
+    }
+
+    .class-info p {
+        font-size: 14px;
+        margin: 0 10px 0 10px;
+    }
+    
+    .class-info .class-name {
+        font-size: 25px;
+        margin-left: 30px;
+    }
+    
+    .class-info .reserve-btn {
+        background-color: #fff;
+        color: #000;
+    }
+    
+    .class-logo {
+        width: 25px;
+    }
+  }
+  
+  /* MOBILE MEDIA QUERY */
+  
+  @media screen and (max-width: 768px) {
+
+    .classes-title {
+        font-size: 2.7rem;
+    }
+
+    .class-info {
+        width: 300px;
+        height: 400px;
+        background-position: center 0px;
+        flex-direction: column;
+        justify-content: space-around;
+        align-items: center;
+        margin: 0 0 30px 0;
+        padding: 50px;
+    }
+
+    .class-info p {
+        font-size: 14px;
+        margin: 0 0 0 0;
+    }
+    
+    .class-info .class-name {
+        font-size: 30px;
+        margin-left: 0px;
+    }
+    
+    .class-info .reserve-btn {
+        background-color: #fff;
+        color: #000;
+        margin: 0;
+    }
+    
+    .class-logo {
+        width: 20px;
+        margin: 0 0 10px 0;
+    }
+  }
