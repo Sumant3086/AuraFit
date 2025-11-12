@@ -1,0 +1,266 @@
+.recommender-section {
+  max-width: 1000px;
+  margin: 60px auto;
+  padding: 0 20px;
+}
+
+.recommender-header {
+  text-align: center;
+  margin-bottom: 50px;
+}
+
+.recommender-icon {
+  font-size: 48px;
+  color: var(--color-cyan);
+  margin-bottom: 20px;
+}
+
+.recommender-header h2 {
+  font-size: 36px;
+  color: white;
+  margin-bottom: 15px;
+}
+
+.recommender-header p {
+  color: #888;
+  font-size: 18px;
+}
+
+.recommender-calculator {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 20px;
+  padding: 40px;
+  margin-bottom: 40px;
+}
+
+.calculator-input {
+  text-align: center;
+}
+
+.calculator-input label {
+  display: block;
+  color: white;
+  font-size: 20px;
+  margin-bottom: 20px;
+  font-weight: 600;
+}
+
+.calculator-input input {
+  width: 100%;
+  max-width: 400px;
+  padding: 15px 20px;
+  font-size: 18px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  border-radius: 10px;
+  color: white;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.calculator-input input:focus {
+  outline: none;
+  border-color: var(--color-cyan);
+}
+
+.calculate-btn {
+  background: linear-gradient(135deg, var(--color-cyan) 0%, var(--color-pink) 100%);
+  color: white;
+  border: none;
+  padding: 15px 40px;
+  border-radius: 25px;
+  font-size: 18px;
+  font-weight: 700;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  transition: all 0.3s ease;
+}
+
+.calculate-btn:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 30px rgba(0, 245, 255, 0.5);
+}
+
+.recommendation-result {
+  margin-top: 40px;
+  background: linear-gradient(135deg, rgba(0, 245, 255, 0.1) 0%, rgba(255, 0, 255, 0.1) 100%);
+  border: 2px solid var(--color-cyan);
+  border-radius: 20px;
+  padding: 40px;
+  text-align: center;
+}
+
+.result-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--color-cyan);
+  color: black;
+  padding: 8px 20px;
+  border-radius: 20px;
+  font-weight: 700;
+  margin-bottom: 20px;
+}
+
+.recommendation-result h3 {
+  font-size: 32px;
+  color: white;
+  margin-bottom: 15px;
+}
+
+.result-price {
+  font-size: 48px;
+  font-weight: 900;
+  background: linear-gradient(135deg, var(--color-cyan) 0%, var(--color-pink) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 15px;
+}
+
+.result-reason {
+  color: white;
+  font-size: 18px;
+  margin-bottom: 10px;
+}
+
+.result-cost {
+  color: var(--color-cyan);
+  font-size: 20px;
+  font-weight: 600;
+  margin-bottom: 10px;
+}
+
+.result-savings {
+  color: #00ff88;
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 30px;
+}
+
+.result-features {
+  text-align: left;
+  max-width: 400px;
+  margin: 30px auto;
+}
+
+.result-features h4 {
+  color: white;
+  margin-bottom: 15px;
+  font-size: 18px;
+}
+
+.result-features ul {
+  list-style: none;
+  padding: 0;
+}
+
+.result-features li {
+  color: #ccc;
+  padding: 8px 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.feature-check {
+  color: var(--color-cyan);
+  font-size: 16px;
+}
+
+.select-plan-btn {
+  background: linear-gradient(135deg, var(--color-pink) 0%, var(--color-cyan) 100%);
+  color: white;
+  border: none;
+  padding: 15px 50px;
+  border-radius: 25px;
+  font-size: 18px;
+  font-weight: 700;
+  cursor: pointer;
+  margin-top: 20px;
+  transition: all 0.3s ease;
+}
+
+.select-plan-btn:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 30px rgba(255, 0, 255, 0.5);
+}
+
+.recommender-comparison {
+  text-align: center;
+}
+
+.recommender-comparison h3 {
+  color: white;
+  font-size: 28px;
+  margin-bottom: 30px;
+}
+
+.comparison-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 20px;
+}
+
+.comparison-card {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 15px;
+  padding: 30px 20px;
+  transition: all 0.3s ease;
+}
+
+.comparison-card.highlighted {
+  border-color: var(--color-cyan);
+  background: rgba(0, 245, 255, 0.1);
+}
+
+.comparison-card:hover {
+  transform: translateY(-5px);
+  border-color: var(--color-cyan);
+}
+
+.comparison-card h4 {
+  color: white;
+  font-size: 20px;
+  margin-bottom: 15px;
+}
+
+.comparison-price {
+  font-size: 28px;
+  font-weight: 900;
+  color: var(--color-cyan);
+  margin-bottom: 10px;
+}
+
+.comparison-visits {
+  color: #ccc;
+  margin-bottom: 5px;
+}
+
+.comparison-cost {
+  color: #888;
+  font-size: 14px;
+}
+
+@media (max-width: 768px) {
+  .recommender-calculator {
+    padding: 25px;
+  }
+  
+  .recommendation-result {
+    padding: 25px;
+  }
+  
+  .result-price {
+    font-size: 36px;
+  }
+  
+  .comparison-grid {
+    grid-template-columns: 1fr;
+  }
+}

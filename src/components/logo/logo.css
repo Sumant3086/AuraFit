@@ -1,0 +1,205 @@
+.gym-logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.gym-logo:hover {
+  transform: scale(1.08);
+  filter: drop-shadow(0 0 20px rgba(0, 245, 255, 0.6));
+}
+
+/* Logo Icon - Dumbbell */
+.logo-icon {
+  display: flex;
+  align-items: center;
+  position: relative;
+}
+
+.dumbbell-bar {
+  width: 30px;
+  height: 5px;
+  background: linear-gradient(135deg, #00d4ff 0%, #0099ff 50%, #00f5ff 100%);
+  border-radius: 3px;
+  position: relative;
+  z-index: 1;
+  box-shadow: 0 0 15px rgba(0, 212, 255, 0.5);
+  animation: pulse-glow 2s ease-in-out infinite;
+}
+
+.dumbbell-left,
+.dumbbell-right {
+  width: 9px;
+  height: 18px;
+  background: linear-gradient(135deg, #ff0080 0%, #ff00ff 50%, #ff0099 100%);
+  border-radius: 3px;
+  position: relative;
+  box-shadow: 0 0 12px rgba(255, 0, 255, 0.4);
+}
+
+.dumbbell-left::before,
+.dumbbell-right::before {
+  content: '';
+  position: absolute;
+  width: 11px;
+  height: 22px;
+  background: linear-gradient(135deg, #ff0080 0%, #ff00ff 50%, #ff0099 100%);
+  border-radius: 4px;
+  box-shadow: 0 0 15px rgba(255, 0, 255, 0.5);
+}
+
+.dumbbell-left::before {
+  left: -3px;
+  top: -2px;
+}
+
+.dumbbell-right::before {
+  right: -3px;
+  top: -2px;
+}
+
+@keyframes pulse-glow {
+  0%, 100% {
+    box-shadow: 0 0 15px rgba(0, 212, 255, 0.5);
+  }
+  50% {
+    box-shadow: 0 0 25px rgba(0, 212, 255, 0.8), 0 0 35px rgba(0, 212, 255, 0.4);
+  }
+}
+
+/* Logo Text */
+.logo-text {
+  display: flex;
+  flex-direction: column;
+  line-height: 1;
+  align-items: center;
+  text-align: center;
+}
+
+.logo-main {
+  font-size: 26px;
+  font-weight: 900;
+  letter-spacing: 3px;
+  background: linear-gradient(135deg, #00d4ff 0%, #0099ff 25%, #00f5ff 50%, #ff00ff 75%, #ff0080 100%);
+  background-size: 200% 200%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: gradient-shift 3s ease infinite;
+  text-shadow: 0 0 30px rgba(0, 245, 255, 0.5);
+  filter: drop-shadow(0 0 10px rgba(0, 245, 255, 0.3));
+}
+
+.logo-sub {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 5px;
+  background: linear-gradient(90deg, #00d4ff 0%, #ff00ff 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-top: 2px;
+  opacity: 0.9;
+}
+
+@keyframes gradient-shift {
+  0%, 100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+/* Size Variations */
+.gym-logo.small .dumbbell-bar {
+  width: 20px;
+  height: 3px;
+}
+
+.gym-logo.small .dumbbell-left,
+.gym-logo.small .dumbbell-right {
+  width: 6px;
+  height: 12px;
+}
+
+.gym-logo.small .logo-main {
+  font-size: 18px;
+}
+
+.gym-logo.small .logo-sub {
+  font-size: 10px;
+}
+
+.gym-logo.large .dumbbell-bar {
+  width: 40px;
+  height: 5px;
+}
+
+.gym-logo.large .dumbbell-left,
+.gym-logo.large .dumbbell-right {
+  width: 10px;
+  height: 20px;
+}
+
+.gym-logo.large .logo-main {
+  font-size: 32px;
+}
+
+.gym-logo.large .logo-sub {
+  font-size: 14px;
+}
+
+/* Color Variations */
+.gym-logo.white .dumbbell-bar,
+.gym-logo.white .dumbbell-left,
+.gym-logo.white .dumbbell-right,
+.gym-logo.white .dumbbell-left::before,
+.gym-logo.white .dumbbell-right::before {
+  background: white;
+}
+
+.gym-logo.white .logo-main {
+  background: white;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.gym-logo.white .logo-sub {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+/* Animation */
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1) rotate(0deg);
+  }
+  25% {
+    transform: scale(1.1) rotate(-5deg);
+  }
+  75% {
+    transform: scale(1.1) rotate(5deg);
+  }
+}
+
+.gym-logo:hover .logo-icon {
+  animation: pulse 0.8s ease-in-out;
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-5px);
+  }
+}
+
+.logo-icon {
+  animation: float 3s ease-in-out infinite;
+}
