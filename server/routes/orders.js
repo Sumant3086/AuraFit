@@ -2,11 +2,38 @@ const express = require('express');
 const router = express.Router();
 const Order = require('../models/Order');
 
+// Get all orders (for testing/admin)
+router.get('/', async (req, res) => {
+  try {
+    const orders = await Order.find()
+      .sort({ orderDate: -1 })
+      .limit(100);
+    
+    console.log(`📦 Fetched ${orders.length} total orders`);
+    
+    res.json({
+      success: true,
+      data: orders
+    });
+  } catch (error) {
+    console.error('❌ Error fetching all orders:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error fetching orders',
+      error: error.message
+    });
+  }
+});
+
 // Create new order
 router.post('/', async (req, res) => {
   try {
+    console.log('📝 Creating new order:', req.body);
+    
     const order = new Order(req.body);
     await order.save();
+    
+    console.log('✅ Order created:', order._id);
     
     res.status(201).json({
       success: true,
@@ -14,6 +41,7 @@ router.post('/', async (req, res) => {
       data: order
     });
   } catch (error) {
+    console.error('❌ Error creating order:', error);
     res.status(500).json({
       success: false,
       message: 'Error creating order',
@@ -47,17 +75,20 @@ router.get('/user/:userId', async (req, res) => {
 // Get user orders by email
 router.get('/user/email/:email', async (req, res) => {
   try {
-    const orders = await Order.find({ userEmail: req.params.email })
+    const email = req.params.email;
+    console.log(`📦 Fetching orders for email: ${email}`);
+    
+    const orders = await Order.find({ userEmail: email })
       .sort({ orderDate: -1 });
     
-    console.log(`📦 Fetched ${orders.length} orders for email: ${req.params.email}`);
+    console.log(`✅ Found ${orders.length} orders for: ${email}`);
     
     res.json({
       success: true,
       data: orders
     });
   } catch (error) {
-    console.error('❌ Error fetching orders:', error);
+    console.error('❌ Error fetching orders by email:', error);
     res.status(500).json({
       success: false,
       message: 'Error fetching orders',
