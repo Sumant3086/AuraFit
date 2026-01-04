@@ -16,8 +16,7 @@ const orderSchema = new mongoose.Schema({
   },
   items: [{
     productId: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'Product'
+      type: String  // Changed from ObjectId to String since we're using shop data IDs
     },
     productName: {
       type: String,
@@ -31,6 +30,12 @@ const orderSchema = new mongoose.Schema({
     price: {
       type: Number,
       required: true
+    },
+    color: {
+      type: String
+    },
+    size: {
+      type: String
     },
     image: String
   }],
@@ -52,6 +57,9 @@ const orderSchema = new mongoose.Schema({
     type: String,
     enum: ['Pending', 'Paid', 'Failed', 'Refunded'],
     default: 'Pending'
+  },
+  paymentId: {
+    type: String
   },
   shippingAddress: {
     street: String,

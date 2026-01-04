@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import './shopping_cart.css'
 import { CiShoppingCart } from 'react-icons/ci'
 import { CgClose } from 'react-icons/cg'
@@ -8,6 +9,7 @@ import { useCart } from '../../context/CartContext';
 const ShoppingCartModal = () => {
   const { cartItems, removeFromCart, updateQuantity, getCartTotal, getCartCount } = useCart();
   const [showModal, setShowModal] = useState(false);
+  const navigate = useNavigate();
 
   const handleRemoveFromCart = (item) => {
     removeFromCart(item.id, item.color, item.size);
@@ -29,55 +31,94 @@ const ShoppingCartModal = () => {
     
     try {
       const userData = JSON.parse(user);
+      console.log('User data:', userData); // Debug log
+      console.log('Cart items raw:', cartItems); // Debug log
+      
+      // Prepare order items with proper price parsing
+      const orderItems = cartItems.map(item => {
+        // More robust price parsing
+        let price = item.price;
+        if (typeof price === 'string') {
+          price = price.replace(/[₹,\s]/g, ''); // Remove rupee symbol, commas, and spaces
+          price = parseFloat(price);
+        }
+        
+        if (isNaN(price)) {
+          throw new Error(`Invalid price for item: ${item.name}`);
+        }
+        
+        return {
+          productId: item.id.toString(), // Convert to string instead of ObjectId
+          productName: item.name,
+          quantity: item.quantity,
+          price: price,
+          color: item.color,
+          size: item.size,
+          image: item.img
+        };
+      });
+      
+      console.log('Order items:', orderItems); // Debug log
       
       // Create order in database
+      const orderData = {
+        userId: userData._id || userData.id, // Try both _id and id
+        userName: userData.name,
+        userEmail: userData.email,
+        items: orderItems,
+        totalAmount: getCartTotal(),
+        shippingAddress: {
+          street: '',
+          city: '',
+          state: '',
+          zipCode: '',
+          country: 'India'
+        },
+        paymentMethod: 'Razorpay',
+        paymentStatus: 'Pending'
+      };
+      
+      console.log('Order data:', orderData); // Debug log
+      
       const response = await fetch('http://localhost:5000/api/orders', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
-          userId: userData.id,
-          userName: userData.name,
-          userEmail: userData.email,
-          items: cartItems.map(item => ({
-            productId: item.id,
-            productName: item.name,
-            quantity: item.quantity,
-            price: parseFloat(item.price.replace(/[^0-9.-]+/g,"")),
-            color: item.color,
-            size: item.size,
-            image: item.img
-          })),
-          totalAmount: getCartTotal(),
-          shippingAddress: {
-            street: '',
-            city: '',
-            state: '',
-            zipCode: '',
-            country: 'India'
-          },
-          paymentMethod: 'Razorpay',
-          paymentStatus: 'Pending'
-        })
+        body: JSON.stringify(orderData)
       });
       
       const data = await response.json();
+      console.log('Order response:', data); // Debug log
       
       if (data.success) {
-        // Open Razorpay payment
-        alert('Order placed! Redirecting to payment...');
-        window.open('https://razorpay.me/@sumantyadav', '_blank');
+        // Get Razorpay payment link from server
+        const paymentResponse = await fetch('http://localhost:5000/api/orders/payment/razorpay-link');
+        const paymentData = await paymentResponse.json();
         
-        // Clear cart after successful order
-        cartItems.forEach(item => removeFromCart(item.id, item.color, item.size));
-        setShowModal(false);
+        if (paymentData.success) {
+          // Store order ID for payment confirmation
+          localStorage.setItem('pendingOrderId', data.data._id);
+          
+          // Clear cart after successful order
+          cartItems.forEach(item => removeFromCart(item.id, item.color, item.size));
+          setShowModal(false);
+          
+          // Open Razorpay payment in new tab
+          window.open(paymentData.data.paymentLink, '_blank');
+          
+          // Navigate to payment confirmation page
+          navigate('/confirm-payment');
+        } else {
+          alert('Payment link not available. Please contact support.');
+        }
       } else {
-        alert(data.message || 'Failed to place order');
+        console.error('Order creation failed:', data);
+        alert(data.message || 'Failed to place order. Please check console for details.');
       }
     } catch (error) {
       console.error('Error placing order:', error);
-      alert('Error placing order. Please try again.');
+      alert('Error placing order: ' + error.message);
     }
   };
 

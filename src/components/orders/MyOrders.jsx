@@ -126,6 +126,9 @@ const MyOrders = () => {
             >
               Delivered ({orders.filter(o => o.status === 'Delivered').length})
             </button>
+            <Link to="/confirm-payment" className="filter-btn confirm-payment-btn">
+              Confirm Payment
+            </Link>
           </div>
 
           <div className="orders-list">

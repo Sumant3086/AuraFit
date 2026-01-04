@@ -416,3 +416,90 @@
     width: 100%;
   }
 }
+
+/* Payment Confirmation Styles */
+.payment-confirmation-form {
+  max-width: 600px;
+  margin: 0 auto;
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(10px);
+  border-radius: 20px;
+  padding: 40px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.form-group {
+  margin-bottom: 25px;
+}
+
+.form-group label {
+  display: block;
+  color: white;
+  font-weight: 600;
+  margin-bottom: 8px;
+  font-size: 1rem;
+}
+
+.form-group input {
+  width: 100%;
+  padding: 15px;
+  border: 2px solid rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.05);
+  color: white;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+}
+
+.form-group input:focus {
+  outline: none;
+  border-color: #00f5ff;
+  box-shadow: 0 0 20px rgba(0, 245, 255, 0.3);
+}
+
+.form-group input::placeholder {
+  color: #888;
+}
+
+.payment-instructions {
+  margin-top: 30px;
+  padding: 20px;
+  background: rgba(0, 245, 255, 0.1);
+  border-radius: 10px;
+  border-left: 4px solid #00f5ff;
+}
+
+.payment-instructions h3 {
+  color: #00f5ff;
+  margin-bottom: 15px;
+  font-size: 1.2rem;
+}
+
+.payment-instructions ul {
+  color: #ccc;
+  padding-left: 20px;
+}
+
+.payment-instructions li {
+  margin-bottom: 8px;
+  line-height: 1.5;
+}
+
+.checkout-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+.confirm-payment-btn {
+  background: linear-gradient(135deg, #ff6b6b 0%, #ff8e8e 100%) !important;
+  color: white !important;
+  text-decoration: none !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  transition: all 0.3s ease !important;
+}
+
+.confirm-payment-btn:hover {
+  transform: translateY(-2px) !important;
+  box-shadow: 0 8px 25px rgba(255, 107, 107, 0.4) !important;
+}

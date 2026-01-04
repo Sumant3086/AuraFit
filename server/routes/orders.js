@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const Order = require('../models/Order');
+require('dotenv').config();
 
 // Get all orders (for testing/admin)
 router.get('/', async (req, res) => {
@@ -28,12 +29,47 @@ router.get('/', async (req, res) => {
 // Create new order
 router.post('/', async (req, res) => {
   try {
-    console.log('📝 Creating new order:', req.body);
+    console.log('📝 Creating new order with data:', JSON.stringify(req.body, null, 2));
+    
+    // Validate required fields
+    const { userId, userName, userEmail, items, totalAmount } = req.body;
+    
+    if (!userId) {
+      return res.status(400).json({
+        success: false,
+        message: 'User ID is required'
+      });
+    }
+    
+    if (!items || items.length === 0) {
+      return res.status(400).json({
+        success: false,
+        message: 'Order must contain at least one item'
+      });
+    }
+    
+    // Validate each item
+    for (let i = 0; i < items.length; i++) {
+      const item = items[i];
+      if (!item.productName || !item.quantity || !item.price) {
+        return res.status(400).json({
+          success: false,
+          message: `Invalid item at index ${i}: missing required fields`
+        });
+      }
+      
+      if (typeof item.price !== 'number' || isNaN(item.price)) {
+        return res.status(400).json({
+          success: false,
+          message: `Invalid price for item ${item.productName}: ${item.price}`
+        });
+      }
+    }
     
     const order = new Order(req.body);
     await order.save();
     
-    console.log('✅ Order created:', order._id);
+    console.log('✅ Order created successfully:', order._id);
     
     res.status(201).json({
       success: true,
@@ -42,6 +78,18 @@ router.post('/', async (req, res) => {
     });
   } catch (error) {
     console.error('❌ Error creating order:', error);
+    
+    // Handle validation errors specifically
+    if (error.name === 'ValidationError') {
+      const validationErrors = Object.values(error.errors).map(err => err.message);
+      return res.status(400).json({
+        success: false,
+        message: 'Validation failed',
+        errors: validationErrors,
+        details: error.message
+      });
+    }
+    
     res.status(500).json({
       success: false,
       message: 'Error creating order',
@@ -117,6 +165,109 @@ router.get('/:id', async (req, res) => {
     res.status(500).json({
       success: false,
       message: 'Error fetching order',
+      error: error.message
+    });
+  }
+});
+
+// Update order status
+router.put('/:id/status', async (req, res) => {
+  try {
+    const { status, paymentStatus } = req.body;
+    
+    const order = await Order.findById(req.params.id);
+    if (!order) {
+      return res.status(404).json({
+        success: false,
+        message: 'Order not found'
+      });
+    }
+    
+    if (status) order.status = status;
+    if (paymentStatus) order.paymentStatus = paymentStatus;
+    
+    await order.save();
+    
+    console.log(`✅ Order ${order._id} status updated: ${status || order.status}, payment: ${paymentStatus || order.paymentStatus}`);
+    
+    res.json({
+      success: true,
+      message: 'Order status updated successfully',
+      data: order
+    });
+  } catch (error) {
+    console.error('❌ Error updating order status:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error updating order status',
+      error: error.message
+    });
+  }
+});
+
+// Get Razorpay payment link
+router.get('/payment/razorpay-link', (req, res) => {
+  try {
+    const paymentLink = process.env.RAZORPAY_PAYMENT_LINK;
+    
+    if (!paymentLink) {
+      return res.status(500).json({
+        success: false,
+        message: 'Payment link not configured'
+      });
+    }
+    
+    res.json({
+      success: true,
+      data: {
+        paymentLink: paymentLink
+      }
+    });
+  } catch (error) {
+    console.error('❌ Error getting payment link:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error getting payment link',
+      error: error.message
+    });
+  }
+});
+
+// Confirm payment (webhook or manual confirmation)
+router.post('/:id/confirm-payment', async (req, res) => {
+  try {
+    const orderId = req.params.id;
+    const { paymentId, paymentStatus = 'Paid' } = req.body;
+    
+    const order = await Order.findById(orderId);
+    if (!order) {
+      return res.status(404).json({
+        success: false,
+        message: 'Order not found'
+      });
+    }
+    
+    order.paymentStatus = paymentStatus;
+    order.status = 'Processing';
+    
+    if (paymentId) {
+      order.paymentId = paymentId;
+    }
+    
+    await order.save();
+    
+    console.log(`✅ Payment confirmed for order ${orderId}`);
+    
+    res.json({
+      success: true,
+      message: 'Payment confirmed successfully',
+      data: order
+    });
+  } catch (error) {
+    console.error('❌ Error confirming payment:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error confirming payment',
       error: error.message
     });
   }

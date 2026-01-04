@@ -19,6 +19,7 @@ import NewAdminDashboard from "./components/admin/NewAdminDashboard";
 import ProtectedAdminRoute from "./components/admin/ProtectedAdminRoute";
 import UserProfile from "./components/profile/UserProfile";
 import MyOrders from "./components/orders/MyOrders";
+import PaymentConfirmation from "./components/orders/PaymentConfirmation";
 import ScrollToTop from "./components/scrollToTop";
 
 const App = () => {
@@ -36,6 +37,7 @@ const App = () => {
         <Route path="/admin/login" element={<AdminLogin />} />
         <Route path="/profile" element={<UserProfile />} />
         <Route path="/my-orders" element={<MyOrders />} />
+        <Route path="/confirm-payment" element={<PaymentConfirmation />} />
         <Route path="/admin/dashboard" element={
           <ProtectedAdminRoute>
             <AdminDashboard />
