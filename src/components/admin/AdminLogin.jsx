@@ -27,16 +27,17 @@ const AdminLogin = () => {
     setLoading(true);
     setError('');
 
-    // Admin credentials - ONLY ADMIN CAN ACCESS
-    const ADMIN_EMAIL = 'sumant@gmail.com';
-    const ADMIN_PASSWORD = 'sumant3086';
+    // Admin credentials from environment variables
+    const ADMIN_EMAIL = process.env.REACT_APP_ADMIN_EMAIL || 'sumant@gmail.com';
+    const ADMIN_PASSWORD = process.env.REACT_APP_ADMIN_PASSWORD || 'sumant3086';
+    const ADMIN_NAME = process.env.REACT_APP_ADMIN_NAME || 'Sumant Yadav';
 
     try {
       if (formData.email === ADMIN_EMAIL && formData.password === ADMIN_PASSWORD) {
         localStorage.setItem('admin', JSON.stringify({ 
           email: formData.email, 
           role: 'admin',
-          name: 'Sumant Yadav'
+          name: ADMIN_NAME
         }));
         setTimeout(() => {
           navigate('/admin/new-dashboard'); // Redirecting to new modern dashboard

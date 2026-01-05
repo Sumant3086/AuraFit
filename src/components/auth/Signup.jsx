@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { authAPI } from '../../services/api';
 import './auth.css';
 import { FaUser, FaEnvelope, FaLock, FaPhone, FaEye, FaEyeSlash } from 'react-icons/fa';
 import Logo from '../logo/Logo';
@@ -53,20 +54,12 @@ const Signup = () => {
 
     try {
       // Call signup API
-      const response = await fetch('http://localhost:5000/api/auth/signup', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          name: formData.name,
-          email: formData.email,
-          phone: formData.phone,
-          password: formData.password
-        })
+      const data = await authAPI.signup({
+        name: formData.name,
+        email: formData.email,
+        phone: formData.phone,
+        password: formData.password
       });
-
-      const data = await response.json();
 
       if (data.success) {
         // Save user to localStorage
