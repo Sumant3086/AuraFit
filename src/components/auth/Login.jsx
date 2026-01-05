@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { authAPI } from '../../services/api';
 import './auth.css';
 import { FaEnvelope, FaLock, FaEye, FaEyeSlash } from 'react-icons/fa';
 import Logo from '../logo/Logo';
@@ -36,18 +37,10 @@ const Login = () => {
       }
 
       // Call login API
-      const response = await fetch('http://localhost:5000/api/auth/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          email: formData.email,
-          password: formData.password
-        })
+      const data = await authAPI.login({
+        email: formData.email,
+        password: formData.password
       });
-
-      const data = await response.json();
 
       if (data.success) {
         // Save user to localStorage

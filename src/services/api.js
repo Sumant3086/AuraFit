@@ -24,6 +24,48 @@ const apiCall = async (endpoint, options = {}) => {
   }
 };
 
+// Auth API
+export const authAPI = {
+  login: (credentials) =>
+    apiCall('/auth/login', {
+      method: 'POST',
+      body: JSON.stringify(credentials),
+    }),
+  
+  signup: (userData) =>
+    apiCall('/auth/signup', {
+      method: 'POST',
+      body: JSON.stringify(userData),
+    }),
+};
+
+// Admin API
+export const adminAPI = {
+  getStats: () => apiCall('/admin/stats'),
+  getUsers: () => apiCall('/admin/users'),
+  getRecentUsers: () => apiCall('/admin/users/recent'),
+  getOrders: () => apiCall('/admin/orders'),
+  healthCheck: () => apiCall('/health'),
+};
+
+// Orders API
+export const ordersAPI = {
+  create: (orderData) =>
+    apiCall('/orders', {
+      method: 'POST',
+      body: JSON.stringify(orderData),
+    }),
+  
+  getByUserEmail: (email) => apiCall(`/orders/user/email/${email}`),
+  
+  confirmPayment: (orderId) =>
+    apiCall(`/orders/${orderId}/confirm-payment`, {
+      method: 'POST',
+    }),
+  
+  getRazorpayLink: () => apiCall('/orders/payment/razorpay-link'),
+};
+
 // Contact API
 export const contactAPI = {
   submit: (contactData) => 
@@ -126,6 +168,9 @@ export const progressTrackerAPI = {
 };
 
 const apiService = {
+  auth: authAPI,
+  admin: adminAPI,
+  orders: ordersAPI,
   contact: contactAPI,
   membership: membershipAPI,
   classes: classesAPI,
