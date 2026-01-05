@@ -97,12 +97,34 @@ npm install
 
 ### 3. Environment Setup
 
-Create `server/.env`:
+**Important: Never commit .env files to Git!**
+
+Create environment files from examples:
+```bash
+# Frontend environment
+cp .env.example .env
+
+# Backend environment  
+cp server/.env.example server/.env
+```
+
+Edit the `.env` files with your actual credentials:
+
+**Frontend (.env):**
+```env
+REACT_APP_API_URL=http://localhost:5000/api
+REACT_APP_ADMIN_EMAIL=your_admin_email
+REACT_APP_ADMIN_PASSWORD=your_admin_password
+REACT_APP_RAZORPAY_LINK=your_razorpay_link
+```
+
+**Backend (server/.env):**
 ```env
 MONGODB_URI=your_mongodb_connection_string
-PORT=5000
-NODE_ENV=development
 GOOGLE_API_KEY=your_google_gemini_api_key
+ADMIN_EMAIL=your_admin_email
+ADMIN_PASSWORD=your_admin_password
+JWT_SECRET=your_jwt_secret
 ```
 
 ### 4. Seed Database (Optional)
