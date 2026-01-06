@@ -2,6 +2,7 @@ import { Navigate } from 'react-router-dom';
 
 const ProtectedAdminRoute = ({ children }) => {
   const admin = localStorage.getItem('admin');
+  const ADMIN_EMAIL = process.env.REACT_APP_ADMIN_EMAIL || 'sumant@gmail.com';
   
   if (!admin) {
     // Not logged in as admin, redirect to admin login
@@ -10,8 +11,8 @@ const ProtectedAdminRoute = ({ children }) => {
 
   try {
     const adminData = JSON.parse(admin);
-    // Verify it's the correct admin
-    if (adminData.email === 'sumant@gmail.com' && adminData.role === 'admin') {
+    // Verify it's the correct admin from env var
+    if (adminData.email === ADMIN_EMAIL && adminData.role === 'admin') {
       return children;
     } else {
       // Invalid admin data, clear and redirect

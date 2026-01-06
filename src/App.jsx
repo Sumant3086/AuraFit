@@ -15,7 +15,6 @@ import Login from "./components/auth/Login";
 import Signup from "./components/auth/Signup";
 import AdminLogin from "./components/admin/AdminLogin";
 import AdminDashboard from "./components/admin/AdminDashboard";
-import NewAdminDashboard from "./components/admin/NewAdminDashboard";
 import ProtectedAdminRoute from "./components/admin/ProtectedAdminRoute";
 import UserProfile from "./components/profile/UserProfile";
 import MyOrders from "./components/orders/MyOrders";
@@ -41,11 +40,6 @@ const App = () => {
         <Route path="/admin/dashboard" element={
           <ProtectedAdminRoute>
             <AdminDashboard />
-          </ProtectedAdminRoute>
-        } />
-        <Route path="/admin/new-dashboard" element={
-          <ProtectedAdminRoute>
-            <NewAdminDashboard />
           </ProtectedAdminRoute>
         } />
         <Route path="*" element={
