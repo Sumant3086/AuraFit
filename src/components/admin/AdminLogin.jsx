@@ -40,7 +40,7 @@ const AdminLogin = () => {
           name: ADMIN_NAME
         }));
         setTimeout(() => {
-          navigate('/admin/new-dashboard'); // Redirecting to new modern dashboard
+          navigate('/admin/dashboard'); // Updated to use single dashboard
         }, 1000);
       } else {
         setError('Access Denied: Invalid admin credentials');
