@@ -11,6 +11,8 @@ A modern, full-stack gym management platform with AI-powered features, stunning 
 ## 🌐 Live Demo
 
 **🚀 [View Live Application](https://aurafitgymwebsite.onrender.com/)**
+<img width="1907" height="874" alt="image" src="https://github.com/user-attachments/assets/a1b128d7-03fc-4307-beb9-01a103f10f40" />
+
 
 ## 🌟 Features
 
