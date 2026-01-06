@@ -8,6 +8,10 @@ A modern, full-stack gym management platform with AI-powered features, stunning 
 ![AI](https://img.shields.io/badge/AI-Google%20Gemini-orange)
 ![License](https://img.shields.io/badge/License-MIT-yellow)
 
+## 🌐 Live Demo
+
+**🚀 [View Live Application](https://aurafitgymwebsite.onrender.com/)**
+
 ## 🌟 Features
 
 ### 🤖 AI-Powered Features (Unique)
