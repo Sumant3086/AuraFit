@@ -5,6 +5,7 @@ import { CiShoppingCart } from 'react-icons/ci'
 import { CgClose } from 'react-icons/cg'
 import { FaPlus, FaMinus, FaTrash } from 'react-icons/fa'
 import { useCart } from '../../context/CartContext';
+import apiService from '../../services/api';
 
 const ShoppingCartModal = () => {
   const { cartItems, removeFromCart, updateQuantity, getCartTotal, getCartCount } = useCart();
@@ -80,22 +81,14 @@ const ShoppingCartModal = () => {
       
       console.log('Order data:', orderData); // Debug log
       
-      const response = await fetch('http://localhost:5000/api/orders', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(orderData)
-      });
-      
-      const data = await response.json();
+      // Create order via apiService (uses environment API base)
+      const data = await apiService.orders.create(orderData);
       console.log('Order response:', data); // Debug log
       
       if (data.success) {
         // Get Razorpay payment link from server
-        const paymentResponse = await fetch('http://localhost:5000/api/orders/payment/razorpay-link');
-        const paymentData = await paymentResponse.json();
-        
+        const paymentData = await apiService.orders.getRazorpayLink();
+
         if (paymentData.success) {
           // Store order ID for payment confirmation
           localStorage.setItem('pendingOrderId', data.data._id);

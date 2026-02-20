@@ -86,6 +86,20 @@ export const membershipAPI = {
       method: 'POST',
       body: JSON.stringify(membershipData),
     }),
+
+  // Create a membership purchase (server endpoint /memberships/purchase)
+  purchase: (membershipData) =>
+    apiCall('/memberships/purchase', {
+      method: 'POST',
+      body: JSON.stringify(membershipData),
+    }),
+
+  // Claim a free trial (server endpoint /memberships/free-trial)
+  freeTrial: (userData) =>
+    apiCall('/memberships/free-trial', {
+      method: 'POST',
+      body: JSON.stringify(userData),
+    }),
   
   getAll: () => apiCall('/memberships'),
   

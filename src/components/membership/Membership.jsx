@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import "./membership.css";
 import { Fade } from "react-awesome-reveal";
 import { FaArrowRight } from 'react-icons/fa';
+import apiService from '../../services/api';
 
 const Membership = () => {
   const navigate = useNavigate();
@@ -28,31 +29,31 @@ const Membership = () => {
         
         const selectedPlan = planDetails[plan];
         
-        // Create pending membership order
-        const response = await fetch('http://localhost:5000/api/memberships/purchase', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            userId: userData.id,
-            name: userData.name,
-            email: userData.email,
-            plan: plan,
-            price: selectedPlan.price,
-            duration: selectedPlan.duration,
-            paymentStatus: 'pending'
-          })
+        // Create pending membership order via API
+        const data = await apiService.membership.purchase({
+          userId: userData.id,
+          name: userData.name,
+          email: userData.email,
+          plan: plan,
+          price: selectedPlan.price,
+          duration: selectedPlan.duration,
+          paymentStatus: 'pending'
         });
-        
-        const data = await response.json();
-        
+
         if (data.success) {
           // Open Razorpay payment gateway
           alert(`Redirecting to payment gateway for ${plan} membership (₹${selectedPlan.price})...`);
-          
-          // Open Razorpay in new window
-          window.open('https://razorpay.me/@sumantyadav', '_blank');
+          // Fetch payment link from server and open it
+          try {
+            const paymentResp = await apiService.orders.getRazorpayLink();
+            if (paymentResp.success) {
+              window.open(paymentResp.data.paymentLink, '_blank');
+            } else {
+              window.open(process.env.REACT_APP_RAZORPAY_LINK, '_blank');
+            }
+          } catch (err) {
+            window.open(process.env.REACT_APP_RAZORPAY_LINK, '_blank');
+          }
           
           // Show message to user
           alert('After completing payment, your membership will be pending admin approval. You will be notified once approved.');
@@ -79,21 +80,13 @@ const Membership = () => {
       try {
         const userData = JSON.parse(user);
         
-        // Create free trial membership
-        const response = await fetch('http://localhost:5000/api/memberships/free-trial', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            userId: userData.id,
-            name: userData.name,
-            email: userData.email
-          })
+        // Create free trial via API
+        const data = await apiService.membership.freeTrial({
+          userId: userData.id,
+          name: userData.name,
+          email: userData.email
         });
-        
-        const data = await response.json();
-        
+
         if (data.success) {
           alert('🎉 Free day pass claimed successfully! Check your email for details.');
         } else {
