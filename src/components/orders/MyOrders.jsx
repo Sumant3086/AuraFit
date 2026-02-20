@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import './myOrders.css';
+import apiService from '../../services/api';
 import { FaShoppingBag, FaArrowLeft, FaBox, FaTruck, FaCheckCircle, FaTimesCircle } from 'react-icons/fa';
 import Navbar from '../navbar/Navbar';
 import Dropdown from '../navbar/Dropdown';
@@ -23,7 +24,7 @@ const MyOrders = () => {
       return;
     }
 
-    // Load orders from localStorage (in real app, fetch from API)
+    // Load orders from API
     loadOrders();
   }, [navigate]);
 
@@ -31,9 +32,8 @@ const MyOrders = () => {
     try {
       const user = JSON.parse(localStorage.getItem('user'));
       
-      // Fetch orders from API
-      const response = await fetch(`http://localhost:5000/api/orders/user/email/${user.email}`);
-      const data = await response.json();
+      // Fetch orders from API using apiService
+      const data = await apiService.orders.getByUserEmail(user.email);
       
       if (data.success && data.data.length > 0) {
         // Transform API data to match component format

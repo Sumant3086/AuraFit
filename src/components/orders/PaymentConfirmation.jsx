@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './myOrders.css';
+import apiService from '../../services/api';
 
 const PaymentConfirmation = () => {
   const navigate = useNavigate();
@@ -27,19 +28,8 @@ const PaymentConfirmation = () => {
     setLoading(true);
     
     try {
-      const response = await fetch(`http://localhost:5000/api/orders/${orderId}/confirm-payment`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          paymentId: paymentId || 'manual-confirmation',
-          paymentStatus: 'Paid'
-        })
-      });
-      
-      const data = await response.json();
-      
+      const data = await apiService.orders.confirmPayment(orderId);
+
       if (data.success) {
         alert('Payment confirmed successfully! Your order is now being processed.');
         localStorage.removeItem('pendingOrderId');
