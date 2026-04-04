@@ -1,15 +1,16 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { 
   FiUsers, FiDollarSign, FiShoppingBag, FiTrendingUp, 
   FiActivity, FiUserPlus, FiCheckCircle, FiXCircle,
-  FiLogOut, FiDatabase, FiRefreshCw, FiHeart, FiTarget, FiCalendar
+  FiLogOut, FiDatabase, FiRefreshCw, FiHeart, FiTarget, 
+  FiCalendar, FiMenu, FiX, FiHome, FiPackage, FiCreditCard,
+  FiBarChart2
 } from 'react-icons/fi';
-import { adminAPI, membershipAPI, ordersAPI, productsAPI, classesAPI } from '../../services/api';
+import { adminAPI, membershipAPI, productsAPI, classesAPI } from '../../services/api';
 import shopData from '../shop/shopData';
 import classesByDay from '../classes/classesData';
-import Footer from '../footer/Footer';
 import './admin.css';
 
 const AdminDashboard = () => {
@@ -18,6 +19,7 @@ const AdminDashboard = () => {
   const [loading, setLoading] = useState(true);
   const [seeding, setSeeding] = useState(false);
   const [dbStatus, setDbStatus] = useState('checking');
+  const [sidebarOpen, setSidebarOpen] = useState(true);
   
   const [stats, setStats] = useState({
     totalUsers: 0,
@@ -250,119 +252,212 @@ const AdminDashboard = () => {
     );
   }
 
-  const statCards = [
-    { icon: FiUsers, label: 'Total Users', value: stats.totalUsers },
-    { icon: FiActivity, label: 'Active Members', value: stats.activeMembers },
-    { icon: FiShoppingBag, label: 'Total Orders', value: stats.totalOrders },
-    { icon: FiDollarSign, label: 'Revenue', value: `₹${stats.revenue.toLocaleString()}` },
-    { icon: FiTrendingUp, label: "Today's Visits", value: stats.todayVisits },
-    { icon: FiUserPlus, label: 'New Signups', value: stats.newSignups }
-  ];
-
-  const tabs = [
-    { id: 'overview', label: 'Overview', icon: '📊' },
-    { id: 'users', label: 'Users', icon: '👥', count: users.length },
-    { id: 'memberships', label: 'Memberships', icon: '💳', count: memberships.filter(m => m.status === 'pending').length },
-    { id: 'orders', label: 'Orders', icon: '🛒', count: orders.length },
-    { id: 'products', label: 'Products', icon: '📦', count: products.length },
-    { id: 'classes', label: 'Classes', icon: '🏋️', count: classes.length },
-    { id: 'tracking', label: 'Tracking', icon: '📈' }
+  const menuItems = [
+    { id: 'overview', label: 'Overview', icon: FiHome },
+    { id: 'users', label: 'Users', icon: FiUsers, count: users.length },
+    { id: 'memberships', label: 'Memberships', icon: FiCreditCard, count: memberships.filter(m => m.status === 'pending').length },
+    { id: 'orders', label: 'Orders', icon: FiShoppingBag, count: orders.length },
+    { id: 'products', label: 'Products', icon: FiPackage, count: products.length },
+    { id: 'classes', label: 'Classes', icon: FiActivity, count: classes.length },
+    { id: 'tracking', label: 'Analytics', icon: FiBarChart2 }
   ];
 
   return (
-    <>
-      {/* Admin Dashboard Content - Using User Site Layout */}
-      <div className="admin-dashboard-wrapper">
-        {/* Hero Section with Admin Header */}
-        <section className="admin-hero">
-          <div className="admin-hero-content">
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6 }}
+    <div className="admin-layout">
+      {/* Sidebar */}
+      <aside className={`admin-sidebar ${sidebarOpen ? 'open' : 'closed'}`}>
+        <div className="sidebar-header">
+          <div className="sidebar-logo">
+            <h2>🏋️ AURA FIT</h2>
+            <span>Admin Panel</span>
+          </div>
+          <button className="sidebar-toggle" onClick={() => setSidebarOpen(!sidebarOpen)}>
+            {sidebarOpen ? <FiX /> : <FiMenu />}
+          </button>
+        </div>
+
+        <nav className="sidebar-nav">
+          {menuItems.map((item) => (
+            <motion.button
+              key={item.id}
+              className={activeTab === item.id ? 'sidebar-item active' : 'sidebar-item'}
+              onClick={() => setActiveTab(item.id)}
+              whileHover={{ x: 5 }}
+              whileTap={{ scale: 0.95 }}
             >
-              <h1 className="admin-hero-title">
-                <span className="gradient-text">ADMIN DASHBOARD</span>
-              </h1>
-              <p className="admin-hero-subtitle">
-                Manage your gym operations with powerful analytics and real-time insights
-              </p>
-              
-              <div className="admin-hero-actions">
-                <div className={`db-status-badge ${dbStatus}`}>
-                  <FiDatabase />
-                  <span>{dbStatus === 'connected' ? 'Connected' : 'Disconnected'}</span>
-                </div>
-                <button onClick={seedDatabase} className="admin-btn seed-btn" disabled={seeding}>
-                  <FiRefreshCw className={seeding ? 'spinning' : ''} />
-                  {seeding ? 'Seeding...' : 'Seed Data'}
-                </button>
-                <button onClick={handleLogout} className="admin-btn logout-btn">
-                  <FiLogOut />
-                  Logout
-                </button>
-              </div>
-            </motion.div>
-          </div>
-        </section>
+              <item.icon className="sidebar-icon" />
+              {sidebarOpen && (
+                <>
+                  <span className="sidebar-label">{item.label}</span>
+                  {item.count > 0 && <span className="sidebar-badge">{item.count}</span>}
+                </>
+              )}
+            </motion.button>
+          ))}
+        </nav>
 
-        {/* Navigation Tabs */}
-        <section className="admin-tabs-section">
-          <div className="container">
-            <div className="admin-tabs">
-              {tabs.map((tab) => (
-                <button
-                  key={tab.id}
-                  className={activeTab === tab.id ? 'admin-tab active' : 'admin-tab'}
-                  onClick={() => setActiveTab(tab.id)}
-                >
-                  <span className="tab-icon">{tab.icon}</span>
-                  <span className="tab-label">{tab.label}</span>
-                  {tab.count > 0 && <span className="tab-badge">{tab.count}</span>}
-                </button>
-              ))}
+        <div className="sidebar-footer">
+          <button className="sidebar-item" onClick={handleLogout}>
+            <FiLogOut className="sidebar-icon" />
+            {sidebarOpen && <span className="sidebar-label">Logout</span>}
+          </button>
+        </div>
+      </aside>
+
+      {/* Main Content */}
+      <main className="admin-main-content">
+        {/* Top Bar */}
+        <header className="admin-topbar">
+          <div className="topbar-left">
+            <button className="mobile-menu-btn" onClick={() => setSidebarOpen(!sidebarOpen)}>
+              <FiMenu />
+            </button>
+            <h1>{menuItems.find(item => item.id === activeTab)?.label || 'Dashboard'}</h1>
+          </div>
+          <div className="topbar-right">
+            <div className={`status-indicator ${dbStatus}`}>
+              <FiDatabase />
+              <span>{dbStatus === 'connected' ? 'Connected' : 'Disconnected'}</span>
             </div>
+            <motion.button 
+              onClick={seedDatabase} 
+              className="topbar-btn seed" 
+              disabled={seeding}
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+            >
+              <FiRefreshCw className={seeding ? 'spinning' : ''} />
+              {seeding ? 'Seeding...' : 'Seed Data'}
+            </motion.button>
           </div>
-        </section>
+        </header>
 
-        {/* Main Content */}
-        <section className="admin-content-section">
-          <div className="container">
+        {/* Content Area */}
+        <div className="admin-content">
+          <AnimatePresence mode="wait">
             {activeTab === 'overview' && (
-              <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="admin-overview">
-                <h2 className="section-title gradient-text">Dashboard Overview</h2>
-                <div className="stats-grid">
-                  {statCards.map((stat, index) => (
-                    <motion.div
-                      key={stat.label}
-                      className="stat-card"
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: index * 0.1 }}
-                    >
-                      <div className="stat-icon">
-                        <stat.icon />
+              <motion.div
+                key="overview"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                className="content-section"
+              >
+                <div className="stats-grid-modern">
+                  <motion.div className="stat-card-modern cyan" whileHover={{ y: -5 }}>
+                    <div className="stat-card-header">
+                      <FiUsers className="stat-card-icon" />
+                      <span className="stat-card-trend">+12%</span>
+                    </div>
+                    <h3 className="stat-card-value">{stats.totalUsers}</h3>
+                    <p className="stat-card-label">Total Users</p>
+                  </motion.div>
+
+                  <motion.div className="stat-card-modern green" whileHover={{ y: -5 }}>
+                    <div className="stat-card-header">
+                      <FiActivity className="stat-card-icon" />
+                      <span className="stat-card-trend">+8%</span>
+                    </div>
+                    <h3 className="stat-card-value">{stats.activeMembers}</h3>
+                    <p className="stat-card-label">Active Members</p>
+                  </motion.div>
+
+                  <motion.div className="stat-card-modern purple" whileHover={{ y: -5 }}>
+                    <div className="stat-card-header">
+                      <FiShoppingBag className="stat-card-icon" />
+                      <span className="stat-card-trend">+15%</span>
+                    </div>
+                    <h3 className="stat-card-value">{stats.totalOrders}</h3>
+                    <p className="stat-card-label">Total Orders</p>
+                  </motion.div>
+
+                  <motion.div className="stat-card-modern gold" whileHover={{ y: -5 }}>
+                    <div className="stat-card-header">
+                      <FiDollarSign className="stat-card-icon" />
+                      <span className="stat-card-trend">+23%</span>
+                    </div>
+                    <h3 className="stat-card-value">₹{stats.revenue.toLocaleString()}</h3>
+                    <p className="stat-card-label">Revenue</p>
+                  </motion.div>
+
+                  <motion.div className="stat-card-modern pink" whileHover={{ y: -5 }}>
+                    <div className="stat-card-header">
+                      <FiTrendingUp className="stat-card-icon" />
+                      <span className="stat-card-trend">+5%</span>
+                    </div>
+                    <h3 className="stat-card-value">{stats.todayVisits}</h3>
+                    <p className="stat-card-label">Today's Visits</p>
+                  </motion.div>
+
+                  <motion.div className="stat-card-modern blue" whileHover={{ y: -5 }}>
+                    <div className="stat-card-header">
+                      <FiUserPlus className="stat-card-icon" />
+                      <span className="stat-card-trend">+18%</span>
+                    </div>
+                    <h3 className="stat-card-value">{stats.newSignups}</h3>
+                    <p className="stat-card-label">New Signups</p>
+                  </motion.div>
+                </div>
+
+                <div className="charts-grid">
+                  <div className="chart-card">
+                    <h3>Recent Activity</h3>
+                    <div className="activity-list">
+                      <div className="activity-item">
+                        <FiUserPlus className="activity-icon cyan" />
+                        <div className="activity-info">
+                          <p className="activity-title">New user registered</p>
+                          <span className="activity-time">2 minutes ago</span>
+                        </div>
                       </div>
-                      <div className="stat-info">
-                        <h3>{stat.value}</h3>
-                        <p>{stat.label}</p>
+                      <div className="activity-item">
+                        <FiShoppingBag className="activity-icon purple" />
+                        <div className="activity-info">
+                          <p className="activity-title">New order placed</p>
+                          <span className="activity-time">15 minutes ago</span>
+                        </div>
                       </div>
-                    </motion.div>
-                  ))}
+                      <div className="activity-item">
+                        <FiCreditCard className="activity-icon green" />
+                        <div className="activity-info">
+                          <p className="activity-title">Membership approved</p>
+                          <span className="activity-time">1 hour ago</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="chart-card">
+                    <h3>Quick Stats</h3>
+                    <div className="quick-stats">
+                      <div className="quick-stat-item">
+                        <span className="quick-stat-label">Products</span>
+                        <span className="quick-stat-value">{products.length}</span>
+                      </div>
+                      <div className="quick-stat-item">
+                        <span className="quick-stat-label">Classes</span>
+                        <span className="quick-stat-value">{classes.length}</span>
+                      </div>
+                      <div className="quick-stat-item">
+                        <span className="quick-stat-label">Pending</span>
+                        <span className="quick-stat-value">{memberships.filter(m => m.status === 'pending').length}</span>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </motion.div>
             )}
 
             {activeTab === 'users' && (
-              <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="admin-users">
-                <h2 className="section-title gradient-text">All Users ({users.length})</h2>
+              <motion.div key="users" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="content-section">
                 {users.length === 0 ? (
-                  <div className="empty-state">
-                    <p>No users found. Users will appear here after signup.</p>
+                  <div className="empty-state-modern">
+                    <FiUsers className="empty-icon" />
+                    <p>No users found</p>
                   </div>
                 ) : (
-                  <div className="data-table-wrapper">
-                    <table className="data-table">
+                  <div className="table-card">
+                    <table className="modern-table">
                       <thead>
                         <tr>
                           <th>Name</th>
@@ -375,10 +470,10 @@ const AdminDashboard = () => {
                       <tbody>
                         {users.map((user) => (
                           <tr key={user._id}>
-                            <td>{user.name}</td>
+                            <td><strong>{user.name}</strong></td>
                             <td>{user.email}</td>
-                            <td><span className={`badge ${user.membership?.toLowerCase() || 'none'}`}>{user.membership || 'None'}</span></td>
-                            <td><span className={`badge ${user.status?.toLowerCase() || 'active'}`}>{user.status || 'Active'}</span></td>
+                            <td><span className={`badge-modern ${user.membership?.toLowerCase() || 'none'}`}>{user.membership || 'None'}</span></td>
+                            <td><span className={`badge-modern ${user.status?.toLowerCase() || 'active'}`}>{user.status || 'Active'}</span></td>
                             <td>{new Date(user.createdAt).toLocaleDateString()}</td>
                           </tr>
                         ))}
@@ -390,15 +485,15 @@ const AdminDashboard = () => {
             )}
 
             {activeTab === 'memberships' && (
-              <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="admin-memberships">
-                <h2 className="section-title gradient-text">Membership Requests</h2>
+              <motion.div key="memberships" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="content-section">
                 {memberships.length === 0 ? (
-                  <div className="empty-state">
-                    <p>No membership requests yet.</p>
+                  <div className="empty-state-modern">
+                    <FiCreditCard className="empty-icon" />
+                    <p>No membership requests</p>
                   </div>
                 ) : (
-                  <div className="data-table-wrapper">
-                    <table className="data-table">
+                  <div className="table-card">
+                    <table className="modern-table">
                       <thead>
                         <tr>
                           <th>Name</th>
@@ -412,18 +507,18 @@ const AdminDashboard = () => {
                       <tbody>
                         {memberships.map((membership) => (
                           <tr key={membership._id}>
-                            <td>{membership.name}</td>
+                            <td><strong>{membership.name}</strong></td>
                             <td>{membership.email}</td>
-                            <td><span className={`badge ${membership.plan}`}>{membership.plan}</span></td>
+                            <td><span className={`badge-modern ${membership.plan}`}>{membership.plan}</span></td>
                             <td>₹{membership.price}</td>
-                            <td><span className={`badge ${membership.status}`}>{membership.status}</span></td>
+                            <td><span className={`badge-modern ${membership.status}`}>{membership.status}</span></td>
                             <td>
                               {membership.status === 'pending' ? (
-                                <div className="action-btns">
-                                  <button onClick={() => approveMembership(membership._id)} className="btn-approve">
+                                <div className="action-btns-modern">
+                                  <button onClick={() => approveMembership(membership._id)} className="btn-modern approve">
                                     <FiCheckCircle /> Approve
                                   </button>
-                                  <button onClick={() => rejectMembership(membership._id)} className="btn-reject">
+                                  <button onClick={() => rejectMembership(membership._id)} className="btn-modern reject">
                                     <FiXCircle /> Reject
                                   </button>
                                 </div>
@@ -439,15 +534,15 @@ const AdminDashboard = () => {
             )}
 
             {activeTab === 'orders' && (
-              <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="admin-orders">
-                <h2 className="section-title gradient-text">All Orders ({orders.length})</h2>
+              <motion.div key="orders" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="content-section">
                 {orders.length === 0 ? (
-                  <div className="empty-state">
-                    <p>No orders yet.</p>
+                  <div className="empty-state-modern">
+                    <FiShoppingBag className="empty-icon" />
+                    <p>No orders yet</p>
                   </div>
                 ) : (
-                  <div className="data-table-wrapper">
-                    <table className="data-table">
+                  <div className="table-card">
+                    <table className="modern-table">
                       <thead>
                         <tr>
                           <th>Order ID</th>
@@ -461,11 +556,11 @@ const AdminDashboard = () => {
                       <tbody>
                         {orders.map((order) => (
                           <tr key={order._id}>
-                            <td>#{order._id?.slice(-6)}</td>
+                            <td><strong>#{order._id?.slice(-6)}</strong></td>
                             <td>{order.customerName || order.userName}</td>
                             <td>{order.items?.length || 0} items</td>
                             <td>₹{order.totalAmount}</td>
-                            <td><span className={`badge ${order.status?.toLowerCase() || 'pending'}`}>{order.status || 'Pending'}</span></td>
+                            <td><span className={`badge-modern ${order.status?.toLowerCase() || 'pending'}`}>{order.status || 'Pending'}</span></td>
                             <td>{new Date(order.orderDate || order.createdAt).toLocaleDateString()}</td>
                           </tr>
                         ))}
@@ -477,15 +572,15 @@ const AdminDashboard = () => {
             )}
 
             {activeTab === 'products' && (
-              <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="admin-products">
-                <h2 className="section-title gradient-text">Products ({products.length})</h2>
+              <motion.div key="products" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="content-section">
                 {products.length === 0 ? (
-                  <div className="empty-state">
+                  <div className="empty-state-modern">
+                    <FiPackage className="empty-icon" />
                     <p>No products found. Click "Seed Data" to add products.</p>
                   </div>
                 ) : (
-                  <div className="data-table-wrapper">
-                    <table className="data-table">
+                  <div className="table-card">
+                    <table className="modern-table">
                       <thead>
                         <tr>
                           <th>Name</th>
@@ -498,8 +593,8 @@ const AdminDashboard = () => {
                       <tbody>
                         {products.map((product) => (
                           <tr key={product._id}>
-                            <td>{product.name}</td>
-                            <td><span className="badge">{product.category}</span></td>
+                            <td><strong>{product.name}</strong></td>
+                            <td><span className="badge-modern">{product.category}</span></td>
                             <td>₹{product.price}</td>
                             <td>{product.stock}</td>
                             <td>⭐ {product.rating || 'N/A'}</td>
@@ -513,15 +608,15 @@ const AdminDashboard = () => {
             )}
 
             {activeTab === 'classes' && (
-              <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="admin-classes">
-                <h2 className="section-title gradient-text">Classes ({classes.length})</h2>
+              <motion.div key="classes" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="content-section">
                 {classes.length === 0 ? (
-                  <div className="empty-state">
+                  <div className="empty-state-modern">
+                    <FiActivity className="empty-icon" />
                     <p>No classes found. Click "Seed Data" to add classes.</p>
                   </div>
                 ) : (
-                  <div className="data-table-wrapper">
-                    <table className="data-table">
+                  <div className="table-card">
+                    <table className="modern-table">
                       <thead>
                         <tr>
                           <th>Name</th>
@@ -535,12 +630,12 @@ const AdminDashboard = () => {
                       <tbody>
                         {classes.map((cls) => (
                           <tr key={cls._id}>
-                            <td>{cls.name}</td>
+                            <td><strong>{cls.name}</strong></td>
                             <td>{cls.instructor}</td>
                             <td>{cls.schedule?.day} {cls.schedule?.time}</td>
                             <td>{cls.duration} min</td>
                             <td>{cls.enrolled || 0}/{cls.capacity}</td>
-                            <td><span className="badge">{cls.level}</span></td>
+                            <td><span className="badge-modern">{cls.level}</span></td>
                           </tr>
                         ))}
                       </tbody>
@@ -551,43 +646,39 @@ const AdminDashboard = () => {
             )}
 
             {activeTab === 'tracking' && (
-              <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="admin-tracking">
-                <h2 className="section-title gradient-text">User Activity Tracking</h2>
-                <div className="tracking-grid">
-                  <div className="tracking-card">
-                    <FiHeart className="tracking-icon" />
+              <motion.div key="tracking" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="content-section">
+                <div className="analytics-grid">
+                  <div className="analytics-card">
+                    <FiHeart className="analytics-icon cyan" />
                     <h3>Workout Plans</h3>
-                    <p className="tracking-count">0</p>
-                    <p className="tracking-desc">Generated plans</p>
+                    <p className="analytics-value">0</p>
+                    <span className="analytics-label">Generated plans</span>
                   </div>
-                  <div className="tracking-card">
-                    <FiTarget className="tracking-icon" />
+                  <div className="analytics-card">
+                    <FiTarget className="analytics-icon green" />
                     <h3>Nutrition Plans</h3>
-                    <p className="tracking-count">0</p>
-                    <p className="tracking-desc">Generated plans</p>
+                    <p className="analytics-value">0</p>
+                    <span className="analytics-label">Generated plans</span>
                   </div>
-                  <div className="tracking-card">
-                    <FiActivity className="tracking-icon" />
+                  <div className="analytics-card">
+                    <FiActivity className="analytics-icon purple" />
                     <h3>Progress Trackers</h3>
-                    <p className="tracking-count">0</p>
-                    <p className="tracking-desc">Active trackers</p>
+                    <p className="analytics-value">0</p>
+                    <span className="analytics-label">Active trackers</span>
                   </div>
-                  <div className="tracking-card">
-                    <FiCalendar className="tracking-icon" />
+                  <div className="analytics-card">
+                    <FiCalendar className="analytics-icon pink" />
                     <h3>Class Bookings</h3>
-                    <p className="tracking-count">{classes.reduce((sum, c) => sum + (c.enrolled || 0), 0)}</p>
-                    <p className="tracking-desc">Total enrollments</p>
+                    <p className="analytics-value">{classes.reduce((sum, c) => sum + (c.enrolled || 0), 0)}</p>
+                    <span className="analytics-label">Total enrollments</span>
                   </div>
                 </div>
               </motion.div>
             )}
-          </div>
-        </section>
-      </div>
-
-      {/* Footer - Same as User Site */}
-      <Footer />
-    </>
+          </AnimatePresence>
+        </div>
+      </main>
+    </div>
   );
 };
 
