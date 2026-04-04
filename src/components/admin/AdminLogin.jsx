@@ -28,9 +28,9 @@ const AdminLogin = () => {
     setError('');
 
     // Admin credentials from environment variables
-    const ADMIN_EMAIL = process.env.REACT_APP_ADMIN_EMAIL || 'sumant@gmail.com';
-    const ADMIN_PASSWORD = process.env.REACT_APP_ADMIN_PASSWORD || 'sumant3086';
-    const ADMIN_NAME = process.env.REACT_APP_ADMIN_NAME || 'Sumant Yadav';
+    const ADMIN_EMAIL = import.meta.env.VITE_ADMIN_EMAIL || 'sumant@gmail.com';
+    const ADMIN_PASSWORD = import.meta.env.VITE_ADMIN_PASSWORD || 'sumant3086';
+    const ADMIN_NAME = import.meta.env.VITE_ADMIN_NAME || 'Sumant Yadav';
 
     try {
       if (formData.email === ADMIN_EMAIL && formData.password === ADMIN_PASSWORD) {

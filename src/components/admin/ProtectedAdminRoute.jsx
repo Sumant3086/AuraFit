@@ -2,7 +2,7 @@ import { Navigate } from 'react-router-dom';
 
 const ProtectedAdminRoute = ({ children }) => {
   const admin = localStorage.getItem('admin');
-  const ADMIN_EMAIL = process.env.REACT_APP_ADMIN_EMAIL || 'sumant@gmail.com';
+  const ADMIN_EMAIL = import.meta.env.VITE_ADMIN_EMAIL || 'sumant@gmail.com';
   
   if (!admin) {
     // Not logged in as admin, redirect to admin login

@@ -50,10 +50,10 @@ const Pricing = () => {
               window.open(paymentResp.data.paymentLink, '_blank');
             } else {
               // Fallback to frontend env var if server doesn't return link
-              window.open(process.env.REACT_APP_RAZORPAY_LINK, '_blank');
+              window.open(import.meta.env.VITE_RAZORPAY_LINK, '_blank');
             }
           } catch (err) {
-            window.open(process.env.REACT_APP_RAZORPAY_LINK, '_blank');
+            window.open(import.meta.env.VITE_RAZORPAY_LINK, '_blank');
           }
           
           // Show message to user
