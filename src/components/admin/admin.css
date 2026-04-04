@@ -193,6 +193,7 @@
   display: flex;
   flex-direction: column;
   background: #000;
+  position: relative;
 }
 
 .admin-sidebar.closed + .admin-main-content {
@@ -201,7 +202,7 @@
 
 /* Top Bar */
 .admin-topbar {
-  background: rgba(0, 20, 40, 0.5);
+  background: rgba(0, 20, 40, 0.95);
   backdrop-filter: blur(10px);
   border-bottom: 1px solid rgba(0, 245, 255, 0.2);
   padding: 1.25rem 2rem;
@@ -211,6 +212,7 @@
   position: sticky;
   top: 0;
   z-index: 10;
+  height: 80px;
 }
 
 .topbar-left {
@@ -315,13 +317,15 @@
   overflow-y: auto;
   position: relative;
   z-index: 1;
+  background: #000;
+  min-height: calc(100vh - 80px);
 }
 
 .content-section {
   width: 100%;
   animation: fadeIn 0.3s ease;
   position: relative;
-  z-index: 1;
+  z-index: 2;
 }
 
 @keyframes fadeIn {
@@ -343,11 +347,11 @@
   gap: 1.5rem;
   margin-bottom: 2rem;
   position: relative;
-  z-index: 1;
+  z-index: 2;
 }
 
 .stat-card-modern {
-  background: rgba(0, 245, 255, 0.03);
+  background: rgba(0, 245, 255, 0.05);
   backdrop-filter: blur(10px);
   border: 1px solid rgba(0, 245, 255, 0.2);
   border-radius: 16px;
@@ -355,7 +359,7 @@
   transition: all 0.3s ease;
   cursor: pointer;
   position: relative;
-  z-index: 1;
+  z-index: 2;
 }
 
 .stat-card-modern:hover {
@@ -456,17 +460,17 @@
   gap: 1.5rem;
   margin-bottom: 2rem;
   position: relative;
-  z-index: 1;
+  z-index: 2;
 }
 
 .chart-card {
-  background: rgba(0, 245, 255, 0.03);
+  background: rgba(0, 245, 255, 0.05);
   backdrop-filter: blur(10px);
   border: 1px solid rgba(0, 245, 255, 0.2);
   border-radius: 16px;
   padding: 1.5rem;
   position: relative;
-  z-index: 1;
+  z-index: 2;
 }
 
 .chart-card h3 {
