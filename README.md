@@ -1,281 +1,205 @@
-# 🏋️ AURA FIT - AI-Powered Gym Management System
+# 🏋️ AURA FIT - Enterprise Fitness Platform
 
-A modern, full-stack gym management platform with AI-powered features, stunning UI, and comprehensive admin dashboard.
+Modern full-stack gym management system with AI, real-time features, and enterprise security.
 
-![React](https://img.shields.io/badge/React-18.3-blue)
-![Node.js](https://img.shields.io/badge/Node.js-20+-green)
-![MongoDB](https://img.shields.io/badge/MongoDB-Atlas-brightgreen)
-![AI](https://img.shields.io/badge/AI-Google%20Gemini-orange)
-![License](https://img.shields.io/badge/License-MIT-yellow)
+![React](https://img.shields.io/badge/React-18.3-blue) ![Node.js](https://img.shields.io/badge/Node.js-20+-green) ![MongoDB](https://img.shields.io/badge/MongoDB-Atlas-brightgreen) ![WebSocket](https://img.shields.io/badge/WebSocket-Socket.io-black)
 
-## 🌐 Live Demo
+## 🚀 [Live Demo](https://aurafitgymwebsite.onrender.com/)
 
-**🚀 [View Live Application](https://aurafitgymwebsite.onrender.com/)**
-<img width="1907" height="874" alt="image" src="https://github.com/user-attachments/assets/a1b128d7-03fc-4307-beb9-01a103f10f40" />
+## ✨ Key Features
 
+### 🎨 Modern UI/UX
+- Framer Motion animations throughout
+- Glassmorphism design
+- Responsive & mobile-friendly
+- Interactive charts & visualizations
 
-## 🌟 Features
+### 🔒 Enterprise Security
+- JWT refresh token rotation
+- Rate limiting & API throttling
+- XSS protection & input sanitization
+- CORS security hardening
+- Helmet.js security headers
 
-### 🤖 AI-Powered Features (Unique)
-- **AI Workout Generator** - Personalized workout plans using Google Gemini AI
-- **AI Nutrition Calculator** - Custom meal plans based on user goals
-- **AI Membership Recommender** - Smart membership suggestions
-- **Body Tracker** - BMI calculator with health insights
+### ⚡ Real-time Features
+- WebSocket server (Socket.io)
+- Live chat between users & trainers
+- Real-time notifications
+- Typing indicators
+- Online/offline status
 
-### 👥 User Management
-- Secure authentication with bcrypt
-- User profiles and dashboards
-- Order history tracking
-- Membership management
+### 🤖 AI-Powered
+- Google Gemini AI workout plans
+- Personalized nutrition calculator
+- Smart membership recommendations
+- Body composition tracking
 
-### 💼 Admin Dashboard
-- Modern glassmorphism UI with gradients
-- Real-time statistics and analytics
-- User and membership management
-- Order tracking system
-- Revenue analytics
+### 📊 Advanced Analytics
+- Interactive charts (Chart.js)
+- Revenue trends & forecasting
+- User engagement metrics
+- CSV export functionality
+- Custom date range filters
 
-### 🛒 E-Commerce
-- Product catalog
-- Shopping cart
-- Order management
-- Payment gateway integration (Razorpay)
+### 🔍 Advanced Search
+- Autocomplete suggestions
+- Multi-criteria filtering
+- Recent searches history
+- Real-time results
 
-### 📅 Class Booking
-- Multiple fitness classes (Yoga, HIIT, Zumba, etc.)
-- Real-time enrollment tracking
-- Instructor information
-- Capacity management
+### 💳 Payment System
+- Razorpay integration
+- PDF invoice generation
+- Payment analytics
+- Order tracking
 
-### 💳 Membership System
-- Multiple tiers (Basic, Pro, Premium)
-- Free day pass/trial
-- Admin approval workflow
-- Automatic expiry tracking
+### 👤 User Dashboard
+- Body measurements tracking
+- Progress charts
+- Workout history
+- Goal tracking
 
-## 🚀 Tech Stack
+### 🛡️ Admin Dashboard
+- Modern sidebar layout
+- Real-time statistics
+- User & membership management
+- Order tracking
+- Analytics with charts
 
-### Frontend
-- **React 18** - UI library
-- **Vite** - Build tool
-- **React Router** - Navigation
-- **React Icons** - Icon library
-- **CSS3** - Styling with glassmorphism
+## 🛠️ Tech Stack
 
-### Backend
-- **Node.js** - Runtime
-- **Express** - Web framework
-- **MongoDB Atlas** - Cloud database
-- **Mongoose** - ODM
-- **bcryptjs** - Password hashing
-- **Google Gemini AI** - AI features
+**Frontend:** React 18, Vite, Framer Motion, Chart.js, Socket.io-client  
+**Backend:** Node.js, Express, MongoDB, Socket.io, JWT, Helmet  
+**AI:** Google Gemini API  
+**Security:** bcrypt, express-rate-limit, express-validator  
+**Database:** MongoDB Atlas with indexing & connection pooling  
+**Real-time:** WebSocket (Socket.io)
 
-### DevOps (Planned)
-- **Docker** - Containerization
-- **Jenkins** - CI/CD pipeline
-- **Git** - Version control
-
-## 📦 Installation
+## 📦 Quick Start
 
 ### Prerequisites
 - Node.js 20+
 - MongoDB Atlas account
 - Google Gemini API key
 
-### 1. Clone Repository
-```bash
-git clone https://github.com/Sumant3086/ReactAuraFit.git
-cd ReactAuraFit
-```
+### Installation
 
-### 2. Install Dependencies
-
-**Frontend:**
 ```bash
+# Clone repository
+git clone https://github.com/Sumant3086/AuraFit.git
+cd AuraFit
+
+# Install dependencies
 npm install
-```
+cd server && npm install && cd ..
 
-**Backend:**
-```bash
-cd server
-npm install
-```
-
-### 3. Environment Setup
-
-**Important: Never commit .env files to Git!**
-
-Create environment files from examples:
-```bash
-# Frontend environment
+# Setup environment variables
 cp .env.example .env
-
-# Backend environment  
 cp server/.env.example server/.env
+# Edit .env files with your credentials
+
+# Run application (both frontend & backend)
+npm run dev
 ```
 
-Edit the `.env` files with your actual credentials:
+Visit: `http://localhost:3000`
+
+### Environment Variables
 
 **Frontend (.env):**
 ```env
-REACT_APP_API_URL=http://localhost:5000/api
-REACT_APP_ADMIN_EMAIL=your_admin_email
-REACT_APP_ADMIN_PASSWORD=your_admin_password
-REACT_APP_RAZORPAY_LINK=your_razorpay_link
+VITE_API_URL=http://localhost:5000/api
+VITE_ADMIN_EMAIL=admin@aurafit.com
+VITE_ADMIN_PASSWORD=your_password
 ```
 
 **Backend (server/.env):**
 ```env
-MONGODB_URI=your_mongodb_connection_string
-GOOGLE_API_KEY=your_google_gemini_api_key
-ADMIN_EMAIL=your_admin_email
-ADMIN_PASSWORD=your_admin_password
+MONGODB_URI=your_mongodb_uri
+GOOGLE_API_KEY=your_gemini_api_key
 JWT_SECRET=your_jwt_secret
+JWT_REFRESH_SECRET=your_refresh_secret
 ```
-
-### 4. Seed Database (Optional)
-
-Add sample users:
-```bash
-cd server
-node seedUsers.js
-```
-
-Add custom user:
-```bash
-node addUser.js
-```
-
-### 5. Run Application
-
-**Backend:**
-```bash
-cd server
-npm start
-```
-
-**Frontend:**
-```bash
-npm run dev
-```
-
-Visit: `http://localhost:5173`
 
 ## 🎯 Usage
 
-### User Access
-1. **Signup:** `/signup` - Create new account
-2. **Login:** `/login` - Access your dashboard
-3. **Shop:** `/shop` - Browse products
-4. **Classes:** `/classes` - Book fitness classes
-5. **Pricing:** `/pricing` - Purchase memberships
-6. **Features:** `/features` - AI-powered tools
+**User Routes:**
+- `/` - Home
+- `/signup` - Register
+- `/login` - Login
+- `/shop` - Products
+- `/classes` - Book classes
+- `/pricing` - Memberships
+- `/features` - AI tools
 
-### Admin Access
-1. **Login:** `/admin/login`
-   - Email: `sumant@gmail.com`
-   - Password: `sumant3086`
-2. **Dashboard:** `/admin/new-dashboard`
+**Admin Routes:**
+- `/admin/login` - Admin login
+- `/admin/dashboard` - Admin panel
 
 ## 📁 Project Structure
 
 ```
-ReactAuraFit/
+AuraFit/
 ├── src/
 │   ├── components/
 │   │   ├── admin/          # Admin dashboard
-│   │   ├── auth/           # Login/Signup
-│   │   ├── features/       # AI features
-│   │   ├── shop/           # E-commerce
-│   │   ├── classes/        # Class booking
-│   │   ├── orders/         # Order management
+│   │   ├── chat/           # Live chat
+│   │   ├── search/         # Advanced search
+│   │   ├── dashboard/      # User dashboard
+│   │   ├── notifications/  # Notification center
 │   │   └── ...
-│   ├── context/            # React context
-│   ├── services/           # API services
-│   └── App.jsx
+│   ├── context/            # React context (Socket, Cart)
+│   └── services/           # API services
 ├── server/
-│   ├── models/             # MongoDB schemas
-│   ├── routes/             # API routes
-│   ├── services/           # Business logic
-│   └── server.js
+│   ├── middleware/         # Security, Auth
+│   ├── socket/             # WebSocket server
+│   ├── config/             # Database config
+│   ├── services/           # PDF, AI services
+│   └── routes/             # API endpoints
 └── package.json
 ```
 
-## 🎨 Key Features Showcase
+## 🔐 Security Features
 
-### Modern Admin Dashboard
-- Glassmorphism design
-- Real-time statistics
-- Gradient animations
-- Responsive layout
+- JWT access & refresh tokens
+- Rate limiting (100 req/15min)
+- Helmet.js security headers
+- Input sanitization
+- XSS protection
+- CORS configuration
+- Password hashing (bcrypt)
 
-### AI Integration
-- Google Gemini API
-- Personalized recommendations
-- Natural language processing
-- Smart algorithms
+## 📊 Database Optimization
 
-### Security
-- Password hashing
-- Protected routes
-- Admin authentication
-- Input validation
+- Indexed collections for fast queries
+- Connection pooling (max: 10)
+- Query performance monitoring
+- Optimized aggregation pipelines
 
-## 🐳 Docker Deployment (Coming Soon)
+## 🌐 API Endpoints
 
-```bash
-# Build and run with Docker Compose
-docker-compose up -d
-```
-
-## 🔧 API Endpoints
-
-### Authentication
-- `POST /api/auth/signup` - Register user
-- `POST /api/auth/login` - Login user
-
-### Memberships
-- `GET /api/memberships` - Get all memberships
-- `POST /api/memberships/purchase` - Purchase membership
-- `PATCH /api/memberships/:id/approve` - Approve membership
-
-### Orders
-- `GET /api/orders/user/email/:email` - Get user orders
-- `POST /api/orders` - Create order
-
-### Admin
-- `GET /api/admin/stats` - Dashboard statistics
-- `GET /api/admin/users` - Get all users
-- `GET /api/admin/orders` - Get all orders
+**Auth:** `/api/auth/signup`, `/api/auth/login`, `/api/auth/refresh`  
+**Memberships:** `/api/memberships/*`  
+**Orders:** `/api/orders/*`  
+**Admin:** `/api/admin/*`  
+**AI:** `/api/workout-plans/*`, `/api/nutrition-plans/*`
 
 ## 🤝 Contributing
 
 1. Fork the repository
-2. Create feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit changes (`git commit -m 'Add AmazingFeature'`)
-4. Push to branch (`git push origin feature/AmazingFeature`)
+2. Create feature branch
+3. Commit changes
+4. Push to branch
 5. Open Pull Request
-
-## 📝 License
-
-This project is licensed under the MIT License.
 
 ## 👨‍💻 Author
 
-**Sumant Yadav**
-- GitHub: [@Sumant3086](https://github.com/Sumant3086)
-- Project: [ReactAuraFit](https://github.com/Sumant3086/ReactAuraFit)
+**Sumant Yadav**  
+GitHub: [@Sumant3086](https://github.com/Sumant3086)
 
-## 🙏 Acknowledgments
+## 📝 License
 
-- Google Gemini AI for AI features
-- MongoDB Atlas for cloud database
-- React community for amazing tools
-- All contributors and supporters
-
-## 📞 Support
-
-For support, email sumantyadav3086@gmail.com or open an issue.
+MIT License
 
 ---
 
