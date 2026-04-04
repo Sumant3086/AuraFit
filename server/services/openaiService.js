@@ -31,28 +31,29 @@ const generateSmartWorkoutPlan = (profile) => {
 
 // Helper functions for enhanced plans
 function generateBeginnerWeightLoss(days) {
+  const daysOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+  const selectedDays = daysOfWeek.slice(0, days);
+  
   return {
     planName: 'Beginner Fat Loss Program',
     description: 'Perfect for beginners focusing on fat loss with proper form and gradual progression',
     duration: `${days} days per week`,
-    weeklySchedule: [
-      {
-        day: 'Monday',
-        focus: 'Full Body + Cardio',
-        workouts: [
-          { exercise: 'Treadmill Walk', sets: 1, reps: '10 mins', rest: 'N/A', notes: 'Warm-up at comfortable pace', calories: '~80' },
-          { exercise: 'Bodyweight Squats', sets: 3, reps: '12-15', rest: '60s', notes: 'Keep chest up, knees behind toes', muscles: 'Legs, Glutes' },
-          { exercise: 'Push-ups (Knee)', sets: 3, reps: '8-10', rest: '60s', notes: 'Maintain straight line from head to knees', muscles: 'Chest, Triceps' },
-          { exercise: 'Plank Hold', sets: 3, reps: '20-30s', rest: '45s', notes: 'Engage core, don\'t let hips sag', muscles: 'Core' },
-          { exercise: 'Jumping Jacks', sets: 3, reps: '30', rest: '30s', notes: 'Great for calorie burn', calories: '~50' }
-        ]
-      }
-    ],
+    weeklySchedule: selectedDays.map(day => ({
+      day,
+      focus: 'Full Body + Cardio',
+      workouts: [
+        { exercise: 'Treadmill Walk', sets: 'warm-up', reps: 'moderate duration', rest: 'N/A', notes: 'Warm-up at comfortable pace', calories: 'moderate' },
+        { exercise: 'Bodyweight Squats', sets: 'moderate', reps: 'moderate range', rest: 'moderate', notes: 'Keep chest up, knees behind toes', muscles: 'Legs, Glutes' },
+        { exercise: 'Push-ups (Knee)', sets: 'moderate', reps: 'moderate range', rest: 'moderate', notes: 'Maintain straight line from head to knees', muscles: 'Chest, Triceps' },
+        { exercise: 'Plank Hold', sets: 'moderate', reps: 'moderate duration', rest: 'short', notes: 'Engage core, don\'t let hips sag', muscles: 'Core' },
+        { exercise: 'Jumping Jacks', sets: 'moderate', reps: 'moderate count', rest: 'short', notes: 'Great for calorie burn', calories: 'moderate' }
+      ]
+    })),
     tips: [
       '🔥 Focus on consistency over intensity',
-      '💧 Drink 3-4 liters of water daily',
-      '😴 Get 7-8 hours of sleep for recovery',
-      '🍎 Maintain a 300-500 calorie deficit',
+      '💧 Stay well hydrated throughout the day',
+      '😴 Get adequate sleep for recovery',
+      '🍎 Maintain a moderate calorie deficit',
       '📱 Track your workouts and progress',
       '🧘 Include stretching after each session'
     ],
@@ -60,149 +61,154 @@ function generateBeginnerWeightLoss(days) {
       'Eat protein with every meal (dal, paneer, eggs)',
       'Include vegetables in lunch and dinner',
       'Avoid sugary drinks and processed foods',
-      'Have your last meal 2-3 hours before bed'
+      'Have your last meal a few hours before bed'
     ]
   };
 }
 
 function generateIntermediateWeightLoss(days) {
+  const daysOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+  const selectedDays = daysOfWeek.slice(0, days);
+  
   return {
     planName: 'Intermediate Fat Shredding Program',
     description: 'High-intensity program for experienced gym-goers targeting maximum fat loss',
     duration: `${days} days per week`,
-    weeklySchedule: [
-      {
-        day: 'Monday',
-        focus: 'HIIT + Lower Body',
-        workouts: [
-          { exercise: 'HIIT Sprints', sets: 8, reps: '30s on/30s off', rest: '30s', notes: 'Max effort sprints', calories: '~150' },
-          { exercise: 'Barbell Squats', sets: 4, reps: '12-15', rest: '60s', notes: 'Go deep, maintain form', muscles: 'Quads, Glutes' },
-          { exercise: 'Romanian Deadlifts', sets: 3, reps: '12-15', rest: '60s', notes: 'Feel hamstring stretch', muscles: 'Hamstrings, Lower Back' },
-          { exercise: 'Walking Lunges', sets: 3, reps: '20 total', rest: '60s', notes: 'Alternate legs', muscles: 'Legs, Glutes' },
-          { exercise: 'Mountain Climbers', sets: 4, reps: '30', rest: '30s', notes: 'Fast pace for cardio', calories: '~80' }
-        ]
-      }
-    ],
+    weeklySchedule: selectedDays.map(day => ({
+      day,
+      focus: 'HIIT + Lower Body',
+      workouts: [
+        { exercise: 'HIIT Sprints', sets: 'multiple', reps: 'intervals', rest: 'short', notes: 'Max effort sprints', calories: 'high' },
+        { exercise: 'Barbell Squats', sets: 'moderate-high', reps: 'moderate range', rest: 'moderate', notes: 'Go deep, maintain form', muscles: 'Quads, Glutes' },
+        { exercise: 'Romanian Deadlifts', sets: 'moderate', reps: 'moderate range', rest: 'moderate', notes: 'Feel hamstring stretch', muscles: 'Hamstrings, Lower Back' },
+        { exercise: 'Walking Lunges', sets: 'moderate', reps: 'moderate total', rest: 'moderate', notes: 'Alternate legs', muscles: 'Legs, Glutes' },
+        { exercise: 'Mountain Climbers', sets: 'moderate-high', reps: 'moderate count', rest: 'short', notes: 'Fast pace for cardio', calories: 'moderate' }
+      ]
+    })),
     tips: [
       '🔥 Push yourself but listen to your body',
       '⏱️ Keep rest periods strict for fat burning',
-      '💪 Progressive overload - increase weight weekly',
+      '💪 Progressive overload - increase weight regularly',
       '🥗 High protein, moderate carbs, low fat diet',
-      '📊 Track body measurements weekly',
-      '🏃 Add 10k steps daily for extra calorie burn'
+      '📊 Track body measurements regularly',
+      '🏃 Add daily steps for extra calorie burn'
     ]
   };
 }
 
 function generateBeginnerMuscleGain(days) {
+  const daysOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+  const selectedDays = daysOfWeek.slice(0, days);
+  
   return {
     planName: 'Beginner Muscle Building Foundation',
     description: 'Build strength and muscle mass with compound movements and proper form',
     duration: `${days} days per week`,
-    weeklySchedule: [
-      {
-        day: 'Monday',
-        focus: 'Chest & Triceps',
-        workouts: [
-          { exercise: 'Barbell Bench Press', sets: 4, reps: '8-10', rest: '90s', notes: 'Lower to chest, press explosively', muscles: 'Chest, Triceps' },
-          { exercise: 'Incline Dumbbell Press', sets: 3, reps: '10-12', rest: '75s', notes: '30-45 degree angle', muscles: 'Upper Chest' },
-          { exercise: 'Cable Flyes', sets: 3, reps: '12-15', rest: '60s', notes: 'Stretch at bottom, squeeze at top', muscles: 'Chest' },
-          { exercise: 'Tricep Dips', sets: 3, reps: '10-12', rest: '60s', notes: 'Lean forward for chest emphasis', muscles: 'Triceps' },
-          { exercise: 'Overhead Tricep Extension', sets: 3, reps: '12-15', rest: '60s', notes: 'Full stretch, controlled movement', muscles: 'Triceps' }
-        ]
-      }
-    ],
+    weeklySchedule: selectedDays.map(day => ({
+      day,
+      focus: 'Chest & Triceps',
+      workouts: [
+        { exercise: 'Barbell Bench Press', sets: 'moderate-high', reps: 'moderate range', rest: 'moderate-long', notes: 'Lower to chest, press explosively', muscles: 'Chest, Triceps' },
+        { exercise: 'Incline Dumbbell Press', sets: 'moderate', reps: 'moderate range', rest: 'moderate', notes: 'appropriate angle', muscles: 'Upper Chest' },
+        { exercise: 'Cable Flyes', sets: 'moderate', reps: 'moderate-high range', rest: 'moderate', notes: 'Stretch at bottom, squeeze at top', muscles: 'Chest' },
+        { exercise: 'Tricep Dips', sets: 'moderate', reps: 'moderate range', rest: 'moderate', notes: 'Lean forward for chest emphasis', muscles: 'Triceps' },
+        { exercise: 'Overhead Tricep Extension', sets: 'moderate', reps: 'moderate-high range', rest: 'moderate', notes: 'Full stretch, controlled movement', muscles: 'Triceps' }
+      ]
+    })),
     tips: [
       '💪 Focus on progressive overload',
-      '🍗 Eat in 300-500 calorie surplus',
-      '🥚 Consume 2g protein per kg bodyweight',
-      '😴 Sleep 8-9 hours for muscle recovery',
-      '📈 Increase weights by 2.5-5kg weekly',
+      '🍗 Eat in moderate calorie surplus',
+      '🥚 Consume adequate protein per kg bodyweight',
+      '😴 Get plenty of sleep for muscle recovery',
+      '📈 Increase weights progressively',
       '🥛 Consider protein supplements if needed'
     ]
   };
 }
 
 function generateIntermediateMuscleGain(days) {
+  const daysOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+  const selectedDays = daysOfWeek.slice(0, days);
+  
   return {
     planName: 'Intermediate Hypertrophy Program',
     description: 'Advanced muscle building with volume and intensity techniques',
     duration: `${days} days per week`,
-    weeklySchedule: [
-      {
-        day: 'Monday',
-        focus: 'Chest & Triceps (Volume)',
-        workouts: [
-          { exercise: 'Barbell Bench Press', sets: 5, reps: '6-8', rest: '120s', notes: 'Heavy weight, perfect form', muscles: 'Chest, Triceps', intensity: 'High' },
-          { exercise: 'Incline Barbell Press', sets: 4, reps: '8-10', rest: '90s', notes: 'Upper chest focus', muscles: 'Upper Chest' },
-          { exercise: 'Dumbbell Flyes', sets: 3, reps: '12-15', rest: '60s', notes: 'Deep stretch, mind-muscle connection', muscles: 'Chest' },
-          { exercise: 'Close-Grip Bench', sets: 4, reps: '8-10', rest: '90s', notes: 'Tricep emphasis', muscles: 'Triceps' },
-          { exercise: 'Cable Pushdowns', sets: 3, reps: '15-20', rest: '45s', notes: 'Pump work, squeeze hard', muscles: 'Triceps' }
-        ]
-      }
-    ],
+    weeklySchedule: selectedDays.map(day => ({
+      day,
+      focus: 'Chest & Triceps (Volume)',
+      workouts: [
+        { exercise: 'Barbell Bench Press', sets: 'high', reps: 'low-moderate range', rest: 'long', notes: 'Heavy weight, perfect form', muscles: 'Chest, Triceps', intensity: 'High' },
+        { exercise: 'Incline Barbell Press', sets: 'moderate-high', reps: 'moderate range', rest: 'moderate-long', notes: 'Upper chest focus', muscles: 'Upper Chest' },
+        { exercise: 'Dumbbell Flyes', sets: 'moderate', reps: 'moderate-high range', rest: 'moderate', notes: 'Deep stretch, mind-muscle connection', muscles: 'Chest' },
+        { exercise: 'Close-Grip Bench', sets: 'moderate-high', reps: 'moderate range', rest: 'moderate-long', notes: 'Tricep emphasis', muscles: 'Triceps' },
+        { exercise: 'Cable Pushdowns', sets: 'moderate', reps: 'high range', rest: 'short', notes: 'Pump work, squeeze hard', muscles: 'Triceps' }
+      ]
+    })),
     tips: [
       '🏋️ Train to near failure on last set',
-      '🍖 Eat 2.2g protein per kg bodyweight',
-      '⏱️ Rest 48-72 hours between muscle groups',
+      '🍖 Eat adequate protein per kg bodyweight',
+      '⏱️ Rest adequately between muscle groups',
       '💊 Consider creatine supplementation',
-      '📊 Track all lifts and aim for PR weekly',
+      '📊 Track all lifts and aim for PR regularly',
       '🥗 Eat clean calories, avoid junk food'
     ]
   };
 }
 
 function generateAdvancedWeightLoss(days) {
+  const daysOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+  const selectedDays = daysOfWeek.slice(0, days);
+  
   return {
     planName: 'Advanced Fat Burning Protocol',
     description: 'Elite-level fat loss with metabolic conditioning and strength preservation',
     duration: `${days} days per week`,
-    weeklySchedule: [
-      {
-        day: 'Monday',
-        focus: 'Metabolic Conditioning',
-        workouts: [
-          { exercise: 'Tabata Sprints', sets: 8, reps: '20s on/10s off', rest: '10s', notes: 'All-out effort', calories: '~200', intensity: 'Maximum' },
-          { exercise: 'Barbell Complexes', sets: 5, reps: '6 each', rest: '90s', notes: 'Deadlift-Row-Clean-Press-Squat', muscles: 'Full Body' },
-          { exercise: 'Burpee Box Jumps', sets: 4, reps: '10', rest: '60s', notes: 'Explosive power', calories: '~100' },
-          { exercise: 'Kettlebell Swings', sets: 4, reps: '20', rest: '45s', notes: 'Hip drive, not arms', muscles: 'Posterior Chain' },
-          { exercise: 'Battle Ropes', sets: 4, reps: '30s', rest: '30s', notes: 'Alternate waves, max intensity', calories: '~80' }
-        ]
-      }
-    ],
+    weeklySchedule: selectedDays.map(day => ({
+      day,
+      focus: 'Metabolic Conditioning',
+      workouts: [
+        { exercise: 'Tabata Sprints', sets: 'multiple', reps: 'intervals', rest: 'minimal', notes: 'All-out effort', calories: 'very high', intensity: 'Maximum' },
+        { exercise: 'Barbell Complexes', sets: 'high', reps: 'each movement', rest: 'moderate-long', notes: 'Deadlift-Row-Clean-Press-Squat', muscles: 'Full Body' },
+        { exercise: 'Burpee Box Jumps', sets: 'moderate-high', reps: 'moderate count', rest: 'moderate', notes: 'Explosive power', calories: 'high' },
+        { exercise: 'Kettlebell Swings', sets: 'moderate-high', reps: 'moderate-high count', rest: 'short', notes: 'Hip drive, not arms', muscles: 'Posterior Chain' },
+        { exercise: 'Battle Ropes', sets: 'moderate-high', reps: 'moderate duration', rest: 'short', notes: 'Alternate waves, max intensity', calories: 'moderate' }
+      ]
+    })),
     tips: [
       '🔥 Maintain muscle while cutting fat',
       '⚡ Keep intensity high, volume moderate',
-      '🥩 High protein (2.5g/kg) to preserve muscle',
-      '🏃 Add fasted cardio 3x per week',
-      '📉 Aim for 0.5-1kg fat loss per week',
-      '💧 Stay hydrated - 4-5 liters daily'
+      '🥩 High protein to preserve muscle',
+      '🏃 Add fasted cardio regularly',
+      '📉 Aim for steady fat loss',
+      '💧 Stay well hydrated'
     ]
   };
 }
 
 function generateAdvancedMuscleGain(days) {
+  const daysOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+  const selectedDays = daysOfWeek.slice(0, days);
+  
   return {
     planName: 'Advanced Mass Building Program',
     description: 'Elite hypertrophy protocol for experienced lifters',
     duration: `${days} days per week`,
-    weeklySchedule: [
-      {
-        day: 'Monday',
-        focus: 'Chest & Triceps (Power)',
-        workouts: [
-          { exercise: 'Barbell Bench Press', sets: 6, reps: '4-6', rest: '180s', notes: 'Max strength, perfect form', muscles: 'Chest, Triceps', intensity: 'Maximum' },
-          { exercise: 'Weighted Dips', sets: 4, reps: '6-8', rest: '120s', notes: 'Add weight plates', muscles: 'Chest, Triceps' },
-          { exercise: 'Incline Dumbbell Press', sets: 4, reps: '8-10', rest: '90s', notes: 'Hypertrophy range', muscles: 'Upper Chest' },
-          { exercise: 'Cable Crossovers', sets: 4, reps: '12-15', rest: '60s', notes: 'Multiple angles', muscles: 'Chest' },
-          { exercise: 'Overhead Tricep Extension', sets: 4, reps: '10-12', rest: '75s', notes: 'Full stretch', muscles: 'Triceps' }
-        ]
-      }
-    ],
+    weeklySchedule: selectedDays.map(day => ({
+      day,
+      focus: 'Chest & Triceps (Power)',
+      workouts: [
+        { exercise: 'Barbell Bench Press', sets: 'high', reps: 'low range', rest: 'very long', notes: 'Max strength, perfect form', muscles: 'Chest, Triceps', intensity: 'Maximum' },
+        { exercise: 'Weighted Dips', sets: 'moderate-high', reps: 'low-moderate range', rest: 'long', notes: 'Add weight plates', muscles: 'Chest, Triceps' },
+        { exercise: 'Incline Dumbbell Press', sets: 'moderate-high', reps: 'moderate range', rest: 'moderate-long', notes: 'Hypertrophy range', muscles: 'Upper Chest' },
+        { exercise: 'Cable Crossovers', sets: 'moderate-high', reps: 'moderate-high range', rest: 'moderate', notes: 'Multiple angles', muscles: 'Chest' },
+        { exercise: 'Overhead Tricep Extension', sets: 'moderate-high', reps: 'moderate range', rest: 'moderate', notes: 'Full stretch', muscles: 'Triceps' }
+      ]
+    })),
     tips: [
       '💪 Periodize training - strength, hypertrophy, deload',
-      '🍖 Eat 500+ calorie surplus on training days',
-      '😴 Sleep 9+ hours for optimal recovery',
+      '🍖 Eat significant calorie surplus on training days',
+      '😴 Get plenty of sleep for optimal recovery',
       '💊 Consider supplements: Protein, Creatine, BCAAs',
       '📈 Track every workout, aim for progressive overload',
       '🧘 Include mobility work and stretching'

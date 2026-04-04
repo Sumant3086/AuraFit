@@ -118,28 +118,28 @@ const WorkoutGenerator = () => {
         {
           day: 'Monday',
           workouts: [
-            { exercise: 'Warm-up Cardio', sets: 1, reps: '10 mins', rest: 'N/A', notes: 'Light jog or cycling' },
-            { exercise: 'Squats', sets: 3, reps: '12-15', rest: '60s', notes: 'Bodyweight or weighted' },
-            { exercise: 'Push-ups', sets: 3, reps: '10-12', rest: '60s', notes: 'Modify as needed' },
-            { exercise: 'Plank', sets: 3, reps: '30-45s', rest: '45s', notes: 'Keep core tight' }
+            { exercise: 'Warm-up Cardio', sets: 'warm-up', reps: 'moderate duration', rest: 'N/A', notes: 'Light jog or cycling' },
+            { exercise: 'Squats', sets: 'moderate', reps: 'moderate range', rest: 'moderate', notes: 'Bodyweight or weighted' },
+            { exercise: 'Push-ups', sets: 'moderate', reps: 'moderate range', rest: 'moderate', notes: 'Modify as needed' },
+            { exercise: 'Plank', sets: 'moderate', reps: 'moderate duration', rest: 'short', notes: 'Keep core tight' }
           ]
         },
         {
           day: 'Wednesday',
           workouts: [
-            { exercise: 'Cycling', sets: 1, reps: '15 mins', rest: 'N/A', notes: 'Moderate intensity' },
-            { exercise: 'Lunges', sets: 3, reps: '10 each leg', rest: '60s', notes: 'Alternate legs' },
-            { exercise: 'Dumbbell Rows', sets: 3, reps: '12-15', rest: '60s', notes: 'Each arm' },
-            { exercise: 'Mountain Climbers', sets: 3, reps: '20', rest: '45s', notes: 'Controlled pace' }
+            { exercise: 'Cycling', sets: 'warm-up', reps: 'moderate duration', rest: 'N/A', notes: 'Moderate intensity' },
+            { exercise: 'Lunges', sets: 'moderate', reps: 'each leg', rest: 'moderate', notes: 'Alternate legs' },
+            { exercise: 'Dumbbell Rows', sets: 'moderate', reps: 'moderate range', rest: 'moderate', notes: 'Each arm' },
+            { exercise: 'Mountain Climbers', sets: 'moderate', reps: 'moderate count', rest: 'short', notes: 'Controlled pace' }
           ]
         },
         {
           day: 'Friday',
           workouts: [
-            { exercise: 'Jump Rope', sets: 3, reps: '2 mins', rest: '60s', notes: 'Or high knees' },
-            { exercise: 'Deadlifts', sets: 3, reps: '10-12', rest: '90s', notes: 'Light to moderate weight' },
-            { exercise: 'Shoulder Press', sets: 3, reps: '12-15', rest: '60s', notes: 'Dumbbells or barbell' },
-            { exercise: 'Burpees', sets: 3, reps: '10', rest: '60s', notes: 'Full body exercise' }
+            { exercise: 'Jump Rope', sets: 'moderate', reps: 'moderate duration', rest: 'moderate', notes: 'Or high knees' },
+            { exercise: 'Deadlifts', sets: 'moderate', reps: 'moderate range', rest: 'moderate-long', notes: 'Light to moderate weight' },
+            { exercise: 'Shoulder Press', sets: 'moderate', reps: 'moderate range', rest: 'moderate', notes: 'Dumbbells or barbell' },
+            { exercise: 'Burpees', sets: 'moderate', reps: 'moderate count', rest: 'moderate', notes: 'Full body exercise' }
           ]
         }
       ].slice(0, availableDays),

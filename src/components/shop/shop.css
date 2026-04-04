@@ -31,9 +31,18 @@
     position: relative;
     width: 320px;
     height: 450px;
-    background-color: #171717;
+    background: rgba(0, 245, 255, 0.05);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(0, 245, 255, 0.2);
     border-radius: 20px;
     overflow: hidden;
+    transition: all 0.4s ease;
+}
+
+.shop-card:hover {
+    transform: translateY(-15px);
+    border-color: #00f5ff;
+    box-shadow: 0 25px 60px rgba(0, 245, 255, 0.4);
 }
 
 .colors {
