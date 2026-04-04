@@ -1420,3 +1420,117 @@
 .table-card::-webkit-scrollbar-thumb:hover {
   background: linear-gradient(135deg, #ff00ff 0%, #00f5ff 100%);
 }
+
+/* ===== ANALYTICS CHARTS ===== */
+
+.analytics-charts {
+  width: 100%;
+}
+
+.analytics-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 4rem;
+  color: #00f5ff;
+}
+
+.analytics-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.date-range-selector {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  background: rgba(0, 245, 255, 0.05);
+  padding: 0.75rem 1.25rem;
+  border-radius: 12px;
+  border: 1px solid rgba(0, 245, 255, 0.2);
+  color: #00f5ff;
+}
+
+.date-range-selector select {
+  background: transparent;
+  border: none;
+  color: white;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  outline: none;
+  font-family: 'Sora', sans-serif;
+}
+
+.date-range-selector select option {
+  background: #001a33;
+  color: white;
+}
+
+.export-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  background: linear-gradient(135deg, #00f5ff 0%, #0099ff 100%);
+  color: #000;
+  border: none;
+  border-radius: 12px;
+  font-size: 0.9rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.export-btn:hover {
+  box-shadow: 0 5px 20px rgba(0, 245, 255, 0.4);
+}
+
+.charts-grid-analytics {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+  gap: 2rem;
+}
+
+.chart-container {
+  background: rgba(0, 245, 255, 0.03);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(0, 245, 255, 0.2);
+  border-radius: 16px;
+  padding: 1.5rem;
+}
+
+.chart-container h3 {
+  color: white;
+  font-size: 1.1rem;
+  margin-bottom: 1.5rem;
+  font-weight: 700;
+}
+
+.chart-wrapper {
+  height: 300px;
+  position: relative;
+}
+
+@media (max-width: 768px) {
+  .charts-grid-analytics {
+    grid-template-columns: 1fr;
+  }
+  
+  .analytics-header {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .export-btn {
+    width: 100%;
+    justify-content: center;
+  }
+}
