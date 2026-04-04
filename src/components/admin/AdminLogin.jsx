@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
+import { motion } from 'framer-motion';
+import { FiMail, FiLock, FiCheckCircle } from 'react-icons/fi';
 import './admin.css';
-import { FaEnvelope, FaLock, FaEye, FaEyeSlash, FaShieldAlt } from 'react-icons/fa';
-import Logo from '../logo/Logo';
 
 const AdminLogin = () => {
   const navigate = useNavigate();
@@ -10,140 +10,165 @@ const AdminLogin = () => {
     email: '',
     password: ''
   });
-  const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
-  const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => {
     setFormData({
       ...formData,
       [e.target.name]: e.target.value
     });
-    setError('');
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true);
     setError('');
 
-    // Admin credentials from environment variables
     const ADMIN_EMAIL = import.meta.env.VITE_ADMIN_EMAIL || 'sumant@gmail.com';
     const ADMIN_PASSWORD = import.meta.env.VITE_ADMIN_PASSWORD || 'sumant3086';
     const ADMIN_NAME = import.meta.env.VITE_ADMIN_NAME || 'Sumant Yadav';
 
     try {
       if (formData.email === ADMIN_EMAIL && formData.password === ADMIN_PASSWORD) {
-        localStorage.setItem('admin', JSON.stringify({ 
-          email: formData.email, 
+        const adminData = {
+          email: ADMIN_EMAIL,
+          name: ADMIN_NAME,
           role: 'admin',
-          name: ADMIN_NAME
-        }));
-        setTimeout(() => {
-          navigate('/admin/dashboard'); // Updated to use single dashboard
-        }, 1000);
+          loginTime: new Date().toISOString()
+        };
+        
+        localStorage.setItem('admin', JSON.stringify(adminData));
+        navigate('/admin/dashboard');
       } else {
-        setError('Access Denied: Invalid admin credentials');
+        setError('Invalid admin credentials. Please try again.');
       }
     } catch (err) {
       setError('Login failed. Please try again.');
-    } finally {
-      setLoading(false);
+      console.error('Login error:', err);
     }
   };
 
+  const features = [
+    'Real-time Analytics Dashboard',
+    'User & Membership Management',
+    'Order Tracking & Revenue Reports',
+    'Database Seeding Tools',
+    'Advanced Data Visualization'
+  ];
+
   return (
     <div className="admin-login-container">
-      <div className="admin-login-left">
+      <motion.div 
+        className="admin-login-left"
+        initial={{ opacity: 0, x: -50 }}
+        animate={{ opacity: 1, x: 0 }}
+        transition={{ duration: 0.6 }}
+      >
         <div className="admin-branding">
-          <Logo size="large" color="gradient" />
-          <h1>AURA FIT</h1>
-          <h2>Admin Portal</h2>
-          <p>Manage your fitness empire with powerful tools and insights</p>
+          <motion.h1
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2 }}
+          >
+            🏋️ AURA FIT
+          </motion.h1>
+          <motion.h2
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.3 }}
+          >
+            Admin Dashboard
+          </motion.h2>
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.4 }}
+          >
+            Manage your gym operations with powerful analytics, user management, 
+            and real-time insights all in one place.
+          </motion.p>
           <div className="admin-features">
-            <div className="feature-item">
-              <FaShieldAlt />
-              <span>Secure Access</span>
-            </div>
-            <div className="feature-item">
-              <FaShieldAlt />
-              <span>Real-time Analytics</span>
-            </div>
-            <div className="feature-item">
-              <FaShieldAlt />
-              <span>User Management</span>
-            </div>
+            {features.map((feature, index) => (
+              <motion.div
+                key={index}
+                className="feature-item"
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.5 + index * 0.1 }}
+              >
+                <FiCheckCircle size={20} />
+                <span>{feature}</span>
+              </motion.div>
+            ))}
           </div>
         </div>
-      </div>
+      </motion.div>
 
-      <div className="admin-login-right">
+      <motion.div 
+        className="admin-login-right"
+        initial={{ opacity: 0, x: 50 }}
+        animate={{ opacity: 1, x: 0 }}
+        transition={{ duration: 0.6 }}
+      >
         <div className="admin-login-card">
           <div className="admin-login-header">
-            <div className="shield-icon">
-              <FaShieldAlt />
-            </div>
-            <h1>Admin Login</h1>
-            <p>Enter your credentials to access the dashboard</p>
+            <h1>Welcome Back</h1>
+            <p>Sign in to access your admin dashboard</p>
           </div>
 
+          {error && (
+            <motion.div 
+              className="admin-error-message"
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+            >
+              {error}
+            </motion.div>
+          )}
+
           <form onSubmit={handleSubmit} className="admin-login-form">
-            {error && <div className="admin-error-message">{error}</div>}
-            
             <div className="admin-form-group">
-              <label>Admin Email</label>
               <div className="admin-input-wrapper">
-                <FaEnvelope className="admin-input-icon" />
+                <FiMail size={20} color="#00f5ff" />
                 <input
                   type="email"
                   name="email"
+                  placeholder="Admin Email"
                   value={formData.email}
                   onChange={handleChange}
-                  placeholder="Enter admin email"
                   required
-                  autoComplete="off"
                 />
               </div>
             </div>
 
             <div className="admin-form-group">
-              <label>Password</label>
               <div className="admin-input-wrapper">
-                <FaLock className="admin-input-icon" />
+                <FiLock size={20} color="#00f5ff" />
                 <input
-                  type={showPassword ? 'text' : 'password'}
+                  type="password"
                   name="password"
+                  placeholder="Password"
                   value={formData.password}
                   onChange={handleChange}
-                  placeholder="Enter admin password"
                   required
                 />
-                <button
-                  type="button"
-                  className="admin-toggle-password"
-                  onClick={() => setShowPassword(!showPassword)}
-                >
-                  {showPassword ? <FaEyeSlash /> : <FaEye />}
-                </button>
               </div>
             </div>
 
-            <button type="submit" className="admin-login-btn" disabled={loading}>
-              {loading ? 'Authenticating...' : 'Access Dashboard'}
-            </button>
+            <motion.button
+              type="submit"
+              className="admin-login-btn"
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+            >
+              Sign In
+            </motion.button>
           </form>
 
-          <div className="admin-login-footer">
-            <div className="security-notice">
-              <FaShieldAlt />
-              <span>Restricted Access - Admin Only</span>
-            </div>
-            <Link to="/login" className="back-to-user">
-              ← Back to User Login
-            </Link>
-          </div>
+          <Link to="/" className="back-to-user">
+            ← Back to User Site
+          </Link>
         </div>
-      </div>
+      </motion.div>
     </div>
   );
 };
