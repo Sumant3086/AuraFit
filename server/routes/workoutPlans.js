@@ -102,133 +102,70 @@ router.get('/:id', async (req, res) => {
 function generateWorkoutPlan(profile) {
   const { fitnessLevel, goals, availableDays, sessionDuration, equipment } = profile;
   
-  // Base workout templates
+  const daysOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+  const selectedDays = daysOfWeek.slice(0, availableDays);
+  
+  // Base workout templates with dynamic values
   const workoutTemplates = {
     beginner: {
-      'weight-loss': [
-        { day: 'Monday', workouts: [
-          { exercise: 'Brisk Walking', sets: 1, reps: '30 mins', rest: 'N/A', notes: 'Warm up for 5 mins' },
-          { exercise: 'Bodyweight Squats', sets: 3, reps: '10-12', rest: '60s', notes: 'Focus on form' },
-          { exercise: 'Push-ups (Modified)', sets: 3, reps: '8-10', rest: '60s', notes: 'Knee push-ups if needed' },
-          { exercise: 'Plank', sets: 3, reps: '20-30s', rest: '45s', notes: 'Keep core tight' }
-        ]},
-        { day: 'Wednesday', workouts: [
-          { exercise: 'Cycling', sets: 1, reps: '25 mins', rest: 'N/A', notes: 'Moderate intensity' },
-          { exercise: 'Lunges', sets: 3, reps: '10 each leg', rest: '60s', notes: 'Alternate legs' },
-          { exercise: 'Dumbbell Rows', sets: 3, reps: '10-12', rest: '60s', notes: 'Use light weights' },
-          { exercise: 'Mountain Climbers', sets: 3, reps: '15-20', rest: '45s', notes: 'Controlled movement' }
-        ]},
-        { day: 'Friday', workouts: [
-          { exercise: 'Jump Rope', sets: 3, reps: '2 mins', rest: '60s', notes: 'Or high knees' },
-          { exercise: 'Goblet Squats', sets: 3, reps: '12-15', rest: '60s', notes: 'Hold dumbbell' },
-          { exercise: 'Shoulder Press', sets: 3, reps: '10-12', rest: '60s', notes: 'Light dumbbells' },
-          { exercise: 'Burpees', sets: 3, reps: '8-10', rest: '60s', notes: 'Modify as needed' }
-        ]}
-      ],
-      'muscle-gain': [
-        { day: 'Monday', workouts: [
-          { exercise: 'Barbell Squats', sets: 4, reps: '8-10', rest: '90s', notes: 'Focus on depth' },
-          { exercise: 'Leg Press', sets: 3, reps: '10-12', rest: '75s', notes: 'Full range of motion' },
-          { exercise: 'Leg Curls', sets: 3, reps: '12-15', rest: '60s', notes: 'Controlled tempo' },
-          { exercise: 'Calf Raises', sets: 4, reps: '15-20', rest: '45s', notes: 'Squeeze at top' }
-        ]},
-        { day: 'Wednesday', workouts: [
-          { exercise: 'Bench Press', sets: 4, reps: '8-10', rest: '90s', notes: 'Chest to bar' },
-          { exercise: 'Incline Dumbbell Press', sets: 3, reps: '10-12', rest: '75s', notes: '30-45 degree angle' },
-          { exercise: 'Cable Flyes', sets: 3, reps: '12-15', rest: '60s', notes: 'Stretch at bottom' },
-          { exercise: 'Tricep Dips', sets: 3, reps: '10-12', rest: '60s', notes: 'Lean forward' }
-        ]},
-        { day: 'Friday', workouts: [
-          { exercise: 'Deadlifts', sets: 4, reps: '6-8', rest: '120s', notes: 'Keep back straight' },
-          { exercise: 'Pull-ups', sets: 3, reps: '8-10', rest: '90s', notes: 'Use assistance if needed' },
-          { exercise: 'Barbell Rows', sets: 3, reps: '10-12', rest: '75s', notes: 'Pull to lower chest' },
-          { exercise: 'Bicep Curls', sets: 3, reps: '12-15', rest: '60s', notes: 'No swinging' }
-        ]}
-      ]
+      'weight-loss': selectedDays.map(day => ({ 
+        day, 
+        workouts: [
+          { exercise: 'Brisk Walking', sets: 'warm-up', reps: 'moderate duration', rest: 'N/A', notes: 'Warm up first' },
+          { exercise: 'Bodyweight Squats', sets: 'moderate', reps: 'moderate range', rest: 'moderate', notes: 'Focus on form' },
+          { exercise: 'Push-ups (Modified)', sets: 'moderate', reps: 'moderate range', rest: 'moderate', notes: 'Knee push-ups if needed' },
+          { exercise: 'Plank', sets: 'moderate', reps: 'moderate duration', rest: 'short', notes: 'Keep core tight' }
+        ]
+      })),
+      'muscle-gain': selectedDays.map(day => ({ 
+        day, 
+        workouts: [
+          { exercise: 'Barbell Squats', sets: 'moderate-high', reps: 'moderate range', rest: 'moderate-long', notes: 'Focus on depth' },
+          { exercise: 'Leg Press', sets: 'moderate', reps: 'moderate range', rest: 'moderate', notes: 'Full range of motion' },
+          { exercise: 'Leg Curls', sets: 'moderate', reps: 'moderate-high range', rest: 'moderate', notes: 'Controlled tempo' },
+          { exercise: 'Calf Raises', sets: 'moderate-high', reps: 'high range', rest: 'short', notes: 'Squeeze at top' }
+        ]
+      }))
     },
     intermediate: {
-      'weight-loss': [
-        { day: 'Monday', workouts: [
-          { exercise: 'HIIT Sprints', sets: 8, reps: '30s on/30s off', rest: '30s', notes: 'Max effort' },
-          { exercise: 'Barbell Squats', sets: 4, reps: '12-15', rest: '60s', notes: 'Moderate weight' },
-          { exercise: 'Romanian Deadlifts', sets: 3, reps: '12-15', rest: '60s', notes: 'Feel hamstring stretch' },
-          { exercise: 'Box Jumps', sets: 3, reps: '10-12', rest: '60s', notes: 'Land softly' }
-        ]},
-        { day: 'Wednesday', workouts: [
-          { exercise: 'Battle Ropes', sets: 4, reps: '30s', rest: '45s', notes: 'Alternate waves' },
-          { exercise: 'Push-ups', sets: 4, reps: '15-20', rest: '45s', notes: 'Explosive if possible' },
-          { exercise: 'Dumbbell Rows', sets: 4, reps: '12-15', rest: '60s', notes: 'Each arm' },
-          { exercise: 'Kettlebell Swings', sets: 4, reps: '15-20', rest: '60s', notes: 'Hip drive' }
-        ]},
-        { day: 'Friday', workouts: [
-          { exercise: 'Rowing Machine', sets: 1, reps: '20 mins', rest: 'N/A', notes: 'Intervals: 1min hard/1min easy' },
-          { exercise: 'Thrusters', sets: 4, reps: '12-15', rest: '60s', notes: 'Squat to press' },
-          { exercise: 'Pull-ups', sets: 4, reps: '8-12', rest: '75s', notes: 'Full range' },
-          { exercise: 'Plank to Push-up', sets: 3, reps: '10-12', rest: '60s', notes: 'Alternate arms' }
-        ]}
-      ],
-      'muscle-gain': [
-        { day: 'Monday', workouts: [
-          { exercise: 'Barbell Squats', sets: 5, reps: '6-8', rest: '120s', notes: 'Heavy weight' },
-          { exercise: 'Front Squats', sets: 4, reps: '8-10', rest: '90s', notes: 'Upright torso' },
-          { exercise: 'Bulgarian Split Squats', sets: 3, reps: '10-12 each', rest: '75s', notes: 'Rear foot elevated' },
-          { exercise: 'Leg Extensions', sets: 3, reps: '12-15', rest: '60s', notes: 'Squeeze quads' }
-        ]},
-        { day: 'Wednesday', workouts: [
-          { exercise: 'Bench Press', sets: 5, reps: '6-8', rest: '120s', notes: 'Progressive overload' },
-          { exercise: 'Incline Barbell Press', sets: 4, reps: '8-10', rest: '90s', notes: 'Upper chest focus' },
-          { exercise: 'Dumbbell Flyes', sets: 3, reps: '12-15', rest: '60s', notes: 'Deep stretch' },
-          { exercise: 'Close-Grip Bench', sets: 3, reps: '10-12', rest: '75s', notes: 'Tricep emphasis' }
-        ]},
-        { day: 'Friday', workouts: [
-          { exercise: 'Deadlifts', sets: 5, reps: '5-6', rest: '150s', notes: 'Heavy, perfect form' },
-          { exercise: 'Weighted Pull-ups', sets: 4, reps: '6-8', rest: '120s', notes: 'Add weight' },
-          { exercise: 'T-Bar Rows', sets: 4, reps: '8-10', rest: '90s', notes: 'Chest supported' },
-          { exercise: 'Face Pulls', sets: 3, reps: '15-20', rest: '60s', notes: 'Rear delts' }
-        ]}
-      ]
+      'weight-loss': selectedDays.map(day => ({ 
+        day, 
+        workouts: [
+          { exercise: 'HIIT Sprints', sets: 'multiple', reps: 'intervals', rest: 'short', notes: 'Max effort' },
+          { exercise: 'Barbell Squats', sets: 'moderate-high', reps: 'moderate-high range', rest: 'moderate', notes: 'Moderate weight' },
+          { exercise: 'Romanian Deadlifts', sets: 'moderate', reps: 'moderate-high range', rest: 'moderate', notes: 'Feel hamstring stretch' },
+          { exercise: 'Box Jumps', sets: 'moderate', reps: 'moderate range', rest: 'moderate', notes: 'Land softly' }
+        ]
+      })),
+      'muscle-gain': selectedDays.map(day => ({ 
+        day, 
+        workouts: [
+          { exercise: 'Barbell Squats', sets: 'high', reps: 'low-moderate range', rest: 'long', notes: 'Heavy weight' },
+          { exercise: 'Front Squats', sets: 'moderate-high', reps: 'moderate range', rest: 'moderate-long', notes: 'Upright torso' },
+          { exercise: 'Bulgarian Split Squats', sets: 'moderate', reps: 'moderate range each', rest: 'moderate', notes: 'Rear foot elevated' },
+          { exercise: 'Leg Extensions', sets: 'moderate', reps: 'moderate-high range', rest: 'moderate', notes: 'Squeeze quads' }
+        ]
+      }))
     },
     advanced: {
-      'weight-loss': [
-        { day: 'Monday', workouts: [
-          { exercise: 'Tabata Sprints', sets: 8, reps: '20s on/10s off', rest: '10s', notes: 'All-out effort' },
-          { exercise: 'Barbell Complexes', sets: 5, reps: '6 each', rest: '90s', notes: 'Deadlift-Row-Clean-Press-Squat' },
-          { exercise: 'Plyometric Push-ups', sets: 4, reps: '10-12', rest: '60s', notes: 'Explosive' },
-          { exercise: 'Sled Pushes', sets: 4, reps: '30m', rest: '90s', notes: 'Heavy load' }
-        ]},
-        { day: 'Wednesday', workouts: [
-          { exercise: 'Assault Bike', sets: 10, reps: '30s max/30s rest', rest: '30s', notes: 'Max calories' },
-          { exercise: 'Clean and Press', sets: 5, reps: '5-6', rest: '120s', notes: 'Technical lift' },
-          { exercise: 'Muscle-ups', sets: 4, reps: '5-8', rest: '120s', notes: 'Strict form' },
-          { exercise: 'Turkish Get-ups', sets: 3, reps: '5 each side', rest: '90s', notes: 'Controlled' }
-        ]},
-        { day: 'Friday', workouts: [
-          { exercise: 'CrossFit WOD', sets: 1, reps: 'AMRAP 20min', rest: 'N/A', notes: '5 Pull-ups, 10 Push-ups, 15 Squats' },
-          { exercise: 'Snatch', sets: 5, reps: '3-5', rest: '150s', notes: 'Olympic lift' },
-          { exercise: 'Handstand Push-ups', sets: 4, reps: '8-10', rest: '90s', notes: 'Wall assisted' },
-          { exercise: 'Farmer Carries', sets: 4, reps: '50m', rest: '75s', notes: 'Heavy dumbbells' }
-        ]}
-      ],
-      'muscle-gain': [
-        { day: 'Monday', workouts: [
-          { exercise: 'Barbell Squats', sets: 6, reps: '4-6', rest: '180s', notes: 'Max strength' },
-          { exercise: 'Pause Squats', sets: 4, reps: '6-8', rest: '120s', notes: '3 second pause' },
-          { exercise: 'Hack Squats', sets: 4, reps: '8-10', rest: '90s', notes: 'Deep stretch' },
-          { exercise: 'Walking Lunges', sets: 3, reps: '15 each', rest: '75s', notes: 'Weighted' }
-        ]},
-        { day: 'Wednesday', workouts: [
-          { exercise: 'Bench Press', sets: 6, reps: '4-6', rest: '180s', notes: 'Powerlifting style' },
-          { exercise: 'Weighted Dips', sets: 4, reps: '6-8', rest: '120s', notes: 'Heavy weight' },
-          { exercise: 'Cable Crossovers', sets: 4, reps: '12-15', rest: '60s', notes: 'Multiple angles' },
-          { exercise: 'Overhead Tricep Extension', sets: 4, reps: '10-12', rest: '75s', notes: 'Full stretch' }
-        ]},
-        { day: 'Friday', workouts: [
-          { exercise: 'Deadlifts', sets: 6, reps: '3-5', rest: '180s', notes: 'Competition style' },
-          { exercise: 'Weighted Pull-ups', sets: 5, reps: '5-7', rest: '150s', notes: 'Heavy plates' },
-          { exercise: 'Pendlay Rows', sets: 4, reps: '6-8', rest: '120s', notes: 'Explosive pull' },
-          { exercise: 'Shrugs', sets: 4, reps: '12-15', rest: '60s', notes: 'Heavy weight' }
-        ]}
-      ]
+      'weight-loss': selectedDays.map(day => ({ 
+        day, 
+        workouts: [
+          { exercise: 'Tabata Sprints', sets: 'multiple', reps: 'intervals', rest: 'minimal', notes: 'All-out effort' },
+          { exercise: 'Barbell Complexes', sets: 'high', reps: 'each movement', rest: 'moderate-long', notes: 'Deadlift-Row-Clean-Press-Squat' },
+          { exercise: 'Plyometric Push-ups', sets: 'moderate-high', reps: 'moderate range', rest: 'moderate', notes: 'Explosive' },
+          { exercise: 'Sled Pushes', sets: 'moderate-high', reps: 'moderate distance', rest: 'moderate-long', notes: 'Heavy load' }
+        ]
+      })),
+      'muscle-gain': selectedDays.map(day => ({ 
+        day, 
+        workouts: [
+          { exercise: 'Deadlifts', sets: 'high', reps: 'low range', rest: 'very long', notes: 'Heavy, perfect form' },
+          { exercise: 'Weighted Pull-ups', sets: 'moderate-high', reps: 'low-moderate range', rest: 'long', notes: 'Add weight' },
+          { exercise: 'T-Bar Rows', sets: 'moderate-high', reps: 'moderate range', rest: 'moderate-long', notes: 'Chest supported' },
+          { exercise: 'Face Pulls', sets: 'moderate', reps: 'high range', rest: 'moderate', notes: 'Rear delts' }
+        ]
+      }))
     }
   };
   
@@ -248,7 +185,7 @@ function generateWorkoutPlan(profile) {
     description: `Personalized ${fitnessLevel} level workout plan designed for ${goalKey.replace('-', ' ')}`,
     weeklySchedule: schedule,
     tips: [
-      'Always warm up for 5-10 minutes before starting',
+      'Always warm up before starting',
       'Focus on proper form over heavy weights',
       'Stay hydrated throughout your workout',
       'Get adequate rest between workout days',

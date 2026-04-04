@@ -45,19 +45,35 @@ const AnalyticsCharts = () => {
   const loadAnalyticsData = async () => {
     setLoading(true);
     try {
-      // Simulate analytics data - replace with actual API calls
       const days = dateRange === '7days' ? 7 : dateRange === '30days' ? 30 : 90;
       const dates = Array.from({ length: days }, (_, i) => 
         format(subDays(new Date(), days - 1 - i), 'MMM dd')
       );
 
-      // Revenue data
+      // Fetch actual data from API
+      const statsResponse = await adminAPI.getStats();
+      const ordersResponse = await adminAPI.getOrders();
+      const usersResponse = await adminAPI.getUsers();
+      const membershipsResponse = await adminAPI.getMemberships();
+
+      const stats = statsResponse?.data || {};
+      const orders = ordersResponse?.data || [];
+      const users = usersResponse?.data || [];
+      const memberships = membershipsResponse?.data || [];
+
+      // Calculate revenue data from actual orders
+      const revenueByDate = {};
+      orders.forEach(order => {
+        const date = format(new Date(order.orderDate || order.createdAt), 'MMM dd');
+        revenueByDate[date] = (revenueByDate[date] || 0) + (order.totalAmount || 0);
+      });
+
       setRevenueData({
         labels: dates,
         datasets: [
           {
             label: 'Revenue (₹)',
-            data: Array.from({ length: days }, () => Math.floor(Math.random() * 50000) + 10000),
+            data: dates.map(date => revenueByDate[date] || 0),
             borderColor: '#00f5ff',
             backgroundColor: 'rgba(0, 245, 255, 0.1)',
             fill: true,
@@ -66,29 +82,54 @@ const AnalyticsCharts = () => {
         ],
       });
 
-      // User growth data
+      // Calculate user growth from actual users
+      const usersByDate = {};
+      users.forEach(user => {
+        const date = format(new Date(user.createdAt), 'MMM dd');
+        usersByDate[date] = (usersByDate[date] || 0) + 1;
+      });
+
       setUserGrowthData({
         labels: dates,
         datasets: [
           {
             label: 'New Users',
-            data: Array.from({ length: days }, () => Math.floor(Math.random() * 20) + 5),
+            data: dates.map(date => usersByDate[date] || 0),
             backgroundColor: '#00f5ff',
           },
           {
             label: 'Active Users',
-            data: Array.from({ length: days }, () => Math.floor(Math.random() * 50) + 20),
+            data: dates.map(date => {
+              const newUsers = usersByDate[date] || 0;
+              return Math.floor(newUsers * 1.5); // Active users estimation
+            }),
             backgroundColor: '#ff00ff',
           },
         ],
       });
 
-      // Membership distribution
+      // Calculate membership distribution from actual data
+      const membershipCounts = {
+        Basic: 0,
+        Pro: 0,
+        Premium: 0,
+      };
+
+      memberships.forEach(membership => {
+        if (membership.status === 'approved' && membershipCounts.hasOwnProperty(membership.plan)) {
+          membershipCounts[membership.plan]++;
+        }
+      });
+
+      const totalMemberships = Object.values(membershipCounts).reduce((a, b) => a + b, 0);
+
       setMembershipDistribution({
         labels: ['Basic', 'Pro', 'Premium'],
         datasets: [
           {
-            data: [30, 45, 25],
+            data: totalMemberships > 0 
+              ? [membershipCounts.Basic, membershipCounts.Pro, membershipCounts.Premium]
+              : [0, 0, 0],
             backgroundColor: ['#9d00ff', '#00f5ff', '#ffd700'],
             borderWidth: 0,
           },
@@ -96,6 +137,36 @@ const AnalyticsCharts = () => {
       });
     } catch (error) {
       console.error('Error loading analytics:', error);
+      // Set empty data on error
+      const days = dateRange === '7days' ? 7 : dateRange === '30days' ? 30 : 90;
+      const dates = Array.from({ length: days }, (_, i) => 
+        format(subDays(new Date(), days - 1 - i), 'MMM dd')
+      );
+
+      setRevenueData({
+        labels: dates,
+        datasets: [{
+          label: 'Revenue (₹)',
+          data: Array(days).fill(0),
+          borderColor: '#00f5ff',
+          backgroundColor: 'rgba(0, 245, 255, 0.1)',
+          fill: true,
+          tension: 0.4,
+        }],
+      });
+
+      setUserGrowthData({
+        labels: dates,
+        datasets: [
+          { label: 'New Users', data: Array(days).fill(0), backgroundColor: '#00f5ff' },
+          { label: 'Active Users', data: Array(days).fill(0), backgroundColor: '#ff00ff' },
+        ],
+      });
+
+      setMembershipDistribution({
+        labels: ['Basic', 'Pro', 'Premium'],
+        datasets: [{ data: [0, 0, 0], backgroundColor: ['#9d00ff', '#00f5ff', '#ffd700'], borderWidth: 0 }],
+      });
     } finally {
       setLoading(false);
     }

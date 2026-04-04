@@ -45,21 +45,21 @@ Please provide a comprehensive workout plan in the following JSON format:
       "workouts": [
         {
           "exercise": "Bench Press",
-          "sets": 4,
-          "reps": "8-10",
-          "rest": "90s",
+          "sets": "appropriate sets",
+          "reps": "appropriate reps",
+          "rest": "appropriate rest",
           "notes": "Lower to chest, press explosively",
           "muscles": "Chest, Triceps",
-          "calories": "~120"
+          "calories": "estimated calories"
         },
         {
           "exercise": "Incline Dumbbell Press",
-          "sets": 3,
-          "reps": "10-12",
-          "rest": "75s",
-          "notes": "30-45 degree angle",
+          "sets": "appropriate sets",
+          "reps": "appropriate reps",
+          "rest": "appropriate rest",
+          "notes": "appropriate angle",
           "muscles": "Upper Chest",
-          "calories": "~100"
+          "calories": "estimated calories"
         }
       ]
     },
@@ -69,21 +69,21 @@ Please provide a comprehensive workout plan in the following JSON format:
       "workouts": [
         {
           "exercise": "Pull-ups",
-          "sets": 4,
-          "reps": "8-10",
-          "rest": "90s",
+          "sets": "appropriate sets",
+          "reps": "appropriate reps",
+          "rest": "appropriate rest",
           "notes": "Full range of motion",
           "muscles": "Back, Biceps",
-          "calories": "~110"
+          "calories": "estimated calories"
         }
       ]
     }
   ],
-  "tips": ["Focus on progressive overload", "Stay hydrated", "Get 7-8 hours sleep"],
+  "tips": ["Focus on progressive overload", "Stay hydrated", "Get adequate sleep"],
   "nutritionTips": ["Eat protein with every meal", "Include vegetables", "Avoid processed foods"]
 }
 
-CRITICAL: Generate exactly ${userProfile.availableDays} different days with unique exercises for each day. Follow proper split training (e.g., Day 1: Chest/Triceps, Day 2: Back/Biceps, Day 3: Legs/Shoulders). Include 5-7 exercises per day.`;
+CRITICAL: Generate exactly ${userProfile.availableDays} different days with unique exercises for each day. Follow proper split training (e.g., Chest/Triceps, Back/Biceps, Legs/Shoulders). Include appropriate number of exercises per day based on session duration and fitness level.`;
 
     const result = await model.generateContent(prompt);
     const response = await result.response;
@@ -129,39 +129,39 @@ Calculated Macros:
 - Carbs: ${calculations.carbs}g
 - Fats: ${calculations.fats}g
 
-IMPORTANT: Provide 3 DIFFERENT meal options for each meal type (breakfast, lunch, dinner, snacks). Each option should be unique and varied.
+IMPORTANT: Provide multiple DIFFERENT meal options for each meal type (breakfast, lunch, dinner, snacks). Each option should be unique and varied.
 
 Please provide a comprehensive meal plan in the following JSON format:
 {
   "mealPlan": {
     "breakfast": [
-      {"meal": "Oatmeal with Berries & Almonds", "calories": 380, "protein": 15, "carbs": 52, "fats": 12, "description": "Fiber-rich breakfast with antioxidants"},
-      {"meal": "Greek Yogurt Parfait", "calories": 350, "protein": 25, "carbs": 40, "fats": 8, "description": "High-protein breakfast"},
-      {"meal": "Scrambled Eggs with Avocado Toast", "calories": 420, "protein": 22, "carbs": 35, "fats": 18, "description": "Balanced breakfast with healthy fats"}
+      {"meal": "Oatmeal with Berries & Almonds", "calories": "appropriate calories", "protein": "appropriate protein", "carbs": "appropriate carbs", "fats": "appropriate fats", "description": "Fiber-rich breakfast with antioxidants"},
+      {"meal": "Greek Yogurt Parfait", "calories": "appropriate calories", "protein": "appropriate protein", "carbs": "appropriate carbs", "fats": "appropriate fats", "description": "High-protein breakfast"},
+      {"meal": "Scrambled Eggs with Avocado Toast", "calories": "appropriate calories", "protein": "appropriate protein", "carbs": "appropriate carbs", "fats": "appropriate fats", "description": "Balanced breakfast with healthy fats"}
     ],
     "lunch": [
-      {"meal": "Grilled Chicken Salad", "calories": 450, "protein": 40, "carbs": 30, "fats": 15, "description": "Lean protein with vegetables"},
-      {"meal": "Quinoa Buddha Bowl", "calories": 480, "protein": 20, "carbs": 65, "fats": 14, "description": "Plant-based complete meal"},
-      {"meal": "Turkey & Hummus Wrap", "calories": 420, "protein": 32, "carbs": 45, "fats": 12, "description": "Convenient portable lunch"}
+      {"meal": "Grilled Chicken Salad", "calories": "appropriate calories", "protein": "appropriate protein", "carbs": "appropriate carbs", "fats": "appropriate fats", "description": "Lean protein with vegetables"},
+      {"meal": "Quinoa Buddha Bowl", "calories": "appropriate calories", "protein": "appropriate protein", "carbs": "appropriate carbs", "fats": "appropriate fats", "description": "Plant-based complete meal"},
+      {"meal": "Turkey & Hummus Wrap", "calories": "appropriate calories", "protein": "appropriate protein", "carbs": "appropriate carbs", "fats": "appropriate fats", "description": "Convenient portable lunch"}
     ],
     "dinner": [
-      {"meal": "Baked Salmon with Roasted Vegetables", "calories": 520, "protein": 42, "carbs": 35, "fats": 22, "description": "Omega-3 rich dinner"},
-      {"meal": "Lean Beef Stir-fry with Brown Rice", "calories": 500, "protein": 38, "carbs": 48, "fats": 16, "description": "High-protein Asian-inspired"},
-      {"meal": "Grilled Chicken with Sweet Potato", "calories": 480, "protein": 45, "carbs": 42, "fats": 12, "description": "Classic bodybuilding meal"}
+      {"meal": "Baked Salmon with Roasted Vegetables", "calories": "appropriate calories", "protein": "appropriate protein", "carbs": "appropriate carbs", "fats": "appropriate fats", "description": "Omega-3 rich dinner"},
+      {"meal": "Lean Beef Stir-fry with Brown Rice", "calories": "appropriate calories", "protein": "appropriate protein", "carbs": "appropriate carbs", "fats": "appropriate fats", "description": "High-protein Asian-inspired"},
+      {"meal": "Grilled Chicken with Sweet Potato", "calories": "appropriate calories", "protein": "appropriate protein", "carbs": "appropriate carbs", "fats": "appropriate fats", "description": "Classic bodybuilding meal"}
     ],
     "snacks": [
-      {"meal": "Protein Shake with Banana", "calories": 200, "protein": 25, "carbs": 20, "fats": 3, "description": "Post-workout recovery"},
-      {"meal": "Mixed Nuts & Dried Fruit", "calories": 220, "protein": 6, "carbs": 18, "fats": 16, "description": "Energy-dense snack"},
-      {"meal": "Apple with Almond Butter", "calories": 210, "protein": 7, "carbs": 24, "fats": 11, "description": "Balanced mid-day snack"}
+      {"meal": "Protein Shake with Banana", "calories": "appropriate calories", "protein": "appropriate protein", "carbs": "appropriate carbs", "fats": "appropriate fats", "description": "Post-workout recovery"},
+      {"meal": "Mixed Nuts & Dried Fruit", "calories": "appropriate calories", "protein": "appropriate protein", "carbs": "appropriate carbs", "fats": "appropriate fats", "description": "Energy-dense snack"},
+      {"meal": "Apple with Almond Butter", "calories": "appropriate calories", "protein": "appropriate protein", "carbs": "appropriate carbs", "fats": "appropriate fats", "description": "Balanced mid-day snack"}
     ]
   },
   "recommendations": [
-    "Drink 8-10 glasses of water daily",
-    "Eat every 3-4 hours to maintain metabolism",
+    "Drink adequate glasses of water daily",
+    "Eat regularly throughout the day to maintain metabolism",
     "Include colorful vegetables in every meal",
     "Prepare meals in advance for consistency"
   ],
-  "hydration": "Aim for 3-4 liters of water daily, more on workout days",
+  "hydration": "Aim for adequate water intake daily, more on workout days",
   "supplements": ["Multivitamin", "Omega-3 Fish Oil", "Vitamin D", "Whey Protein (if needed)"]
 }
 
@@ -192,70 +192,75 @@ Make it culturally diverse, practical, and aligned with their dietary restrictio
 function generateTemplateWorkoutPlan(userProfile) {
   const { fitnessLevel, goals, availableDays } = userProfile;
   
+  const daysOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+  const selectedDays = daysOfWeek.slice(0, availableDays);
+  
   const templates = {
     beginner: {
       'weight-loss': {
         planName: 'Beginner Fat Loss Program',
         description: 'Perfect for beginners focusing on fat loss with proper form',
         duration: `${availableDays} days per week`,
-        weeklySchedule: [
-          {
-            day: 'Monday',
-            focus: 'Full Body + Cardio',
-            workouts: [
-              { exercise: 'Treadmill Walk', sets: 1, reps: '10 mins', rest: 'N/A', notes: 'Warm-up', calories: '~80', muscles: 'Cardio' },
-              { exercise: 'Bodyweight Squats', sets: 3, reps: '12-15', rest: '60s', notes: 'Keep chest up', muscles: 'Legs, Glutes', calories: '~60' },
-              { exercise: 'Push-ups (Knee)', sets: 3, reps: '8-10', rest: '60s', notes: 'Maintain form', muscles: 'Chest, Triceps', calories: '~50' },
-              { exercise: 'Plank Hold', sets: 3, reps: '20-30s', rest: '45s', notes: 'Engage core', muscles: 'Core', calories: '~30' },
-              { exercise: 'Jumping Jacks', sets: 3, reps: '30', rest: '30s', notes: 'Cardio finisher', muscles: 'Full Body', calories: '~70' }
-            ]
-          },
-          {
-            day: 'Wednesday',
-            focus: 'Upper Body + Core',
-            workouts: [
-              { exercise: 'Cycling', sets: 1, reps: '10 mins', rest: 'N/A', notes: 'Warm-up', calories: '~90', muscles: 'Cardio' },
-              { exercise: 'Dumbbell Rows', sets: 3, reps: '10-12', rest: '60s', notes: 'Each arm', muscles: 'Back, Biceps', calories: '~70' },
-              { exercise: 'Shoulder Press', sets: 3, reps: '10-12', rest: '60s', notes: 'Light weights', muscles: 'Shoulders', calories: '~60' },
-              { exercise: 'Bicycle Crunches', sets: 3, reps: '15-20', rest: '45s', notes: 'Controlled movement', muscles: 'Abs', calories: '~40' },
-              { exercise: 'Mountain Climbers', sets: 3, reps: '20', rest: '45s', notes: 'Fast pace', muscles: 'Core, Cardio', calories: '~80' }
-            ]
-          },
-          {
-            day: 'Friday',
-            focus: 'Lower Body + HIIT',
-            workouts: [
-              { exercise: 'Jump Rope', sets: 3, reps: '2 mins', rest: '60s', notes: 'Warm-up', calories: '~100', muscles: 'Cardio' },
-              { exercise: 'Lunges', sets: 3, reps: '10 each leg', rest: '60s', notes: 'Alternate legs', muscles: 'Legs, Glutes', calories: '~70' },
-              { exercise: 'Glute Bridges', sets: 3, reps: '15-20', rest: '45s', notes: 'Squeeze at top', muscles: 'Glutes, Hamstrings', calories: '~50' },
-              { exercise: 'Burpees', sets: 3, reps: '8-10', rest: '60s', notes: 'Full body exercise', muscles: 'Full Body', calories: '~90' },
-              { exercise: 'High Knees', sets: 3, reps: '30s', rest: '30s', notes: 'HIIT finisher', muscles: 'Cardio', calories: '~80' }
-            ]
-          },
-          {
-            day: 'Saturday',
-            focus: 'Active Recovery + Flexibility',
-            workouts: [
-              { exercise: 'Light Jog', sets: 1, reps: '15 mins', rest: 'N/A', notes: 'Easy pace', calories: '~120', muscles: 'Cardio' },
-              { exercise: 'Yoga Flow', sets: 1, reps: '10 mins', rest: 'N/A', notes: 'Stretching', calories: '~40', muscles: 'Full Body' },
-              { exercise: 'Foam Rolling', sets: 1, reps: '10 mins', rest: 'N/A', notes: 'Recovery', calories: '~20', muscles: 'Recovery' },
-              { exercise: 'Cat-Cow Stretch', sets: 3, reps: '10', rest: '30s', notes: 'Spine mobility', calories: '~15', muscles: 'Back' },
-              { exercise: 'Child Pose Hold', sets: 2, reps: '60s', rest: '30s', notes: 'Relaxation', calories: '~10', muscles: 'Full Body' }
-            ]
-          },
-          {
-            day: 'Sunday',
-            focus: 'Full Body Circuit',
-            workouts: [
-              { exercise: 'Jumping Jacks', sets: 1, reps: '5 mins', rest: 'N/A', notes: 'Warm-up', calories: '~60', muscles: 'Cardio' },
-              { exercise: 'Bodyweight Squats', sets: 4, reps: '15', rest: '45s', notes: 'Deep squats', muscles: 'Legs', calories: '~70' },
-              { exercise: 'Push-ups', sets: 4, reps: '10', rest: '45s', notes: 'Full range', muscles: 'Chest, Triceps', calories: '~60' },
-              { exercise: 'Plank', sets: 4, reps: '30s', rest: '30s', notes: 'Hold steady', muscles: 'Core', calories: '~40' },
-              { exercise: 'Burpees', sets: 4, reps: '10', rest: '60s', notes: 'Circuit finisher', muscles: 'Full Body', calories: '~100' }
-            ]
-          }
-        ].slice(0, availableDays),
-        tips: ['Focus on consistency', 'Drink 3-4 liters water daily', 'Get 7-8 hours sleep', 'Track your progress weekly'],
+        weeklySchedule: selectedDays.map((day, index) => {
+          const workoutTypes = [
+            {
+              focus: 'Full Body + Cardio',
+              workouts: [
+                { exercise: 'Treadmill Walk', sets: 'warm-up', reps: 'moderate duration', rest: 'N/A', notes: 'Warm-up', calories: 'moderate', muscles: 'Cardio' },
+                { exercise: 'Bodyweight Squats', sets: 'moderate', reps: 'moderate range', rest: 'moderate', notes: 'Keep chest up', muscles: 'Legs, Glutes', calories: 'moderate' },
+                { exercise: 'Push-ups (Knee)', sets: 'moderate', reps: 'moderate range', rest: 'moderate', notes: 'Maintain form', muscles: 'Chest, Triceps', calories: 'moderate' },
+                { exercise: 'Plank Hold', sets: 'moderate', reps: 'moderate duration', rest: 'short', notes: 'Engage core', muscles: 'Core', calories: 'low' },
+                { exercise: 'Jumping Jacks', sets: 'moderate', reps: 'moderate count', rest: 'short', notes: 'Cardio finisher', muscles: 'Full Body', calories: 'moderate' }
+              ]
+            },
+            {
+              focus: 'Upper Body + Core',
+              workouts: [
+                { exercise: 'Cycling', sets: 'warm-up', reps: 'moderate duration', rest: 'N/A', notes: 'Warm-up', calories: 'moderate', muscles: 'Cardio' },
+                { exercise: 'Dumbbell Rows', sets: 'moderate', reps: 'moderate range', rest: 'moderate', notes: 'Each arm', muscles: 'Back, Biceps', calories: 'moderate' },
+                { exercise: 'Shoulder Press', sets: 'moderate', reps: 'moderate range', rest: 'moderate', notes: 'Light weights', muscles: 'Shoulders', calories: 'moderate' },
+                { exercise: 'Bicycle Crunches', sets: 'moderate', reps: 'moderate range', rest: 'short', notes: 'Controlled movement', muscles: 'Abs', calories: 'low' },
+                { exercise: 'Mountain Climbers', sets: 'moderate', reps: 'moderate count', rest: 'short', notes: 'Fast pace', muscles: 'Core, Cardio', calories: 'moderate' }
+              ]
+            },
+            {
+              focus: 'Lower Body + HIIT',
+              workouts: [
+                { exercise: 'Jump Rope', sets: 'moderate', reps: 'moderate duration', rest: 'moderate', notes: 'Warm-up', calories: 'high', muscles: 'Cardio' },
+                { exercise: 'Lunges', sets: 'moderate', reps: 'each leg', rest: 'moderate', notes: 'Alternate legs', muscles: 'Legs, Glutes', calories: 'moderate' },
+                { exercise: 'Glute Bridges', sets: 'moderate', reps: 'moderate range', rest: 'short', notes: 'Squeeze at top', muscles: 'Glutes, Hamstrings', calories: 'moderate' },
+                { exercise: 'Burpees', sets: 'moderate', reps: 'moderate range', rest: 'moderate', notes: 'Full body exercise', muscles: 'Full Body', calories: 'high' },
+                { exercise: 'High Knees', sets: 'moderate', reps: 'moderate duration', rest: 'short', notes: 'HIIT finisher', muscles: 'Cardio', calories: 'moderate' }
+              ]
+            },
+            {
+              focus: 'Active Recovery + Flexibility',
+              workouts: [
+                { exercise: 'Light Jog', sets: 'single', reps: 'moderate duration', rest: 'N/A', notes: 'Easy pace', calories: 'moderate', muscles: 'Cardio' },
+                { exercise: 'Yoga Flow', sets: 'single', reps: 'moderate duration', rest: 'N/A', notes: 'Stretching', calories: 'low', muscles: 'Full Body' },
+                { exercise: 'Foam Rolling', sets: 'single', reps: 'moderate duration', rest: 'N/A', notes: 'Recovery', calories: 'low', muscles: 'Recovery' },
+                { exercise: 'Cat-Cow Stretch', sets: 'moderate', reps: 'moderate count', rest: 'short', notes: 'Spine mobility', calories: 'low', muscles: 'Back' },
+                { exercise: 'Child Pose Hold', sets: 'few', reps: 'moderate duration', rest: 'short', notes: 'Relaxation', calories: 'low', muscles: 'Full Body' }
+              ]
+            },
+            {
+              focus: 'Full Body Circuit',
+              workouts: [
+                { exercise: 'Jumping Jacks', sets: 'warm-up', reps: 'moderate duration', rest: 'N/A', notes: 'Warm-up', calories: 'moderate', muscles: 'Cardio' },
+                { exercise: 'Bodyweight Squats', sets: 'moderate-high', reps: 'moderate count', rest: 'short', notes: 'Deep squats', muscles: 'Legs', calories: 'moderate' },
+                { exercise: 'Push-ups', sets: 'moderate-high', reps: 'moderate count', rest: 'short', notes: 'Full range', muscles: 'Chest, Triceps', calories: 'moderate' },
+                { exercise: 'Plank', sets: 'moderate-high', reps: 'moderate duration', rest: 'short', notes: 'Hold steady', muscles: 'Core', calories: 'low' },
+                { exercise: 'Burpees', sets: 'moderate-high', reps: 'moderate count', rest: 'moderate', notes: 'Circuit finisher', muscles: 'Full Body', calories: 'high' }
+              ]
+            }
+          ];
+          
+          return {
+            day: day,
+            ...workoutTypes[index % workoutTypes.length]
+          };
+        }),
+        tips: ['Focus on consistency', 'Stay well hydrated', 'Get adequate sleep', 'Track your progress regularly'],
         nutritionTips: ['Eat protein with every meal', 'Include vegetables', 'Avoid sugary drinks', 'Maintain calorie deficit']
       }
     }
@@ -269,36 +274,41 @@ function generateTemplateWorkoutPlan(userProfile) {
  * Fallback template-based meal plan generation
  */
 function generateTemplateMealPlan(userProfile, calculations) {
+  const caloriesPerMeal = Math.round(calculations.targetCalories / 4); // Rough distribution
+  const proteinPerMeal = Math.round(calculations.protein / 4);
+  const carbsPerMeal = Math.round(calculations.carbs / 4);
+  const fatsPerMeal = Math.round(calculations.fats / 4);
+  
   return {
     mealPlan: {
       breakfast: [
-        { meal: 'Oatmeal with Berries', calories: 350, protein: 12, carbs: 55, fats: 8, description: 'Healthy start' },
-        { meal: 'Greek Yogurt Parfait', calories: 320, protein: 20, carbs: 40, fats: 8, description: 'Protein-rich' },
-        { meal: 'Scrambled Eggs & Toast', calories: 380, protein: 22, carbs: 35, fats: 15, description: 'Classic breakfast' }
+        { meal: 'Oatmeal with Berries', calories: caloriesPerMeal, protein: proteinPerMeal, carbs: carbsPerMeal, fats: fatsPerMeal, description: 'Healthy start' },
+        { meal: 'Greek Yogurt Parfait', calories: caloriesPerMeal, protein: proteinPerMeal, carbs: carbsPerMeal, fats: fatsPerMeal, description: 'Protein-rich' },
+        { meal: 'Scrambled Eggs & Toast', calories: caloriesPerMeal, protein: proteinPerMeal, carbs: carbsPerMeal, fats: fatsPerMeal, description: 'Classic breakfast' }
       ],
       lunch: [
-        { meal: 'Grilled Chicken Salad', calories: 450, protein: 35, carbs: 30, fats: 18, description: 'Lean protein' },
-        { meal: 'Quinoa Bowl', calories: 480, protein: 18, carbs: 65, fats: 15, description: 'Plant-based' },
-        { meal: 'Turkey Wrap', calories: 420, protein: 28, carbs: 45, fats: 12, description: 'Convenient meal' }
+        { meal: 'Grilled Chicken Salad', calories: caloriesPerMeal, protein: proteinPerMeal, carbs: carbsPerMeal, fats: fatsPerMeal, description: 'Lean protein' },
+        { meal: 'Quinoa Bowl', calories: caloriesPerMeal, protein: proteinPerMeal, carbs: carbsPerMeal, fats: fatsPerMeal, description: 'Plant-based' },
+        { meal: 'Turkey Wrap', calories: caloriesPerMeal, protein: proteinPerMeal, carbs: carbsPerMeal, fats: fatsPerMeal, description: 'Convenient meal' }
       ],
       dinner: [
-        { meal: 'Salmon with Vegetables', calories: 520, protein: 40, carbs: 35, fats: 22, description: 'Omega-3 rich' },
-        { meal: 'Lean Beef Stir-fry', calories: 480, protein: 38, carbs: 40, fats: 18, description: 'High protein' },
-        { meal: 'Tofu Curry', calories: 450, protein: 22, carbs: 50, fats: 16, description: 'Vegetarian option' }
+        { meal: 'Salmon with Vegetables', calories: caloriesPerMeal, protein: proteinPerMeal, carbs: carbsPerMeal, fats: fatsPerMeal, description: 'Omega-3 rich' },
+        { meal: 'Lean Beef Stir-fry', calories: caloriesPerMeal, protein: proteinPerMeal, carbs: carbsPerMeal, fats: fatsPerMeal, description: 'High protein' },
+        { meal: 'Tofu Curry', calories: caloriesPerMeal, protein: proteinPerMeal, carbs: carbsPerMeal, fats: fatsPerMeal, description: 'Vegetarian option' }
       ],
       snacks: [
-        { meal: 'Protein Shake', calories: 180, protein: 25, carbs: 15, fats: 3, description: 'Post-workout' },
-        { meal: 'Mixed Nuts', calories: 200, protein: 6, carbs: 8, fats: 18, description: 'Healthy fats' },
-        { meal: 'Apple with Peanut Butter', calories: 220, protein: 8, carbs: 25, fats: 12, description: 'Energy boost' }
+        { meal: 'Protein Shake', calories: Math.round(caloriesPerMeal * 0.5), protein: Math.round(proteinPerMeal * 0.8), carbs: Math.round(carbsPerMeal * 0.4), fats: Math.round(fatsPerMeal * 0.3), description: 'Post-workout' },
+        { meal: 'Mixed Nuts', calories: Math.round(caloriesPerMeal * 0.5), protein: Math.round(proteinPerMeal * 0.3), carbs: Math.round(carbsPerMeal * 0.2), fats: Math.round(fatsPerMeal * 0.8), description: 'Healthy fats' },
+        { meal: 'Apple with Peanut Butter', calories: Math.round(caloriesPerMeal * 0.5), protein: Math.round(proteinPerMeal * 0.4), carbs: Math.round(carbsPerMeal * 0.5), fats: Math.round(fatsPerMeal * 0.5), description: 'Energy boost' }
       ]
     },
     recommendations: [
-      'Drink 8-10 glasses of water daily',
-      'Eat every 3-4 hours to maintain metabolism',
+      'Drink adequate water throughout the day',
+      'Eat regularly to maintain metabolism',
       'Include a variety of colorful vegetables',
       'Prepare meals in advance for consistency'
     ],
-    hydration: 'Aim for 3-4 liters of water daily',
+    hydration: 'Aim for adequate water intake daily',
     supplements: ['Multivitamin', 'Omega-3', 'Vitamin D']
   };
 }
