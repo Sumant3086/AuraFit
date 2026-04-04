@@ -20,6 +20,7 @@ import ProtectedAdminRoute from "./components/admin/ProtectedAdminRoute";
 import UserProfile from "./components/profile/UserProfile";
 import MyOrders from "./components/orders/MyOrders";
 import PaymentConfirmation from "./components/orders/PaymentConfirmation";
+import LiveChat from "./components/chat/LiveChat";
 import ScrollToTop from "./components/scrollToTop";
 
 const App = () => {
@@ -57,6 +58,7 @@ const App = () => {
                 <Route exact path="/pricing" element={<Pricing />} />
                 <Route exact path="/features" element={<Features />} />
               </Routes>
+              <LiveChat />
             </>
           } />
         </Routes>
