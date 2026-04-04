@@ -64,36 +64,76 @@ const AdminDashboard = () => {
   const loadStats = async () => {
     try {
       const data = await adminAPI.getStats();
-      if (data.success) setStats(data.data);
+      if (data && data.success && data.data) {
+        setStats(data.data);
+      } else {
+        console.warn('Stats API returned unexpected format:', data);
+        // Set default stats if API fails
+        setStats({
+          totalUsers: 0,
+          activeMembers: 0,
+          totalOrders: 0,
+          revenue: 0,
+          todayVisits: 0,
+          newSignups: 0
+        });
+      }
     } catch (error) {
       console.error('Stats error:', error);
+      // Set default stats on error
+      setStats({
+        totalUsers: 0,
+        activeMembers: 0,
+        totalOrders: 0,
+        revenue: 0,
+        todayVisits: 0,
+        newSignups: 0
+      });
     }
   };
 
   const loadUsers = async () => {
     try {
       const data = await adminAPI.getUsers();
-      if (data.success) setUsers(data.data || []);
+      if (data && data.success && data.data) {
+        setUsers(Array.isArray(data.data) ? data.data : []);
+      } else {
+        console.warn('Users API returned unexpected format:', data);
+        setUsers([]);
+      }
     } catch (error) {
       console.error('Users error:', error);
+      setUsers([]);
     }
   };
 
   const loadMemberships = async () => {
     try {
       const data = await membershipAPI.getAll();
-      if (data.success) setMemberships(data.data || []);
+      if (data && data.success && data.data) {
+        setMemberships(Array.isArray(data.data) ? data.data : []);
+      } else {
+        console.warn('Memberships API returned unexpected format:', data);
+        setMemberships([]);
+      }
     } catch (error) {
       console.error('Memberships error:', error);
+      setMemberships([]);
     }
   };
 
   const loadOrders = async () => {
     try {
       const data = await adminAPI.getOrders();
-      if (data.success) setOrders(data.data || []);
+      if (data && data.success && data.data) {
+        setOrders(Array.isArray(data.data) ? data.data : []);
+      } else {
+        console.warn('Orders API returned unexpected format:', data);
+        setOrders([]);
+      }
     } catch (error) {
       console.error('Orders error:', error);
+      setOrders([]);
     }
   };
 
@@ -102,54 +142,81 @@ const AdminDashboard = () => {
     setSeeding(true);
 
     try {
-      const existingProducts = (await productsAPI.getAll()).data || [];
-      const existingClasses = (await classesAPI.getAll()).data || [];
+      let productsSeeded = 0;
+      let classesSeeded = 0;
 
-      if (existingProducts.length > 0 || existingClasses.length > 0) {
-        alert('Database already contains data. Skipping seed.');
-        setSeeding(false);
-        return;
+      // Check existing data
+      try {
+        const existingProductsRes = await productsAPI.getAll();
+        const existingClassesRes = await classesAPI.getAll();
+        
+        const existingProducts = existingProductsRes?.data || [];
+        const existingClasses = existingClassesRes?.data || [];
+
+        if (existingProducts.length > 0 && existingClasses.length > 0) {
+          alert(`Database already has ${existingProducts.length} products and ${existingClasses.length} classes.`);
+          setSeeding(false);
+          return;
+        }
+      } catch (checkError) {
+        console.log('Could not check existing data, proceeding with seed...');
       }
 
       // Seed products
-      const productPromises = shopData.map(item => {
-        const priceNumeric = Number(String(item.price).replace(/[^0-9.-]+/g, '')) || 0;
-        const category = item.name.toLowerCase().includes('bottle') ? 'accessories' : 'apparel';
-        return productsAPI.create({
-          name: item.name,
-          description: `${item.name} - premium quality`,
-          price: priceNumeric,
-          category,
-          image: item.linkImg[Object.keys(item.linkImg)[0]] || '',
-          stock: 10
-        });
-      });
-
-      await Promise.all(productPromises);
+      if (shopData && shopData.length > 0) {
+        for (const item of shopData) {
+          try {
+            const priceNumeric = Number(String(item.price).replace(/[^0-9.-]+/g, '')) || 0;
+            const category = item.name.toLowerCase().includes('bottle') ? 'accessories' : 'apparel';
+            
+            await productsAPI.create({
+              name: item.name,
+              description: `${item.name} - premium quality gym wear`,
+              price: priceNumeric,
+              category,
+              image: item.linkImg[Object.keys(item.linkImg)[0]] || '',
+              stock: 50,
+              rating: 4.5
+            });
+            productsSeeded++;
+          } catch (err) {
+            console.error(`Failed to seed product ${item.name}:`, err.message);
+          }
+        }
+      }
 
       // Seed classes
-      const classesFlat = Object.keys(classesByDay).reduce((acc, day) => {
-        const list = classesByDay[day].map(c => ({ ...c, schedule: { day, time: c.time } }));
-        return acc.concat(list);
-      }, []);
+      if (classesByDay && Object.keys(classesByDay).length > 0) {
+        const classesFlat = Object.keys(classesByDay).reduce((acc, day) => {
+          const list = classesByDay[day].map(c => ({ ...c, day, schedule: { day, time: c.time } }));
+          return acc.concat(list);
+        }, []);
 
-      const classPromises = classesFlat.map(c => classesAPI.create({
-        name: c.name,
-        description: c.description || c.icon || 'Class session',
-        instructor: c.trainer || 'Staff',
-        schedule: c.schedule || { day: 'Monday', time: c.time },
-        duration: parseInt(c.duration) || 60,
-        capacity: c.spots || 20,
-        level: (c.level || 'all').toLowerCase()
-      }));
+        for (const c of classesFlat) {
+          try {
+            await classesAPI.create({
+              name: c.name,
+              description: c.description || `${c.name} - ${c.icon || 'Fitness class'}`,
+              instructor: c.trainer || 'Professional Trainer',
+              schedule: c.schedule || { day: c.day || 'Monday', time: c.time || '10:00 AM' },
+              duration: parseInt(c.duration) || 60,
+              capacity: c.spots || 20,
+              enrolled: 0,
+              level: (c.level || 'all').toLowerCase(),
+              isActive: true
+            });
+            classesSeeded++;
+          } catch (err) {
+            console.error(`Failed to seed class ${c.name}:`, err.message);
+          }
+        }
+      }
 
-      await Promise.all(classPromises);
-
-      alert('✅ Database seeded successfully!');
+      alert(`✅ Seeding complete!\n${productsSeeded} products and ${classesSeeded} classes added.`);
       await loadDashboardData();
     } catch (error) {
       console.error('Seeding error:', error);
-      alert('❌ Seeding failed. Check console.');
+      alert(`❌ Seeding failed: ${error.message}`);
     } finally {
       setSeeding(false);
     }
@@ -336,43 +403,49 @@ const AdminDashboard = () => {
               className="users-section"
             >
               <h2>All Users ({users.length})</h2>
-              <div className="table-container">
-                <table className="admin-table">
-                  <thead>
-                    <tr>
-                      <th>Name</th>
-                      <th>Email</th>
-                      <th>Membership</th>
-                      <th>Status</th>
-                      <th>Joined</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {users.map((user, index) => (
-                      <motion.tr
-                        key={user._id}
-                        initial={{ opacity: 0, x: -20 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        transition={{ delay: index * 0.05 }}
-                      >
-                        <td>{user.name}</td>
-                        <td>{user.email}</td>
-                        <td>
-                          <span className={`membership-badge ${user.membership?.toLowerCase()}`}>
-                            {user.membership || 'None'}
-                          </span>
-                        </td>
-                        <td>
-                          <span className={`status-badge ${user.status?.toLowerCase()}`}>
-                            {user.status}
-                          </span>
-                        </td>
-                        <td>{new Date(user.createdAt).toLocaleDateString()}</td>
-                      </motion.tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
+              {users.length === 0 ? (
+                <div className="empty-state">
+                  <p>No users found. Users will appear here after signup.</p>
+                </div>
+              ) : (
+                <div className="table-container">
+                  <table className="admin-table">
+                    <thead>
+                      <tr>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Membership</th>
+                        <th>Status</th>
+                        <th>Joined</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {users.map((user, index) => (
+                        <motion.tr
+                          key={user._id}
+                          initial={{ opacity: 0, x: -20 }}
+                          animate={{ opacity: 1, x: 0 }}
+                          transition={{ delay: index * 0.05 }}
+                        >
+                          <td>{user.name}</td>
+                          <td>{user.email}</td>
+                          <td>
+                            <span className={`membership-badge ${user.membership?.toLowerCase() || 'none'}`}>
+                              {user.membership || 'None'}
+                            </span>
+                          </td>
+                          <td>
+                            <span className={`status-badge ${user.status?.toLowerCase() || 'active'}`}>
+                              {user.status || 'Active'}
+                            </span>
+                          </td>
+                          <td>{new Date(user.createdAt).toLocaleDateString()}</td>
+                        </motion.tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              )}
             </motion.div>
           )}
 
@@ -386,66 +459,73 @@ const AdminDashboard = () => {
               className="memberships-section"
             >
               <h2>Membership Requests</h2>
-              <div className="table-container">
-                <table className="admin-table">
-                  <thead>
-                    <tr>
-                      <th>Name</th>
-                      <th>Email</th>
-                      <th>Plan</th>
-                      <th>Price</th>
-                      <th>Status</th>
-                      <th>Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {memberships.map((membership, index) => (
-                      <motion.tr
-                        key={membership._id}
-                        initial={{ opacity: 0, x: -20 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        transition={{ delay: index * 0.05 }}
-                      >
-                        <td>{membership.name}</td>
-                        <td>{membership.email}</td>
-                        <td>
-                          <span className={`plan-badge ${membership.plan}`}>
-                            {membership.plan}
-                          </span>
-                        </td>
-                        <td>₹{membership.price}</td>
-                        <td>
-                          <span className={`status-badge ${membership.status}`}>
-                            {membership.status}
-                          </span>
-                        </td>
-                        <td>
-                          {membership.status === 'pending' && (
-                            <div className="action-buttons">
-                              <motion.button
-                                onClick={() => approveMembership(membership._id)}
-                                className="approve-btn"
-                                whileHover={{ scale: 1.1 }}
-                                whileTap={{ scale: 0.9 }}
-                              >
-                                <FiCheckCircle /> Approve
-                              </motion.button>
-                              <motion.button
-                                onClick={() => rejectMembership(membership._id)}
-                                className="reject-btn"
-                                whileHover={{ scale: 1.1 }}
-                                whileTap={{ scale: 0.9 }}
-                              >
-                                <FiXCircle /> Reject
-                              </motion.button>
-                            </div>
-                          )}
-                        </td>
-                      </motion.tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
+              {memberships.length === 0 ? (
+                <div className="empty-state">
+                  <p>No membership requests yet. Requests will appear here when users purchase memberships.</p>
+                </div>
+              ) : (
+                <div className="table-container">
+                  <table className="admin-table">
+                    <thead>
+                      <tr>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Plan</th>
+                        <th>Price</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {memberships.map((membership, index) => (
+                        <motion.tr
+                          key={membership._id}
+                          initial={{ opacity: 0, x: -20 }}
+                          animate={{ opacity: 1, x: 0 }}
+                          transition={{ delay: index * 0.05 }}
+                        >
+                          <td>{membership.name}</td>
+                          <td>{membership.email}</td>
+                          <td>
+                            <span className={`plan-badge ${membership.plan}`}>
+                              {membership.plan}
+                            </span>
+                          </td>
+                          <td>₹{membership.price}</td>
+                          <td>
+                            <span className={`status-badge ${membership.status}`}>
+                              {membership.status}
+                            </span>
+                          </td>
+                          <td>
+                            {membership.status === 'pending' && (
+                              <div className="action-buttons">
+                                <motion.button
+                                  onClick={() => approveMembership(membership._id)}
+                                  className="approve-btn"
+                                  whileHover={{ scale: 1.1 }}
+                                  whileTap={{ scale: 0.9 }}
+                                >
+                                  <FiCheckCircle /> Approve
+                                </motion.button>
+                                <motion.button
+                                  onClick={() => rejectMembership(membership._id)}
+                                  className="reject-btn"
+                                  whileHover={{ scale: 1.1 }}
+                                  whileTap={{ scale: 0.9 }}
+                                >
+                                  <FiXCircle /> Reject
+                                </motion.button>
+                              </div>
+                            )}
+                            {membership.status !== 'pending' && <span>—</span>}
+                          </td>
+                        </motion.tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              )}
             </motion.div>
           )}
 
@@ -459,41 +539,47 @@ const AdminDashboard = () => {
               className="orders-section"
             >
               <h2>All Orders ({orders.length})</h2>
-              <div className="table-container">
-                <table className="admin-table">
-                  <thead>
-                    <tr>
-                      <th>Order ID</th>
-                      <th>Customer</th>
-                      <th>Items</th>
-                      <th>Total</th>
-                      <th>Status</th>
-                      <th>Date</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {orders.map((order, index) => (
-                      <motion.tr
-                        key={order._id}
-                        initial={{ opacity: 0, x: -20 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        transition={{ delay: index * 0.05 }}
-                      >
-                        <td>#{order._id?.slice(-6)}</td>
-                        <td>{order.customerName}</td>
-                        <td>{order.items?.length || 0} items</td>
-                        <td>₹{order.totalAmount}</td>
-                        <td>
-                          <span className={`status-badge ${order.status?.toLowerCase()}`}>
-                            {order.status}
-                          </span>
-                        </td>
-                        <td>{new Date(order.orderDate).toLocaleDateString()}</td>
-                      </motion.tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
+              {orders.length === 0 ? (
+                <div className="empty-state">
+                  <p>No orders yet. Orders will appear here when users make purchases.</p>
+                </div>
+              ) : (
+                <div className="table-container">
+                  <table className="admin-table">
+                    <thead>
+                      <tr>
+                        <th>Order ID</th>
+                        <th>Customer</th>
+                        <th>Items</th>
+                        <th>Total</th>
+                        <th>Status</th>
+                        <th>Date</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {orders.map((order, index) => (
+                        <motion.tr
+                          key={order._id}
+                          initial={{ opacity: 0, x: -20 }}
+                          animate={{ opacity: 1, x: 0 }}
+                          transition={{ delay: index * 0.05 }}
+                        >
+                          <td>#{order._id?.slice(-6)}</td>
+                          <td>{order.customerName || order.userName}</td>
+                          <td>{order.items?.length || 0} items</td>
+                          <td>₹{order.totalAmount}</td>
+                          <td>
+                            <span className={`status-badge ${order.status?.toLowerCase() || 'pending'}`}>
+                              {order.status || 'Pending'}
+                            </span>
+                          </td>
+                          <td>{new Date(order.orderDate || order.createdAt).toLocaleDateString()}</td>
+                        </motion.tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              )}
             </motion.div>
           )}
         </AnimatePresence>
