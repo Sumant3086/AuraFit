@@ -11,6 +11,7 @@ import {
 import { adminAPI, membershipAPI, productsAPI, classesAPI } from '../../services/api';
 import shopData from '../shop/shopData';
 import classesByDay from '../classes/classesData';
+import AnalyticsCharts from './AnalyticsCharts';
 import './admin.css';
 
 const AdminDashboard = () => {
@@ -647,7 +648,9 @@ const AdminDashboard = () => {
 
             {activeTab === 'tracking' && (
               <motion.div key="tracking" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="content-section">
-                <div className="analytics-grid">
+                <AnalyticsCharts />
+                
+                <div className="analytics-grid" style={{ marginTop: '2rem' }}>
                   <div className="analytics-card">
                     <FiHeart className="analytics-icon cyan" />
                     <h3>Workout Plans</h3>

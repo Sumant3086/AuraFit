@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Routes, Route } from "react-router-dom";
 import { CartProvider } from "./context/CartContext";
+import { SocketProvider } from "./context/SocketContext";
 import Navbar from "./components/navbar/Navbar";
 import Dropdown from "./components/navbar/Dropdown";
 import Home from "./components/home/Home";
@@ -29,37 +30,39 @@ const App = () => {
   
 
   return (
-    <CartProvider>
-      <Routes>
-        <Route path="/login" element={<Login />} />
-        <Route path="/signup" element={<Signup />} />
-        <Route path="/admin/login" element={<AdminLogin />} />
-        <Route path="/profile" element={<UserProfile />} />
-        <Route path="/my-orders" element={<MyOrders />} />
-        <Route path="/confirm-payment" element={<PaymentConfirmation />} />
-        <Route path="/admin/dashboard" element={
-          <ProtectedAdminRoute>
-            <AdminDashboard />
-          </ProtectedAdminRoute>
-        } />
-        <Route path="*" element={
-          <>
-            <Navbar toggle={toggle} />
-            <Dropdown isOpen={isOpen} toggle={toggle} />
-            <Routes>
-              <Route exact path="/" element={<Home />} />
-              <Route exact path="/contact" element={<Contact />} />
-              <Route exact path="/shop" element={<Shop />} />
-              <Route path="/shop/:id" element={<Product shopData={shopData} />} />
-              <Route exact path="/classes" element={<Classes />} />
-              <Route exact path="/pricing" element={<Pricing />} />
-              <Route exact path="/features" element={<Features />} />
-            </Routes>
-          </>
-        } />
-      </Routes>
-      <ScrollToTop />
-    </CartProvider>
+    <SocketProvider>
+      <CartProvider>
+        <Routes>
+          <Route path="/login" element={<Login />} />
+          <Route path="/signup" element={<Signup />} />
+          <Route path="/admin/login" element={<AdminLogin />} />
+          <Route path="/profile" element={<UserProfile />} />
+          <Route path="/my-orders" element={<MyOrders />} />
+          <Route path="/confirm-payment" element={<PaymentConfirmation />} />
+          <Route path="/admin/dashboard" element={
+            <ProtectedAdminRoute>
+              <AdminDashboard />
+            </ProtectedAdminRoute>
+          } />
+          <Route path="*" element={
+            <>
+              <Navbar toggle={toggle} />
+              <Dropdown isOpen={isOpen} toggle={toggle} />
+              <Routes>
+                <Route exact path="/" element={<Home />} />
+                <Route exact path="/contact" element={<Contact />} />
+                <Route exact path="/shop" element={<Shop />} />
+                <Route path="/shop/:id" element={<Product shopData={shopData} />} />
+                <Route exact path="/classes" element={<Classes />} />
+                <Route exact path="/pricing" element={<Pricing />} />
+                <Route exact path="/features" element={<Features />} />
+              </Routes>
+            </>
+          } />
+        </Routes>
+        <ScrollToTop />
+      </CartProvider>
+    </SocketProvider>
   );
 };
 
