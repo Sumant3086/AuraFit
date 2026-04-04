@@ -19,11 +19,11 @@
   },
   "scripts": {
     "start": "vite",
-    "dev": "vite",
+    "dev": "concurrently \"vite\" \"cd server && npm run dev\" --names \"CLIENT,SERVER\" --prefix-colors \"cyan,green\"",
+    "dev:client": "vite",
+    "dev:server": "cd server && npm run dev",
     "build": "vite build",
     "preview": "vite preview",
-    "server": "cd server && npm run dev",
-    "dev:full": "concurrently \"npm run dev\" \"npm run server\"",
     "render-build": "npm install && npm run build && cd server && npm install",
     "render-start": "cd server && npm start"
   },
