@@ -7,9 +7,13 @@ router.post('/generate', async (req, res) => {
   try {
     const { userId, name, email, userProfile } = req.body;
     
-    // Enhanced AI-powered workout plan generation
-    const { generateSmartWorkoutPlan } = require('../services/openaiService');
-    const generatedPlan = generateSmartWorkoutPlan(userProfile);
+    console.log('🤖 Generating AI workout plan for:', name);
+    
+    // Try AI-powered generation first
+    const { generateAIWorkoutPlan } = require('../services/geminiService');
+    const generatedPlan = await generateAIWorkoutPlan(userProfile);
+    
+    console.log('✅ AI workout plan generated successfully');
     
     try {
       // Try to save to database
@@ -25,12 +29,12 @@ router.post('/generate', async (req, res) => {
       
       res.status(201).json({ 
         success: true, 
-        message: 'Enhanced workout plan generated successfully',
+        message: 'AI-powered workout plan generated successfully',
         data: workoutPlan 
       });
     } catch (dbError) {
       // If database save fails, still return the generated plan
-      console.warn('Database save failed, returning plan without saving:', dbError.message);
+      console.warn('⚠️ Database save failed, returning plan without saving:', dbError.message);
       res.status(201).json({ 
         success: true, 
         message: 'Workout plan generated (not saved to database)',
@@ -45,6 +49,7 @@ router.post('/generate', async (req, res) => {
       });
     }
   } catch (error) {
+    console.error('❌ Error generating workout plan:', error);
     res.status(500).json({ 
       success: false, 
       message: 'Error generating workout plan', 

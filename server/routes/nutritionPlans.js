@@ -1,15 +1,25 @@
 const express = require('express');
 const router = express.Router();
 const NutritionPlan = require('../models/NutritionPlan');
+const { generateAINutritionPlan } = require('../services/geminiService');
 
 // Calculate nutrition plan
 router.post('/calculate', async (req, res) => {
   try {
     const { userId, name, email, userProfile } = req.body;
     
+    console.log('🥗 Calculating nutrition plan for:', name);
+    
+    // Calculate basic nutrition metrics
     const calculations = calculateNutrition(userProfile);
-    const mealPlan = generateMealPlan(calculations, userProfile);
-    const recommendations = generateRecommendations(userProfile);
+    
+    // Generate AI-powered meal plan
+    const aiMealPlan = await generateAINutritionPlan(userProfile, calculations);
+    
+    const mealPlan = aiMealPlan.mealPlan;
+    const recommendations = aiMealPlan.recommendations || generateRecommendations(userProfile);
+    
+    console.log('✅ AI nutrition plan generated successfully');
     
     try {
       // Try to save to database
@@ -27,12 +37,12 @@ router.post('/calculate', async (req, res) => {
       
       res.status(201).json({ 
         success: true, 
-        message: 'Nutrition plan created successfully',
+        message: 'AI-powered nutrition plan created successfully',
         data: nutritionPlan 
       });
     } catch (dbError) {
       // If database save fails, still return the calculated plan
-      console.warn('Database save failed, returning plan without saving:', dbError.message);
+      console.warn('⚠️ Database save failed, returning plan without saving:', dbError.message);
       res.status(201).json({ 
         success: true, 
         message: 'Nutrition plan calculated (not saved to database)',
