@@ -1,5 +1,6 @@
 import React, { useState } from "react"
 import { Link } from "react-router-dom"
+import { motion } from "framer-motion"
 import './shop.css'
 import shopData from "./shopData"
 import Footer from "../footer/Footer"
@@ -36,10 +37,29 @@ const Shop = () => {
 
         <ShoppingCartModal />
 
-        <h1 className="shop-title">Train in our <span>colors!</span></h1>
-        <div className="shop-container">
-            {products.map((product) => (
-                <div key={product.id} className="shop-card">
+        <motion.h1 
+          className="shop-title"
+          initial={{ y: -50, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ duration: 0.6 }}
+        >
+          Train in our <span>colors!</span>
+        </motion.h1>
+        <motion.div 
+          className="shop-container"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.5, delay: 0.2 }}
+        >
+            {products.map((product, index) => (
+                <motion.div 
+                  key={product.id} 
+                  className="shop-card"
+                  initial={{ opacity: 0, y: 50 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: index * 0.1 }}
+                  whileHover={{ scale: 1.05, y: -10 }}
+                >
 
                     {Object.keys(product.checkImg).map((item) => {
                         if(product.checkImg[item]) {
@@ -52,24 +72,30 @@ const Shop = () => {
                     })}
                     <div className="colors">
                         {product.colors.map((color) => (
-                            <div 
+                            <motion.div 
                             key={color}
                             className={`btn-color ${product.checkImg[color] && 'active' } `} style={{backgroundColor:color}}
                             onClick={() => handleChooseColor(product.id, color)}
+                            whileHover={{ scale: 1.2 }}
+                            whileTap={{ scale: 0.9 }}
                             >
-                            </div>
+                            </motion.div>
                         ))}
                     </div>
                     <p className="shop-product-name">{product.name}</p>
                     <p className="shop-product-price">{product.price}</p>
                     <Link to={`/shop/${product.id}`}>
-                        <div className="details">
+                        <motion.div 
+                          className="details"
+                          whileHover={{ scale: 1.05 }}
+                          whileTap={{ scale: 0.95 }}
+                        >
                             Details
-                        </div>
+                        </motion.div>
                     </Link>
-                </div>
+                </motion.div>
             ))}
-        </div>
+        </motion.div>
         <Footer />
     </div>
   )
