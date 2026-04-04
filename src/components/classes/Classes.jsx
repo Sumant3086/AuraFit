@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { motion, AnimatePresence } from 'framer-motion';
 import './classes.css';
 import Footer from '../footer/Footer';
 import classesByDay from './classesData';
@@ -61,64 +62,106 @@ const Classes = () => {
 
   return (
     <section className="classes">
-      <h1 className="classes-title">Classes <span>Schedule</span></h1>
-      <p className="classes-subtitle">Join our expert-led fitness classes designed for all levels</p>
+      <motion.h1 
+        className="classes-title"
+        initial={{ y: -50, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ duration: 0.6 }}
+      >
+        Classes <span>Schedule</span>
+      </motion.h1>
+      <motion.p 
+        className="classes-subtitle"
+        initial={{ y: -30, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ duration: 0.6, delay: 0.2 }}
+      >
+        Join our expert-led fitness classes designed for all levels
+      </motion.p>
       <div className="classes-container">
-        <div className='classes-days'>
-          {Object.keys(classesByDay).map((day) => (
-            <button
+        <motion.div 
+          className='classes-days'
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.5, delay: 0.3 }}
+        >
+          {Object.keys(classesByDay).map((day, index) => (
+            <motion.button
               className={selectedDay === day ? 'active' : ''}
               key={day}
               onClick={() => handleDayClick(day)}
+              whileHover={{ scale: 1.05, y: -3 }}
+              whileTap={{ scale: 0.95 }}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.4 + index * 0.05 }}
             >
               {day}
-            </button>
+            </motion.button>
           ))}
-        </div>
-        <ul className="classes-list">
-          {classesByDay[selectedDay]?.map((classItem, index) => {
-            const IconComponent = iconMap[classItem.icon];
-            return (
-              <li key={index} className="class-card">
-                <div className="class-icon-wrapper">
-                  {IconComponent && <IconComponent className="class-main-icon" />}
-                </div>
-                <div className="class-content">
-                  <div className="class-header">
-                    <h3 className="class-name">{classItem.name}</h3>
-                    <span 
-                      className="class-level" 
-                      style={{ color: getLevelColor(classItem.level) }}
+        </motion.div>
+        <AnimatePresence mode="wait">
+          <motion.ul 
+            className="classes-list"
+            key={selectedDay}
+            initial={{ opacity: 0, x: 50 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: -50 }}
+            transition={{ duration: 0.3 }}
+          >
+            {classesByDay[selectedDay]?.map((classItem, index) => {
+              const IconComponent = iconMap[classItem.icon];
+              return (
+                <motion.li 
+                  key={index} 
+                  className="class-card"
+                  initial={{ opacity: 0, y: 30 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: index * 0.1 }}
+                  whileHover={{ scale: 1.02, y: -5 }}
+                >
+                  <div className="class-icon-wrapper">
+                    {IconComponent && <IconComponent className="class-main-icon" />}
+                  </div>
+                  <div className="class-content">
+                    <div className="class-header">
+                      <h3 className="class-name">{classItem.name}</h3>
+                      <span 
+                        className="class-level" 
+                        style={{ color: getLevelColor(classItem.level) }}
+                      >
+                        <MdSignalCellularAlt /> {classItem.level}
+                      </span>
+                    </div>
+                    <p className="class-description">{classItem.description}</p>
+                    <div className="class-details">
+                      <div className="class-detail-item">
+                        <FaClock className="detail-icon" />
+                        <span>{classItem.time}</span>
+                      </div>
+                      <div className="class-detail-item">
+                        <FaUserTie className="detail-icon" />
+                        <span>{classItem.trainer}</span>
+                      </div>
+                      <div className="class-detail-item">
+                        <MdPeople className="detail-icon" />
+                        <span>{classItem.spots} spots</span>
+                      </div>
+                    </div>
+                    <motion.button 
+                      className="reserve-btn"
+                      onClick={() => handleReserveSpot(classItem)}
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
                     >
-                      <MdSignalCellularAlt /> {classItem.level}
-                    </span>
+                      Reserve Spot
+                    </motion.button>
                   </div>
-                  <p className="class-description">{classItem.description}</p>
-                  <div className="class-details">
-                    <div className="class-detail-item">
-                      <FaClock className="detail-icon" />
-                      <span>{classItem.time}</span>
-                    </div>
-                    <div className="class-detail-item">
-                      <FaUserTie className="detail-icon" />
-                      <span>{classItem.trainer}</span>
-                    </div>
-                    <div className="class-detail-item">
-                      <MdPeople className="detail-icon" />
-                      <span>{classItem.spots} spots</span>
-                    </div>
-                  </div>
-                  <button 
-                    className="reserve-btn"
-                    onClick={() => handleReserveSpot(classItem)}
-                  >
-                    Reserve Spot
-                  </button>
-                </div>
-              </li>
-            );
-          })}
-        </ul>
+                </motion.li>
+              );
+            })}
+          </motion.ul>
+        </AnimatePresence>
       </div>
       <Footer />
     </section>

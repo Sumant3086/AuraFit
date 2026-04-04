@@ -1,7 +1,7 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
+import { motion } from "framer-motion";
 import "./membership.css";
-import { Fade } from "react-awesome-reveal";
 import { FaArrowRight } from 'react-icons/fa';
 import apiService from '../../services/api';
 
@@ -102,16 +102,39 @@ const Membership = () => {
   return (
     <section id="membership">
       <div className="membership-container">
-        <Fade bottom triggerOnce="true">
-          <h1>
-            It's your time to <span>Push your limits!</span>
-          </h1>
-          <h2 className="plans-h2">Membership plans</h2>
-        </Fade>
+        <motion.h1
+          initial={{ y: -50, opacity: 0 }}
+          whileInView={{ y: 0, opacity: 1 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6 }}
+        >
+          It's your time to <span>Push your limits!</span>
+        </motion.h1>
+        <motion.h2 
+          className="plans-h2"
+          initial={{ y: -30, opacity: 0 }}
+          whileInView={{ y: 0, opacity: 1 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6, delay: 0.2 }}
+        >
+          Membership plans
+        </motion.h2>
 
-        <Fade bottom triggerOnce="true">
-        <div className="membership-cards">
-          <div className="membership-card">
+        <motion.div 
+          className="membership-cards"
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5, delay: 0.3 }}
+        >
+          <motion.div 
+            className="membership-card"
+            initial={{ opacity: 0, y: 50 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5, delay: 0.4 }}
+            whileHover={{ scale: 1.05, y: -10 }}
+          >
             <p className="price">₹999</p>
             <p className="per_month">Per month</p>
             <ul>
@@ -120,10 +143,24 @@ const Membership = () => {
               <li> - Access to boxing gym</li>
               <li> - Personal locker</li>
             </ul>
-            <div className="btn-basic" onClick={() => handleMembershipClick('Basic')}>Basic</div>
-          </div>
+            <motion.div 
+              className="btn-basic" 
+              onClick={() => handleMembershipClick('Basic')}
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.95 }}
+            >
+              Basic
+            </motion.div>
+          </motion.div>
 
-          <div className="membership-card-strike">
+          <motion.div 
+            className="membership-card-strike"
+            initial={{ opacity: 0, y: 50 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5, delay: 0.5 }}
+            whileHover={{ scale: 1.08, y: -15 }}
+          >
             <p className="price">₹2,499</p>
             <p className="per_month">Per month</p>
             <ul>
@@ -135,10 +172,24 @@ const Membership = () => {
               <li> - Personal trainer (2 sessions)</li>
               <li> - AURA FIT merchandise</li>
             </ul>
-            <div className="btn-strike" onClick={() => handleMembershipClick('Premium')}>Premium</div>
-          </div>
+            <motion.div 
+              className="btn-strike" 
+              onClick={() => handleMembershipClick('Premium')}
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.95 }}
+            >
+              Premium
+            </motion.div>
+          </motion.div>
 
-          <div className="membership-card">
+          <motion.div 
+            className="membership-card"
+            initial={{ opacity: 0, y: 50 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5, delay: 0.6 }}
+            whileHover={{ scale: 1.05, y: -10 }}
+          >
             <p className="price">₹1,699</p>
             <p className="per_month">Per month</p>
             <ul>
@@ -149,16 +200,39 @@ const Membership = () => {
               <li> - Free protein shakes</li>
               <li> - Personal locker</li>
             </ul>
-            <div className="btn-pro" onClick={() => handleMembershipClick('Pro')}>Pro</div>
-          </div>
+            <motion.div 
+              className="btn-pro" 
+              onClick={() => handleMembershipClick('Pro')}
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.95 }}
+            >
+              Pro
+            </motion.div>
+          </motion.div>
 
-        </div>
-        </Fade>
+        </motion.div>
         
-        <Fade bottom triggerOnce="true">
-          <h2 className="voucher-h2">Still not sure?</h2>
-          <div className="btn-voucher" onClick={handleFreeEntry}>Get 1 free entry <FaArrowRight className="voucher-icon" /></div>
-        </Fade>
+        <motion.h2 
+          className="voucher-h2"
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6, delay: 0.7 }}
+        >
+          Still not sure?
+        </motion.h2>
+        <motion.div 
+          className="btn-voucher" 
+          onClick={handleFreeEntry}
+          initial={{ opacity: 0, scale: 0.8 }}
+          whileInView={{ opacity: 1, scale: 1 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5, delay: 0.8 }}
+          whileHover={{ scale: 1.05, x: 5 }}
+          whileTap={{ scale: 0.95 }}
+        >
+          Get 1 free entry <FaArrowRight className="voucher-icon" />
+        </motion.div>
       </div>
     </section>
   );
