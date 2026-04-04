@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const Order = require('../models/Order');
+const { createOrder, verifyPaymentSignature } = require('../services/razorpayService');
 require('dotenv').config();
 
 // Get all orders (for testing/admin)
@@ -200,6 +201,80 @@ router.put('/:id/status', async (req, res) => {
     res.status(500).json({
       success: false,
       message: 'Error updating order status',
+      error: error.message
+    });
+  }
+});
+
+// Create Razorpay order
+router.post('/create-razorpay-order', async (req, res) => {
+  try {
+    const { amount, orderId } = req.body;
+    
+    if (!amount) {
+      return res.status(400).json({
+        success: false,
+        message: 'Amount is required'
+      });
+    }
+    
+    const result = await createOrder(amount, 'INR', orderId);
+    
+    if (result.success) {
+      res.json({
+        success: true,
+        data: {
+          orderId: result.orderId,
+          amount: result.amount,
+          currency: result.currency,
+          keyId: process.env.RAZORPAY_KEY_ID
+        }
+      });
+    } else {
+      res.status(500).json({
+        success: false,
+        message: 'Failed to create Razorpay order',
+        error: result.error
+      });
+    }
+  } catch (error) {
+    console.error('❌ Error creating Razorpay order:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error creating Razorpay order',
+      error: error.message
+    });
+  }
+});
+
+// Verify Razorpay payment
+router.post('/verify-payment', async (req, res) => {
+  try {
+    const { razorpay_order_id, razorpay_payment_id, razorpay_signature } = req.body;
+    
+    const isValid = verifyPaymentSignature(
+      razorpay_order_id,
+      razorpay_payment_id,
+      razorpay_signature
+    );
+    
+    if (isValid) {
+      res.json({
+        success: true,
+        message: 'Payment verified successfully',
+        paymentId: razorpay_payment_id
+      });
+    } else {
+      res.status(400).json({
+        success: false,
+        message: 'Payment verification failed'
+      });
+    }
+  } catch (error) {
+    console.error('❌ Error verifying payment:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error verifying payment',
       error: error.message
     });
   }
