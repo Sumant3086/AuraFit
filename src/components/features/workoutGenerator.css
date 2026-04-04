@@ -426,3 +426,182 @@
 .profile-link-inline:hover {
   color: #ff00ff;
 }
+
+
+/* Enhanced Table Layout for Workout Plan */
+.workout-table-container {
+  margin-top: 40px;
+  overflow-x: auto;
+}
+
+.workout-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0 10px;
+}
+
+.workout-table thead th {
+  background: linear-gradient(135deg, rgba(0, 245, 255, 0.2) 0%, rgba(157, 0, 255, 0.2) 100%);
+  color: #00f5ff;
+  padding: 15px;
+  text-align: left;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-size: 13px;
+  border: none;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.workout-table tbody tr {
+  background: rgba(255, 255, 255, 0.03);
+  transition: all 0.3s ease;
+}
+
+.workout-table tbody tr:hover {
+  background: rgba(0, 245, 255, 0.1);
+  transform: translateX(5px);
+  box-shadow: 0 5px 20px rgba(0, 245, 255, 0.2);
+}
+
+.workout-table tbody td {
+  padding: 18px 15px;
+  color: #fff;
+  border: none;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.workout-table tbody td:first-child {
+  border-left: 3px solid #00f5ff;
+  font-weight: 700;
+  color: #00f5ff;
+}
+
+.exercise-name {
+  font-size: 16px;
+  font-weight: 600;
+  color: #fff;
+  margin-bottom: 5px;
+}
+
+.exercise-muscles {
+  font-size: 12px;
+  color: #00f5ff;
+  font-weight: 500;
+}
+
+.sets-reps {
+  font-weight: 600;
+  color: #ff00ff;
+}
+
+.rest-time {
+  color: #ffc107;
+  font-weight: 500;
+}
+
+.exercise-notes {
+  font-size: 13px;
+  color: #aaa;
+  font-style: italic;
+  line-height: 1.4;
+}
+
+.calories-badge {
+  display: inline-block;
+  background: linear-gradient(135deg, #ff6b6b 0%, #ff8e53 100%);
+  color: white;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+/* Day Header Styling */
+.day-header {
+  background: linear-gradient(135deg, rgba(0, 245, 255, 0.15) 0%, rgba(157, 0, 255, 0.15) 100%);
+  padding: 25px;
+  border-radius: 15px;
+  margin-bottom: 20px;
+  border-left: 5px solid #00f5ff;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.day-title {
+  font-size: 24px;
+  font-weight: 800;
+  color: #00f5ff;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+}
+
+.day-focus {
+  font-size: 16px;
+  color: #ff00ff;
+  font-weight: 600;
+  background: rgba(255, 0, 255, 0.1);
+  padding: 8px 20px;
+  border-radius: 25px;
+  border: 1px solid rgba(255, 0, 255, 0.3);
+}
+
+/* Responsive Table */
+@media (max-width: 768px) {
+  .workout-table {
+    display: block;
+  }
+  
+  .workout-table thead {
+    display: none;
+  }
+  
+  .workout-table tbody,
+  .workout-table tr,
+  .workout-table td {
+    display: block;
+    width: 100%;
+  }
+  
+  .workout-table tbody tr {
+    margin-bottom: 20px;
+    border-radius: 12px;
+    padding: 15px;
+    background: rgba(0, 245, 255, 0.05);
+    border-left: 4px solid #00f5ff;
+  }
+  
+  .workout-table tbody td {
+    padding: 10px 0;
+    border: none;
+    text-align: left;
+  }
+  
+  .workout-table tbody td:before {
+    content: attr(data-label);
+    font-weight: 700;
+    color: #00f5ff;
+    display: block;
+    margin-bottom: 5px;
+    text-transform: uppercase;
+    font-size: 12px;
+    letter-spacing: 1px;
+  }
+  
+  .day-header {
+    flex-direction: column;
+    gap: 15px;
+    text-align: center;
+  }
+  
+  .day-title {
+    font-size: 20px;
+  }
+  
+  .day-focus {
+    font-size: 14px;
+  }
+}

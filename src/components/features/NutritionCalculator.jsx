@@ -297,22 +297,56 @@ const NutritionCalculator = () => {
             </div>
 
             <div className="meal-plan-section">
-              <h4>Sample Meal Plan</h4>
+              <h4>🍽️ Sample Meal Plan</h4>
               {Object.entries(nutritionPlan.mealPlan).map(([mealType, meals]) => (
-                <div key={mealType} className="meal-type-section">
-                  <h5>{mealType.charAt(0).toUpperCase() + mealType.slice(1)}</h5>
-                  <div className="meals-grid">
-                    {meals.map((meal, index) => (
-                      <div key={index} className="meal-card">
-                        <div className="meal-name">{meal.meal}</div>
-                        <div className="meal-macros">
-                          <span>{meal.calories} cal</span>
-                          <span>P: {meal.protein}g</span>
-                          <span>C: {meal.carbs}g</span>
-                          <span>F: {meal.fats}g</span>
-                        </div>
-                      </div>
-                    ))}
+                <div key={mealType}>
+                  <div className="meal-type-header">
+                    <div className="meal-type-title">
+                      {mealType === 'breakfast' && '🌅'}
+                      {mealType === 'lunch' && '☀️'}
+                      {mealType === 'dinner' && '🌙'}
+                      {mealType === 'snacks' && '🍎'}
+                      {' '}
+                      {mealType.charAt(0).toUpperCase() + mealType.slice(1)}
+                    </div>
+                  </div>
+                  
+                  <div className="meal-table-container">
+                    <table className="meal-table">
+                      <thead>
+                        <tr>
+                          <th>Meal Option</th>
+                          <th>Calories</th>
+                          <th>Protein</th>
+                          <th>Carbs</th>
+                          <th>Fats</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {meals.map((meal, index) => (
+                          <tr key={index}>
+                            <td data-label="Meal Option">
+                              <div className="meal-name">{meal.meal}</div>
+                              {meal.description && (
+                                <div className="meal-description">{meal.description}</div>
+                              )}
+                            </td>
+                            <td data-label="Calories">
+                              <span className="macro-value">{meal.calories} kcal</span>
+                            </td>
+                            <td data-label="Protein">
+                              <span className="macro-value">{meal.protein}g</span>
+                            </td>
+                            <td data-label="Carbs">
+                              <span className="macro-value">{meal.carbs}g</span>
+                            </td>
+                            <td data-label="Fats">
+                              <span className="macro-value">{meal.fats}g</span>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
                   </div>
                 </div>
               ))}

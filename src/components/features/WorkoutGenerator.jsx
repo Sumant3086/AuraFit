@@ -336,31 +336,74 @@ const WorkoutGenerator = () => {
 
             <div className="weekly-schedule">
               {generatedPlan.weeklySchedule.map((day, index) => (
-                <div key={index} className="day-card">
-                  <h4>{day.day}</h4>
-                  <div className="workouts-list">
-                    {day.workouts.map((workout, wIndex) => (
-                      <div key={wIndex} className="workout-item">
-                        <div className="workout-name">{workout.exercise}</div>
-                        <div className="workout-details">
-                          {workout.sets} sets × {workout.reps} | Rest: {workout.rest}
-                        </div>
-                        {workout.notes && <div className="workout-notes">{workout.notes}</div>}
-                      </div>
-                    ))}
+                <div key={index} className="day-section">
+                  <div className="day-header">
+                    <div className="day-title">{day.day}</div>
+                    <div className="day-focus">{day.focus}</div>
+                  </div>
+                  
+                  <div className="workout-table-container">
+                    <table className="workout-table">
+                      <thead>
+                        <tr>
+                          <th>Exercise</th>
+                          <th>Sets × Reps</th>
+                          <th>Rest</th>
+                          <th>Notes</th>
+                          <th>Calories</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {day.workouts.map((workout, wIndex) => (
+                          <tr key={wIndex}>
+                            <td data-label="Exercise">
+                              <div className="exercise-name">{workout.exercise}</div>
+                              {workout.muscles && (
+                                <div className="exercise-muscles">🎯 {workout.muscles}</div>
+                              )}
+                            </td>
+                            <td data-label="Sets × Reps">
+                              <span className="sets-reps">{workout.sets} × {workout.reps}</span>
+                            </td>
+                            <td data-label="Rest">
+                              <span className="rest-time">{workout.rest}</span>
+                            </td>
+                            <td data-label="Notes">
+                              <div className="exercise-notes">{workout.notes}</div>
+                            </td>
+                            <td data-label="Calories">
+                              {workout.calories && (
+                                <span className="calories-badge">{workout.calories}</span>
+                              )}
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
                   </div>
                 </div>
               ))}
             </div>
 
             <div className="plan-tips">
-              <h4>Tips for Success:</h4>
+              <h4>💡 Tips for Success:</h4>
               <ul>
                 {generatedPlan.tips.map((tip, index) => (
                   <li key={index}>{tip}</li>
                 ))}
               </ul>
             </div>
+
+            {generatedPlan.nutritionTips && (
+              <div className="plan-tips" style={{borderLeftColor: '#00ff88', background: 'rgba(0, 255, 136, 0.1)'}}>
+                <h4 style={{color: '#00ff88'}}>🥗 Nutrition Tips:</h4>
+                <ul>
+                  {generatedPlan.nutritionTips.map((tip, index) => (
+                    <li key={index} style={{color: '#ccc'}}>{tip}</li>
+                  ))}
+                </ul>
+              </div>
+            )}
           </div>
         )}
       </div>

@@ -287,3 +287,131 @@
 .profile-link-inline:hover {
   color: #ff00ff;
 }
+
+
+/* Enhanced Meal Plan Table */
+.meal-table-container {
+  margin-top: 30px;
+  overflow-x: auto;
+}
+
+.meal-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0 8px;
+}
+
+.meal-table thead th {
+  background: linear-gradient(135deg, rgba(255, 0, 255, 0.2) 0%, rgba(0, 245, 255, 0.2) 100%);
+  color: #ff00ff;
+  padding: 15px;
+  text-align: left;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-size: 13px;
+  border: none;
+}
+
+.meal-table tbody tr {
+  background: rgba(255, 255, 255, 0.03);
+  transition: all 0.3s ease;
+}
+
+.meal-table tbody tr:hover {
+  background: rgba(255, 0, 255, 0.1);
+  transform: translateX(5px);
+  box-shadow: 0 5px 20px rgba(255, 0, 255, 0.2);
+}
+
+.meal-table tbody td {
+  padding: 18px 15px;
+  color: #fff;
+  border: none;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.meal-table tbody td:first-child {
+  border-left: 3px solid #ff00ff;
+  font-weight: 700;
+}
+
+.meal-name {
+  font-size: 16px;
+  font-weight: 600;
+  color: #fff;
+  margin-bottom: 5px;
+}
+
+.meal-description {
+  font-size: 12px;
+  color: #aaa;
+  font-style: italic;
+}
+
+.macro-value {
+  font-weight: 600;
+  color: #00f5ff;
+}
+
+.meal-type-header {
+  background: linear-gradient(135deg, rgba(255, 0, 255, 0.15) 0%, rgba(0, 245, 255, 0.15) 100%);
+  padding: 20px;
+  border-radius: 12px;
+  margin: 30px 0 20px 0;
+  border-left: 5px solid #ff00ff;
+}
+
+.meal-type-title {
+  font-size: 22px;
+  font-weight: 800;
+  color: #ff00ff;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* Responsive Meal Table */
+@media (max-width: 768px) {
+  .meal-table {
+    display: block;
+  }
+  
+  .meal-table thead {
+    display: none;
+  }
+  
+  .meal-table tbody,
+  .meal-table tr,
+  .meal-table td {
+    display: block;
+    width: 100%;
+  }
+  
+  .meal-table tbody tr {
+    margin-bottom: 20px;
+    border-radius: 12px;
+    padding: 15px;
+    background: rgba(255, 0, 255, 0.05);
+    border-left: 4px solid #ff00ff;
+  }
+  
+  .meal-table tbody td {
+    padding: 10px 0;
+    border: none;
+    text-align: left;
+  }
+  
+  .meal-table tbody td:before {
+    content: attr(data-label);
+    font-weight: 700;
+    color: #ff00ff;
+    display: block;
+    margin-bottom: 5px;
+    text-transform: uppercase;
+    font-size: 12px;
+    letter-spacing: 1px;
+  }
+}
