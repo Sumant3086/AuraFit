@@ -1,5 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Routes, Route } from "react-router-dom";
+import { Toaster } from 'react-hot-toast';
+import AOS from 'aos';
+import 'aos/dist/aos.css';
 import { CartProvider } from "./context/CartContext";
 import { SocketProvider } from "./context/SocketContext";
 import Navbar from "./components/navbar/Navbar";
@@ -23,6 +26,10 @@ import MyOrders from "./components/orders/MyOrders";
 import PaymentConfirmation from "./components/orders/PaymentConfirmation";
 import LiveChat from "./components/chat/LiveChat";
 import ScrollToTop from "./components/scrollToTop";
+import ScrollToTopButton from "./components/common/ScrollToTop";
+import ProgressBar from "./components/common/ProgressBar";
+import './styles/animations.css';
+import './styles/responsive.css';
 
 const App = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -30,10 +37,32 @@ const App = () => {
     setIsOpen(!isOpen);
   };
   
+  // Initialize AOS animations
+  useEffect(() => {
+    AOS.init({
+      duration: 800,
+      once: true,
+      offset: 100,
+      easing: 'ease-out',
+    });
+  }, []);
 
   return (
     <SocketProvider>
       <CartProvider>
+        <ProgressBar />
+        <Toaster 
+          position="top-right"
+          reverseOrder={false}
+          toastOptions={{
+            duration: 3000,
+            style: {
+              background: '#1a1a1a',
+              color: '#fff',
+              border: '1px solid #9d00ff',
+            },
+          }}
+        />
         <Routes>
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
@@ -65,6 +94,7 @@ const App = () => {
           } />
         </Routes>
         <ScrollToTop />
+        <ScrollToTopButton />
       </CartProvider>
     </SocketProvider>
   );
