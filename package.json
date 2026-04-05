@@ -6,6 +6,7 @@
   "dependencies": {
     "@emotion/react": "^11.11.1",
     "@google/generative-ai": "^0.1.3",
+    "@vitejs/plugin-react": "^6.0.1",
     "axios": "^1.6.2",
     "chart.js": "^4.5.1",
     "classnames": "^2.3.2",
@@ -20,7 +21,9 @@
     "recharts": "^3.8.1",
     "socket.io-client": "^4.8.3",
     "styled-components": "^6.1.1",
-    "swiper": "^12.1.3"
+    "swiper": "^12.1.3",
+    "vite": "^8.0.3",
+    "vite-plugin-svgr": "^5.2.0"
   },
   "scripts": {
     "start": "vite",
@@ -29,13 +32,10 @@
     "dev:server": "cd server && npm run dev",
     "build": "vite build",
     "preview": "vite preview",
-    "render-build": "npm install && npm run build && cd server && npm install",
+    "render-build": "npm ci && npm run build && cd server && npm install",
     "render-start": "cd server && npm start"
   },
   "devDependencies": {
-    "@vitejs/plugin-react": "^6.0.1",
-    "concurrently": "^8.2.2",
-    "vite": "^8.0.3",
-    "vite-plugin-svgr": "^5.2.0"
+    "concurrently": "^8.2.2"
   }
 }
