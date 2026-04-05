@@ -65,7 +65,19 @@ export const ordersAPI = {
       method: 'POST',
     }),
   
-  getRazorpayLink: () => apiCall('/orders/payment/razorpay-link'),
+  getRazorpayConfig: () => apiCall('/orders/payment/razorpay-config'),
+  
+  createRazorpayOrder: (orderData) =>
+    apiCall('/orders/create-razorpay-order', {
+      method: 'POST',
+      body: JSON.stringify(orderData),
+    }),
+  
+  verifyPayment: (paymentData) =>
+    apiCall('/orders/verify-payment', {
+      method: 'POST',
+      body: JSON.stringify(paymentData),
+    }),
 };
 
 // Contact API

@@ -280,29 +280,29 @@ router.post('/verify-payment', async (req, res) => {
   }
 });
 
-// Get Razorpay payment link
-router.get('/payment/razorpay-link', (req, res) => {
+// Get Razorpay configuration
+router.get('/payment/razorpay-config', (req, res) => {
   try {
-    const paymentLink = process.env.RAZORPAY_PAYMENT_LINK;
+    const keyId = process.env.RAZORPAY_KEY_ID;
     
-    if (!paymentLink) {
+    if (!keyId) {
       return res.status(500).json({
         success: false,
-        message: 'Payment link not configured'
+        message: 'Razorpay configuration not found'
       });
     }
     
     res.json({
       success: true,
       data: {
-        paymentLink: paymentLink
+        keyId: keyId
       }
     });
   } catch (error) {
-    console.error('❌ Error getting payment link:', error);
+    console.error('❌ Error getting Razorpay config:', error);
     res.status(500).json({
       success: false,
-      message: 'Error getting payment link',
+      message: 'Error getting payment configuration',
       error: error.message
     });
   }
