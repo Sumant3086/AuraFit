@@ -17,6 +17,20 @@ const Pricing = () => {
       alert('Please login to purchase a membership');
       navigate('/login');
     } else {
+      // Wait for Razorpay SDK to load
+      let retries = 0;
+      while (!window.Razorpay && retries < 10) {
+        console.log('Waiting for Razorpay SDK to load...');
+        await new Promise(resolve => setTimeout(resolve, 500));
+        retries++;
+      }
+      
+      if (!window.Razorpay) {
+        console.error('Razorpay SDK failed to load after 5 seconds');
+        alert('Payment system could not be loaded. Please refresh the page and try again.');
+        return;
+      }
+      
       try {
         const userData = JSON.parse(user);
         
@@ -45,12 +59,8 @@ const Pricing = () => {
           alert(`Processing payment for ${plan} membership (₹${selectedPlan.price})...`);
           
           try {
-            // Check if Razorpay is loaded
-            if (!window.Razorpay) {
-              console.error('Razorpay SDK not loaded');
-              alert('Payment system is loading. Please try again in a moment.');
-              return;
-            }
+            // Razorpay SDK is already checked at the start of handleMembershipClick
+            console.log('Razorpay SDK loaded successfully');
 
             // Create Razorpay order
             const orderResponse = await apiService.orders.createRazorpayOrder({
