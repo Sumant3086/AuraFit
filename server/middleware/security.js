@@ -42,8 +42,19 @@ const helmetConfig = helmet({
       styleSrc: ["'self'", "'unsafe-inline'", 'https://fonts.googleapis.com'],
       fontSrc: ["'self'", 'https://fonts.gstatic.com'],
       imgSrc: ["'self'", 'data:', 'https:'],
-      scriptSrc: ["'self'", "'unsafe-inline'"],
-      connectSrc: ["'self'", 'https://api.razorpay.com', 'wss:'],
+      scriptSrc: [
+        "'self'", 
+        "'unsafe-inline'",
+        'https://checkout.razorpay.com'
+      ],
+      connectSrc: [
+        "'self'", 
+        'https://api.razorpay.com',
+        'https://checkout.razorpay.com',
+        'wss:',
+        'ws:'
+      ],
+      frameSrc: ["'self'", 'https://api.razorpay.com'],
     },
   },
   crossOriginEmbedderPolicy: false,
