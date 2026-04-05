@@ -45,11 +45,20 @@ const Membership = () => {
           alert(`Processing payment for ${plan} membership (₹${selectedPlan.price})...`);
           
           try {
+            // Check if Razorpay is loaded
+            if (!window.Razorpay) {
+              console.error('Razorpay SDK not loaded');
+              alert('Payment system is loading. Please try again in a moment.');
+              return;
+            }
+
             // Create Razorpay order
             const orderResponse = await apiService.orders.createRazorpayOrder({
               amount: selectedPlan.price,
               orderId: data.data.order._id
             });
+
+            console.log('Razorpay order response:', orderResponse);
 
             if (orderResponse.success) {
               // Initialize Razorpay checkout
@@ -61,18 +70,23 @@ const Membership = () => {
                 description: `${plan} Membership`,
                 order_id: orderResponse.data.orderId,
                 handler: async function (response) {
-                  // Verify payment
-                  const verifyResponse = await apiService.orders.verifyPayment({
-                    razorpay_order_id: response.razorpay_order_id,
-                    razorpay_payment_id: response.razorpay_payment_id,
-                    razorpay_signature: response.razorpay_signature
-                  });
+                  try {
+                    // Verify payment
+                    const verifyResponse = await apiService.orders.verifyPayment({
+                      razorpay_order_id: response.razorpay_order_id,
+                      razorpay_payment_id: response.razorpay_payment_id,
+                      razorpay_signature: response.razorpay_signature
+                    });
 
-                  if (verifyResponse.success) {
-                    alert('Payment successful! Your membership is now active.');
-                    navigate('/profile');
-                  } else {
-                    alert('Payment verification failed. Please contact support.');
+                    if (verifyResponse.success) {
+                      alert('Payment successful! Your membership is now active.');
+                      navigate('/profile');
+                    } else {
+                      alert('Payment verification failed. Please contact support.');
+                    }
+                  } catch (verifyError) {
+                    console.error('Payment verification error:', verifyError);
+                    alert('Payment verification failed. Please contact support with your payment ID.');
                   }
                 },
                 prefill: {
@@ -81,17 +95,28 @@ const Membership = () => {
                 },
                 theme: {
                   color: '#9d00ff'
+                },
+                modal: {
+                  ondismiss: function() {
+                    console.log('Payment cancelled by user');
+                  }
                 }
               };
 
+              console.log('Opening Razorpay with options:', { ...options, key: 'HIDDEN' });
               const rzp = new window.Razorpay(options);
+              rzp.on('payment.failed', function (response) {
+                console.error('Payment failed:', response.error);
+                alert('Payment failed: ' + response.error.description);
+              });
               rzp.open();
             } else {
-              alert('Failed to initialize payment. Please try again.');
+              console.error('Failed to create Razorpay order:', orderResponse);
+              alert('Failed to initialize payment: ' + (orderResponse.message || 'Unknown error'));
             }
           } catch (err) {
             console.error('Payment error:', err);
-            alert('Payment initialization failed. Please try again.');
+            alert('Payment initialization failed: ' + err.message);
           }
           
           // Show message to user
