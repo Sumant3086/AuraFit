@@ -121,8 +121,8 @@ const ShoppingCartModal = () => {
                 }
               },
               prefill: {
-                name: user?.name || '',
-                email: user?.email || ''
+                name: userData.name || '',
+                email: userData.email || ''
               },
               theme: {
                 color: '#9d00ff'

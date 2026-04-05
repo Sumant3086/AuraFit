@@ -67,11 +67,12 @@ const Login = () => {
           navigate('/');
         }
       } else {
+        // Display the specific error message from server
         setError(data.message || 'Invalid email or password');
       }
     } catch (err) {
       console.error('Login error:', err);
-      setError('Login failed. Please check if the server is running.');
+      setError('Network error. Please check your connection and try again.');
     } finally {
       setLoading(false);
     }
