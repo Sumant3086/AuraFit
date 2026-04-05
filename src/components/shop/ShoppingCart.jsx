@@ -5,7 +5,7 @@ import { CiShoppingCart } from 'react-icons/ci'
 import { CgClose } from 'react-icons/cg'
 import { FaPlus, FaMinus, FaTrash } from 'react-icons/fa'
 import { useCart } from '../../context/CartContext';
-import apiService from '../../services/api';
+import apiService, { getRazorpayKey } from '../../services/api';
 
 const ShoppingCartModal = () => {
   const { cartItems, removeFromCart, updateQuantity, getCartTotal, getCartCount } = useCart();
@@ -103,9 +103,12 @@ const ShoppingCartModal = () => {
           console.log('Razorpay order response:', orderResponse);
 
           if (orderResponse.success) {
+            // Get Razorpay key (works in both dev and production)
+            const razorpayKey = await getRazorpayKey();
+            
             // Initialize Razorpay checkout
             const options = {
-              key: import.meta.env.VITE_RAZORPAY_KEY_ID,
+              key: razorpayKey,
               amount: orderResponse.data.amount,
               currency: orderResponse.data.currency,
               name: 'AURA FIT',

@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import "../membership/membership.css";
 import Footer from "../footer/Footer";
 import { FaArrowRight } from 'react-icons/fa';
-import apiService from '../../services/api';
+import apiService, { getRazorpayKey } from '../../services/api';
 
 const Pricing = () => {
   const navigate = useNavigate();
@@ -61,9 +61,12 @@ const Pricing = () => {
             console.log('Razorpay order response:', orderResponse);
 
             if (orderResponse.success) {
+              // Get Razorpay key (works in both dev and production)
+              const razorpayKey = await getRazorpayKey();
+              
               // Initialize Razorpay checkout
               const options = {
-                key: import.meta.env.VITE_RAZORPAY_KEY_ID,
+                key: razorpayKey,
                 amount: orderResponse.data.amount,
                 currency: orderResponse.data.currency,
                 name: 'AURA FIT',

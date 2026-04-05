@@ -2,6 +2,31 @@ const API_URL = import.meta.env.MODE === 'production'
   ? '/api' 
   : (import.meta.env.VITE_API_URL || 'http://localhost:5000/api');
 
+// Helper function to get Razorpay key (works in both dev and production)
+export const getRazorpayKey = async () => {
+  try {
+    // Try environment variable first
+    const envKey = import.meta.env.VITE_RAZORPAY_KEY_ID;
+    if (envKey && envKey !== 'undefined' && envKey !== '') {
+      console.log('Using Razorpay key from environment');
+      return envKey;
+    }
+    
+    // Fallback: fetch from backend (production fallback)
+    console.log('Fetching Razorpay key from backend');
+    const response = await apiCall('/orders/payment/razorpay-config');
+    if (response.success && response.data.keyId) {
+      console.log('Razorpay key fetched from backend successfully');
+      return response.data.keyId;
+    }
+    
+    throw new Error('Razorpay key not found in environment or backend');
+  } catch (error) {
+    console.error('Error getting Razorpay key:', error);
+    throw error;
+  }
+};
+
 // Generic API call handler
 const apiCall = async (endpoint, options = {}) => {
   try {
