@@ -7,8 +7,12 @@
     <meta name="theme-color" content="#000000" />
     <meta name="description" content="AURA FIT - AI-Powered Gym Management System with Google Gemini AI" />
     <title>AURA FIT - AI-Powered Gym</title>
-    <!-- Razorpay SDK -->
-    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+    <!-- Razorpay SDK - Load with error handling -->
+    <script 
+      src="https://checkout.razorpay.com/v1/checkout.js"
+      onload="console.log('Razorpay SDK loaded successfully')"
+      onerror="console.error('Failed to load Razorpay SDK')"
+    ></script>
   </head>
   <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>
