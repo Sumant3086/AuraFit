@@ -93,8 +93,6 @@ const Pricing = () => {
             alert('Payment initialization failed. Please try again.');
           }
           
-          }
-          
           // Show message to user
           alert('After completing payment, your membership will be pending admin approval. You will be notified once approved.');
           
