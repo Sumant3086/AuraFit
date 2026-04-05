@@ -86,24 +86,57 @@ const ShoppingCartModal = () => {
       console.log('Order response:', data); // Debug log
       
       if (data.success) {
-        // Get Razorpay payment link from server
-        const paymentData = await apiService.orders.getRazorpayLink();
+        try {
+          // Create Razorpay order
+          const orderResponse = await apiService.orders.createRazorpayOrder({
+            amount: getCartTotal(),
+            orderId: data.data._id
+          });
 
-        if (paymentData.success) {
-          // Store order ID for payment confirmation
-          localStorage.setItem('pendingOrderId', data.data._id);
-          
-          // Clear cart after successful order
-          cartItems.forEach(item => removeFromCart(item.id, item.color, item.size));
-          setShowModal(false);
-          
-          // Open Razorpay payment in new tab
-          window.open(paymentData.data.paymentLink, '_blank');
-          
-          // Navigate to payment confirmation page
-          navigate('/confirm-payment');
-        } else {
-          alert('Payment link not available. Please contact support.');
+          if (orderResponse.success) {
+            // Initialize Razorpay checkout
+            const options = {
+              key: import.meta.env.VITE_RAZORPAY_KEY_ID,
+              amount: orderResponse.data.amount,
+              currency: orderResponse.data.currency,
+              name: 'AURA FIT',
+              description: 'Product Purchase',
+              order_id: orderResponse.data.orderId,
+              handler: async function (response) {
+                // Verify payment
+                const verifyResponse = await apiService.orders.verifyPayment({
+                  razorpay_order_id: response.razorpay_order_id,
+                  razorpay_payment_id: response.razorpay_payment_id,
+                  razorpay_signature: response.razorpay_signature
+                });
+
+                if (verifyResponse.success) {
+                  // Clear cart after successful payment
+                  cartItems.forEach(item => removeFromCart(item.id, item.color, item.size));
+                  setShowModal(false);
+                  alert('Payment successful! Your order has been placed.');
+                  navigate('/profile');
+                } else {
+                  alert('Payment verification failed. Please contact support.');
+                }
+              },
+              prefill: {
+                name: user?.name || '',
+                email: user?.email || ''
+              },
+              theme: {
+                color: '#9d00ff'
+              }
+            };
+
+            const rzp = new window.Razorpay(options);
+            rzp.open();
+          } else {
+            alert('Failed to initialize payment. Please try again.');
+          }
+        } catch (err) {
+          console.error('Payment error:', err);
+          alert('Payment initialization failed. Please try again.');
         }
       } else {
         console.error('Order creation failed:', data);
