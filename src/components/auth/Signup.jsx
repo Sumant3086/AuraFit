@@ -81,11 +81,12 @@ const Signup = () => {
           navigate('/');
         }
       } else {
+        // Display the specific error message from server
         setError(data.message || 'Failed to create account');
       }
     } catch (err) {
       console.error('Signup error:', err);
-      setError('Failed to create account. Please check if the server is running.');
+      setError('Network error. Please check your connection and try again.');
     } finally {
       setLoading(false);
     }

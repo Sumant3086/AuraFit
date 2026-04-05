@@ -70,13 +70,14 @@ const Membership = () => {
 
                   if (verifyResponse.success) {
                     alert('Payment successful! Your membership is now active.');
+                    navigate('/profile');
                   } else {
                     alert('Payment verification failed. Please contact support.');
                   }
                 },
                 prefill: {
-                  name: user?.name || '',
-                  email: user?.email || ''
+                  name: userData.name || '',
+                  email: userData.email || ''
                 },
                 theme: {
                   color: '#9d00ff'

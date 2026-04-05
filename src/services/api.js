@@ -15,14 +15,26 @@ const apiCall = async (endpoint, options = {}) => {
 
     const data = await response.json();
 
+    // Return data even if response is not ok, so we can access error messages
     if (!response.ok) {
-      throw new Error(data.message || 'Something went wrong');
+      // Return the error data with success: false
+      return {
+        success: false,
+        message: data.message || 'Something went wrong',
+        error: data.error,
+        status: response.status
+      };
     }
 
     return data;
   } catch (error) {
     console.error('API Error:', error);
-    throw error;
+    // Return a structured error response
+    return {
+      success: false,
+      message: 'Network error. Please check your connection.',
+      error: error.message
+    };
   }
 };
 
@@ -38,6 +50,18 @@ export const authAPI = {
     apiCall('/auth/signup', {
       method: 'POST',
       body: JSON.stringify(userData),
+    }),
+  
+  verifyEmail: (emailData) =>
+    apiCall('/auth/verify-email', {
+      method: 'POST',
+      body: JSON.stringify(emailData),
+    }),
+  
+  resetPassword: (resetData) =>
+    apiCall('/auth/reset-password', {
+      method: 'POST',
+      body: JSON.stringify(resetData),
     }),
 };
 
