@@ -41,18 +41,56 @@ const Membership = () => {
         });
 
         if (data.success) {
-          // Open Razorpay payment gateway
-          alert(`Redirecting to payment gateway for ${plan} membership (₹${selectedPlan.price})...`);
-          // Fetch payment link from server and open it
+          // Create Razorpay order and open payment gateway
+          alert(`Processing payment for ${plan} membership (₹${selectedPlan.price})...`);
+          
           try {
-            const paymentResp = await apiService.orders.getRazorpayLink();
-            if (paymentResp.success) {
-              window.open(paymentResp.data.paymentLink, '_blank');
+            // Create Razorpay order
+            const orderResponse = await apiService.orders.createRazorpayOrder({
+              amount: selectedPlan.price,
+              orderId: data.data.order._id
+            });
+
+            if (orderResponse.success) {
+              // Initialize Razorpay checkout
+              const options = {
+                key: import.meta.env.VITE_RAZORPAY_KEY_ID,
+                amount: orderResponse.data.amount,
+                currency: orderResponse.data.currency,
+                name: 'AURA FIT',
+                description: `${plan} Membership`,
+                order_id: orderResponse.data.orderId,
+                handler: async function (response) {
+                  // Verify payment
+                  const verifyResponse = await apiService.orders.verifyPayment({
+                    razorpay_order_id: response.razorpay_order_id,
+                    razorpay_payment_id: response.razorpay_payment_id,
+                    razorpay_signature: response.razorpay_signature
+                  });
+
+                  if (verifyResponse.success) {
+                    alert('Payment successful! Your membership is now active.');
+                  } else {
+                    alert('Payment verification failed. Please contact support.');
+                  }
+                },
+                prefill: {
+                  name: user?.name || '',
+                  email: user?.email || ''
+                },
+                theme: {
+                  color: '#9d00ff'
+                }
+              };
+
+              const rzp = new window.Razorpay(options);
+              rzp.open();
             } else {
-              window.open(import.meta.env.VITE_RAZORPAY_LINK, '_blank');
+              alert('Failed to initialize payment. Please try again.');
             }
           } catch (err) {
-            window.open(import.meta.env.VITE_RAZORPAY_LINK, '_blank');
+            console.error('Payment error:', err);
+            alert('Payment initialization failed. Please try again.');
           }
           
           // Show message to user
