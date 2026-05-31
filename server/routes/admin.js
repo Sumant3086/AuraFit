@@ -107,6 +107,112 @@ router.get('/stats', adminGuard, async (req, res) => {
   }
 });
 
+// GET /api/admin/kpis — Business KPI metrics (MRR, churn, retention, conversion)
+router.get('/kpis', adminGuard, async (req, res) => {
+  try {
+    const now = new Date();
+    const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+    const startOfLastMonth = new Date(now.getFullYear(), now.getMonth() - 1, 1);
+    const endOfLastMonth = new Date(now.getFullYear(), now.getMonth(), 0);
+
+    // MRR pricing map (monthly equivalents in INR)
+    const PLAN_MONTHLY_PRICE = { Basic: 999, Pro: 1999, Premium: 3999 };
+
+    const [
+      totalUsers,
+      activeMembers,
+      newThisMonth,
+      newLastMonth,
+      activeLastMonth,
+      churned,
+      dailyActive,
+      weeklyActive,
+      orderRevenue,
+      membershipRevenue,
+    ] = await Promise.all([
+      User.countDocuments({ role: { $in: ['member', 'user'] } }),
+      User.find({ membership: { $in: ['Basic', 'Pro', 'Premium'] }, status: 'Active' }).select('membership').lean(),
+      User.countDocuments({ createdAt: { $gte: startOfMonth } }),
+      User.countDocuments({ createdAt: { $gte: startOfLastMonth, $lt: startOfMonth } }),
+      User.countDocuments({ membership: { $in: ['Basic', 'Pro', 'Premium'] }, status: 'Active', createdAt: { $lt: startOfMonth } }),
+      User.countDocuments({ membership: 'None', updatedAt: { $gte: startOfMonth } }),
+      User.countDocuments({ lastLogin: { $gte: new Date(Date.now() - 86400000) } }),
+      User.countDocuments({ lastLogin: { $gte: new Date(Date.now() - 7 * 86400000) } }),
+      Order.aggregate([{ $match: { paymentStatus: 'Paid' } }, { $group: { _id: null, total: { $sum: '$totalAmount' } } }]),
+      Membership.aggregate([{ $match: { paymentStatus: 'paid', status: 'active' } }, { $group: { _id: null, total: { $sum: '$price' } } }]),
+    ]);
+
+    // MRR calculation
+    const mrr = activeMembers.reduce((sum, m) => sum + (PLAN_MONTHLY_PRICE[m.membership] || 0), 0);
+    const arr = mrr * 12;
+
+    // Churn rate
+    const churnRate = activeLastMonth > 0 ? Math.round((churned / activeLastMonth) * 1000) / 10 : 0;
+    const retentionRate = Math.round((100 - churnRate) * 10) / 10;
+
+    // Conversion rate (free users → paid members)
+    const conversionRate = totalUsers > 0 ? Math.round((activeMembers.length / totalUsers) * 1000) / 10 : 0;
+
+    // ARPU
+    const totalRevenue = (orderRevenue[0]?.total || 0) + (membershipRevenue[0]?.total || 0);
+    const arpu = totalUsers > 0 ? Math.round(totalRevenue / totalUsers) : 0;
+
+    // DAU/MAU ratio
+    const mau = weeklyActive;
+    const dauMauRatio = mau > 0 ? Math.round((dailyActive / mau) * 1000) / 10 : 0;
+
+    // Growth rate (MoM)
+    const growthRate = newLastMonth > 0 ? Math.round(((newThisMonth - newLastMonth) / newLastMonth) * 1000) / 10 : 0;
+
+    // Monthly cohort data (last 6 months)
+    const cohorts = await Promise.all(
+      Array.from({ length: 6 }, (_, i) => {
+        const start = new Date(now.getFullYear(), now.getMonth() - (5 - i), 1);
+        const end = new Date(now.getFullYear(), now.getMonth() - (4 - i), 0);
+        return User.countDocuments({ createdAt: { $gte: start, $lte: end } }).then(count => ({
+          month: start.toLocaleDateString('en-US', { month: 'short', year: 'numeric' }),
+          users: count,
+        }));
+      })
+    );
+
+    // Revenue by plan
+    const revenueByPlan = {};
+    activeMembers.forEach(m => {
+      revenueByPlan[m.membership] = (revenueByPlan[m.membership] || 0) + (PLAN_MONTHLY_PRICE[m.membership] || 0);
+    });
+
+    res.json({
+      success: true,
+      data: {
+        mrr,
+        arr,
+        churnRate,
+        retentionRate,
+        conversionRate,
+        arpu,
+        dauMauRatio,
+        dailyActive,
+        weeklyActive,
+        growthRate,
+        newThisMonth,
+        newLastMonth,
+        activeMemberCount: activeMembers.length,
+        totalRevenue,
+        cohorts,
+        revenueByPlan,
+        planBreakdown: {
+          Basic: activeMembers.filter(m => m.membership === 'Basic').length,
+          Pro: activeMembers.filter(m => m.membership === 'Pro').length,
+          Premium: activeMembers.filter(m => m.membership === 'Premium').length,
+        },
+      },
+    });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+});
+
 // GET /api/admin/users
 router.get('/users', adminGuard, async (req, res) => {
   try {

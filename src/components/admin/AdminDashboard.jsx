@@ -12,6 +12,7 @@ import { adminAPI, membershipAPI, productsAPI, classesAPI } from '../../services
 import shopData from '../shop/shopData';
 import classesByDay from '../classes/classesData';
 import AnalyticsCharts from './AnalyticsCharts';
+import AdminKPIBoard from './AdminKPIBoard';
 import './admin.css';
 
 const AdminDashboard = () => {
@@ -260,7 +261,8 @@ const AdminDashboard = () => {
     { id: 'orders', label: 'Orders', icon: FiShoppingBag, count: orders.length },
     { id: 'products', label: 'Products', icon: FiPackage, count: products.length },
     { id: 'classes', label: 'Classes', icon: FiActivity, count: classes.length },
-    { id: 'tracking', label: 'Analytics', icon: FiBarChart2 }
+    { id: 'tracking', label: 'Analytics', icon: FiBarChart2 },
+    { id: 'kpis', label: 'Business KPIs', icon: FiTrendingUp },
   ];
 
   return (
@@ -676,6 +678,15 @@ const AdminDashboard = () => {
                     <span className="analytics-label">Total enrollments</span>
                   </div>
                 </div>
+              </motion.div>
+            )}
+            {activeTab === 'kpis' && (
+              <motion.div key="kpis" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="content-section">
+                <div style={{ marginBottom: 24 }}>
+                  <h2 style={{ color: '#fff', fontSize: 22, fontWeight: 800, margin: '0 0 6px' }}>Business KPI Dashboard 📈</h2>
+                  <p style={{ color: '#555', fontSize: 14, margin: 0 }}>MRR, churn, retention, conversion, and growth metrics</p>
+                </div>
+                <AdminKPIBoard />
               </motion.div>
             )}
           </AnimatePresence>

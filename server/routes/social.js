@@ -2,6 +2,8 @@ const express = require('express');
 const router = express.Router();
 const SocialPost = require('../models/SocialPost');
 const { verifyToken } = require('../middleware/auth');
+const { emitToAll, emitToUser } = require('../socket/socketServer');
+const { notifySocialLike, notifySocialComment } = require('../services/notificationService');
 
 // Get feed (members-only + public)
 router.get('/feed', verifyToken, async (req, res) => {
@@ -48,7 +50,12 @@ router.post('/', verifyToken, async (req, res) => {
       visibility,
     });
 
-    res.status(201).json({ success: true, data: post });
+    const enriched = { ...post.toObject(), likeCount: 0, commentCount: 0, isLiked: false };
+
+    // Broadcast to all connected members in real-time
+    emitToAll('community:new-post', enriched);
+
+    res.status(201).json({ success: true, data: enriched });
   } catch (err) {
     res.status(500).json({ success: false, message: err.message });
   }
@@ -73,6 +80,12 @@ router.post('/:id/like', verifyToken, async (req, res) => {
     }
 
     await post.save();
+
+    // Notify post owner about the like (but not if they liked their own post)
+    if (liked && String(post.userId) !== String(req.user._id)) {
+      notifySocialLike(post.userId, req.user.name, post.content).catch(() => {});
+    }
+
     res.json({ success: true, liked, likeCount: post.likes.length });
   } catch (err) {
     res.status(500).json({ success: false, message: err.message });
@@ -96,6 +109,11 @@ router.post('/:id/comment', verifyToken, async (req, res) => {
     };
     post.comments.push(comment);
     await post.save();
+
+    // Notify post owner about the comment
+    if (String(post.userId) !== String(req.user._id)) {
+      notifySocialComment(post.userId, req.user.name, post.content).catch(() => {});
+    }
 
     res.status(201).json({ success: true, data: comment, commentCount: post.comments.length });
   } catch (err) {

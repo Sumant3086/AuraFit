@@ -43,6 +43,10 @@ connectDB();
 const { seedAchievements } = require('./services/gamificationService');
 seedAchievements();
 
+// Initialize cron jobs
+const { initCronJobs } = require('./jobs/cronJobs');
+initCronJobs();
+
 // ── API Routes ──────────────────────────────────────────────
 // Core
 app.use('/api/auth', require('./routes/auth'));
@@ -72,6 +76,10 @@ app.use('/api/onboarding', require('./routes/onboarding'));
 app.use('/api/social', require('./routes/social'));
 app.use('/api/ai-chat', require('./routes/aiChat'));
 app.use('/api/reports', require('./routes/reports'));
+
+// v2.2 features
+app.use('/api/notifications', require('./routes/notifications'));
+app.use('/api/trainers', require('./routes/trainers'));
 // ────────────────────────────────────────────────────────────
 
 // Health check
