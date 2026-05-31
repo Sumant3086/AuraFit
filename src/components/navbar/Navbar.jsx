@@ -5,11 +5,13 @@ import { Link, useNavigate } from "react-router-dom";
 import { HiMenu } from "react-icons/hi";
 import { FaUser, FaTrophy, FaQrcode, FaDumbbell } from "react-icons/fa";
 import { useAuth } from "../../context/AuthContext";
+import { useTheme } from "../../context/ThemeContext";
 
 const Navbar = ({ toggle }) => {
   const [scrolled, setScrolled] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
-  const { user, isAuthenticated, logout, isAdmin } = useAuth();
+  const { user, isAuthenticated, logout, isAdmin, isTrainer } = useAuth();
+  const { theme, toggleTheme } = useTheme();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -43,6 +45,20 @@ const Navbar = ({ toggle }) => {
         <Link to="/shop" className="menu-items">Shop</Link>
         <Link to="/features" className="menu-items">Features</Link>
         <Link to="/contact" className="menu-items">Contact</Link>
+
+        {/* Theme toggle */}
+        <button
+          onClick={toggleTheme}
+          aria-label="Toggle theme"
+          style={{
+            background: 'none', border: '1px solid #333', borderRadius: 20,
+            padding: '5px 10px', cursor: 'pointer', fontSize: 16,
+            color: theme === 'dark' ? '#ffd700' : '#333',
+            transition: 'all 0.2s', lineHeight: 1,
+          }}
+        >
+          {theme === 'dark' ? '☀️' : '🌙'}
+        </button>
 
         {isAuthenticated && user ? (
           <div className="user-menu" style={{ position: 'relative' }}>
@@ -84,8 +100,11 @@ const Navbar = ({ toggle }) => {
                 <NavDropItem to="/achievements" icon="🏅" label="Achievements" onClick={() => setDropdownOpen(false)} />
                 <NavDropItem to="/leaderboard" icon="🏆" label="Leaderboard" onClick={() => setDropdownOpen(false)} />
                 <NavDropItem to="/book-trainer" icon="👨‍💼" label="Book Trainer" onClick={() => setDropdownOpen(false)} />
+                <NavDropItem to="/community" icon="🤝" label="Community" onClick={() => setDropdownOpen(false)} />
                 <NavDropItem to="/my-orders" icon="📦" label="My Orders" onClick={() => setDropdownOpen(false)} />
-                {isAdmin && <NavDropItem to="/admin/dashboard" icon="⚙️" label="Admin Panel" onClick={() => setDropdownOpen(false)} />}
+                <NavDropItem to="/settings" icon="⚙️" label="Settings" onClick={() => setDropdownOpen(false)} />
+                {isTrainer && <NavDropItem to="/trainer/dashboard" icon="🏋️" label="Trainer Dashboard" onClick={() => setDropdownOpen(false)} />}
+                {isAdmin && <NavDropItem to="/admin/dashboard" icon="🔐" label="Admin Panel" onClick={() => setDropdownOpen(false)} />}
                 <div style={{ borderTop: '1px solid #1a1a1a', marginTop: 4, paddingTop: 4 }}>
                   <button onClick={handleLogout} style={{
                     width: '100%', padding: '10px 16px', background: 'none', border: 'none', color: '#ff4444',

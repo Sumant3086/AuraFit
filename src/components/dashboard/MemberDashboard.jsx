@@ -3,14 +3,15 @@ import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import AnnouncementBanner from '../announcements/AnnouncementBanner';
+import ActivityFeed from './ActivityFeed';
 import toast from 'react-hot-toast';
 
 const QUICK_ACTIONS = [
   { label: 'Check-In', icon: '📱', path: '/checkin', color: '#9d00ff', desc: 'QR Check-In' },
   { label: 'Workout', icon: '💪', path: '/features', color: '#00d4ff', desc: 'AI Generate' },
   { label: 'Nutrition', icon: '🥗', path: '/features', color: '#00c853', desc: 'Meal Plan' },
+  { label: 'Community', icon: '🤝', path: '/community', color: '#ff6b35', desc: 'Social Feed' },
   { label: 'Book Trainer', icon: '👨‍💼', path: '/book-trainer', color: '#ffd700', desc: 'Schedule' },
-  { label: 'Progress', icon: '📊', path: '/features', color: '#ff6b35', desc: 'Track Body' },
   { label: 'Leaderboard', icon: '🏆', path: '/leaderboard', color: '#ff1493', desc: 'Rankings' },
 ];
 
@@ -19,24 +20,45 @@ export default function MemberDashboard() {
   const [stats, setStats] = useState(null);
   const [achievements, setAchievements] = useState([]);
   const [announcements, setAnnouncements] = useState([]);
+  const [weeklyInsight, setWeeklyInsight] = useState(null);
   const [loading, setLoading] = useState(true);
   const [checkedInToday, setCheckedInToday] = useState(false);
+  const [downloadingReport, setDownloadingReport] = useState(false);
 
   useEffect(() => {
     const loadDashboard = async () => {
       try {
-        const [attRes, achRes] = await Promise.all([
+        const [attRes, achRes, insightRes] = await Promise.all([
           apiClient.get('/attendance/stats/me').catch(() => ({ data: { data: null } })),
           apiClient.get('/achievements/my').catch(() => ({ data: { data: [] } })),
+          apiClient.get('/ai-chat/weekly-insight').catch(() => ({ data: { data: null } })),
         ]);
         setStats(attRes.data.data);
         const earned = achRes.data.data?.filter(a => a.earned) || [];
         setAchievements(earned.slice(0, 6));
+        setWeeklyInsight(insightRes.data.data);
       } catch {}
       setLoading(false);
     };
     loadDashboard();
   }, []);
+
+  const downloadProgressReport = async () => {
+    setDownloadingReport(true);
+    try {
+      const res = await apiClient.get('/reports/progress', { responseType: 'blob' });
+      const url = URL.createObjectURL(new Blob([res.data], { type: 'application/pdf' }));
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `aurafit-progress-${new Date().toISOString().slice(0,10)}.pdf`;
+      a.click();
+      URL.revokeObjectURL(url);
+      toast.success('Progress report downloaded! 📊');
+    } catch {
+      toast.error('Failed to generate report. Try again.');
+    }
+    setDownloadingReport(false);
+  };
 
   const handleQuickCheckIn = async () => {
     if (checkedInToday) return;
@@ -166,6 +188,42 @@ export default function MemberDashboard() {
           </div>
         )}
 
+        {/* Weekly AI Insight Card */}
+        {weeklyInsight && (
+          <div style={{
+            background: 'linear-gradient(135deg, #0a1a0a, #0a0a1a)', border: '1px solid #00c85333',
+            borderRadius: 16, padding: 20, marginBottom: 28,
+          }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 14 }}>
+              <h3 style={{ color: '#fff', margin: 0, fontSize: 16, fontWeight: 700 }}>✨ Weekly AI Insights</h3>
+              <button
+                onClick={downloadProgressReport}
+                disabled={downloadingReport}
+                style={{
+                  padding: '6px 14px', background: '#00d4ff22', border: '1px solid #00d4ff44',
+                  borderRadius: 20, color: '#00d4ff', cursor: 'pointer', fontSize: 12, fontWeight: 700,
+                }}
+              >
+                {downloadingReport ? '...' : '📊 Export PDF'}
+              </button>
+            </div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+              <div style={{ display: 'flex', gap: 10, alignItems: 'flex-start' }}>
+                <span style={{ fontSize: 18, flexShrink: 0 }}>💪</span>
+                <p style={{ color: '#ccc', fontSize: 13, lineHeight: 1.5, margin: 0 }}>{weeklyInsight.workoutTip}</p>
+              </div>
+              <div style={{ display: 'flex', gap: 10, alignItems: 'flex-start' }}>
+                <span style={{ fontSize: 18, flexShrink: 0 }}>🥗</span>
+                <p style={{ color: '#ccc', fontSize: 13, lineHeight: 1.5, margin: 0 }}>{weeklyInsight.nutritionTip}</p>
+              </div>
+              <div style={{ display: 'flex', gap: 10, alignItems: 'flex-start' }}>
+                <span style={{ fontSize: 18, flexShrink: 0 }}>🎯</span>
+                <p style={{ color: '#00c853', fontSize: 13, lineHeight: 1.5, margin: 0, fontWeight: 600 }}>Goal: {weeklyInsight.weeklyGoal}</p>
+              </div>
+            </div>
+          </div>
+        )}
+
         {/* Referral Card */}
         {user?.referralCode && (
           <div style={{
@@ -187,7 +245,7 @@ export default function MemberDashboard() {
         )}
 
         {/* Membership status */}
-        <div style={{ background: '#111', border: '1px solid #222', borderRadius: 16, padding: 20 }}>
+        <div style={{ background: '#111', border: '1px solid #222', borderRadius: 16, padding: 20, marginBottom: 28 }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <div>
               <p style={{ color: '#888', fontSize: 13, margin: '0 0 4px' }}>Membership</p>
@@ -206,6 +264,31 @@ export default function MemberDashboard() {
               </Link>
             )}
           </div>
+        </div>
+
+        {/* Activity Feed */}
+        <div style={{ background: '#111', border: '1px solid #1a1a1a', borderRadius: 16, padding: 20, marginBottom: 28 }}>
+          <ActivityFeed />
+        </div>
+
+        {/* Settings & quick links row */}
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 10 }}>
+          {[
+            { label: 'Settings', icon: '⚙️', path: '/settings' },
+            { label: 'Community', icon: '🤝', path: '/community' },
+            { label: 'Achievements', icon: '🏅', path: '/achievements' },
+            { label: 'My Orders', icon: '📦', path: '/my-orders' },
+          ].map(link => (
+            <Link key={link.label} to={link.path} style={{ textDecoration: 'none' }}>
+              <div style={{
+                background: '#0a0a0a', border: '1px solid #1a1a1a', borderRadius: 12,
+                padding: '12px 8px', textAlign: 'center',
+              }}>
+                <div style={{ fontSize: 22, marginBottom: 4 }}>{link.icon}</div>
+                <p style={{ color: '#555', fontSize: 11, margin: 0 }}>{link.label}</p>
+              </div>
+            </Link>
+          ))}
         </div>
       </div>
     </div>

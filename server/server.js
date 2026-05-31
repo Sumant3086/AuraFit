@@ -67,6 +67,11 @@ app.use('/api/achievements', require('./routes/achievements'));
 app.use('/api/trainer-bookings', require('./routes/trainerBookings'));
 app.use('/api/announcements', require('./routes/announcements'));
 app.use('/api/onboarding', require('./routes/onboarding'));
+
+// v2.1 features
+app.use('/api/social', require('./routes/social'));
+app.use('/api/ai-chat', require('./routes/aiChat'));
+app.use('/api/reports', require('./routes/reports'));
 // ────────────────────────────────────────────────────────────
 
 // Health check

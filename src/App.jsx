@@ -6,6 +6,7 @@ import 'aos/dist/aos.css';
 import { CartProvider } from "./context/CartContext";
 import { SocketProvider } from "./context/SocketContext";
 import { AuthProvider, useAuth } from "./context/AuthContext";
+import { ThemeProvider } from "./context/ThemeContext";
 import './styles/animations.css';
 import './styles/responsive.css';
 
@@ -20,6 +21,7 @@ import ScrollToTopButton from "./components/common/ScrollToTop";
 import ProgressBar from "./components/common/ProgressBar";
 import LiveChat from "./components/chat/LiveChat";
 import BottomNav from "./components/common/BottomNav";
+import FitnessAssistant from "./components/chat/FitnessAssistant";
 
 // Lazy loaded (code-split for performance)
 const Contact = lazy(() => import("./components/contact/Contact"));
@@ -44,6 +46,11 @@ const Achievements = lazy(() => import("./components/gamification/Achievements")
 const QRCheckIn = lazy(() => import("./components/attendance/QRCheckIn"));
 const TrainerBooking = lazy(() => import("./components/booking/TrainerBooking"));
 const GymLandingPage = lazy(() => import("./components/gym/GymLandingPage"));
+
+// v2.1 features
+const CommunityFeed = lazy(() => import("./components/social/CommunityFeed"));
+const Settings = lazy(() => import("./components/settings/Settings"));
+const TrainerDashboard = lazy(() => import("./components/trainer/TrainerDashboard"));
 
 // Lazy load shop data to avoid circular dependency
 import shopDataModule from "./components/shop/shopData";
@@ -99,6 +106,7 @@ const AppInner = () => {
             style: { background: '#1a1a1a', color: '#fff', border: '1px solid #9d00ff', borderRadius: '10px' },
           }}
         />
+        <FitnessAssistant />
         <Suspense fallback={<PageLoader />}>
           <Routes>
             {/* Auth routes (no navbar) */}
@@ -148,6 +156,15 @@ const AppInner = () => {
             <Route path="/book-trainer" element={
               <OnboardingGuard><TrainerBooking /></OnboardingGuard>
             } />
+            <Route path="/community" element={
+              <OnboardingGuard><CommunityFeed /></OnboardingGuard>
+            } />
+            <Route path="/settings" element={
+              <OnboardingGuard><Settings /></OnboardingGuard>
+            } />
+            <Route path="/trainer/dashboard" element={
+              <OnboardingGuard><TrainerDashboard /></OnboardingGuard>
+            } />
 
             {/* Gym landing pages */}
             <Route path="/gym/:slug" element={<GymLandingPage />} />
@@ -180,9 +197,11 @@ const AppInner = () => {
 };
 
 const App = () => (
-  <AuthProvider>
-    <AppInner />
-  </AuthProvider>
+  <ThemeProvider>
+    <AuthProvider>
+      <AppInner />
+    </AuthProvider>
+  </ThemeProvider>
 );
 
 export default App;
