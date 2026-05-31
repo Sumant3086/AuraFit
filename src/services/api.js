@@ -30,9 +30,11 @@ export const getRazorpayKey = async () => {
 // Generic API call handler
 const apiCall = async (endpoint, options = {}) => {
   try {
+    const token = localStorage.getItem('accessToken');
     const response = await fetch(`${API_URL}${endpoint}`, {
       headers: {
         'Content-Type': 'application/json',
+        ...(token ? { Authorization: `Bearer ${token}` } : {}),
         ...options.headers,
       },
       ...options,

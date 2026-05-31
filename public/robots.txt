@@ -1,0 +1,10 @@
+User-agent: *
+Allow: /
+Disallow: /admin/
+Disallow: /api/
+Disallow: /dashboard
+Disallow: /profile
+Disallow: /my-orders
+
+# Sitemaps
+Sitemap: https://aurafitgymwebsite.onrender.com/sitemap.xml
