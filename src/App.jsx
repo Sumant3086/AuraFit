@@ -52,6 +52,10 @@ const CommunityFeed = lazy(() => import("./components/social/CommunityFeed"));
 const Settings = lazy(() => import("./components/settings/Settings"));
 const TrainerDashboard = lazy(() => import("./components/trainer/TrainerDashboard"));
 
+// v2.2 features
+const TrainerDirectory = lazy(() => import("./components/trainers/TrainerDirectory"));
+const TrainerProfile = lazy(() => import("./components/trainers/TrainerProfile"));
+
 // Lazy load shop data to avoid circular dependency
 import shopDataModule from "./components/shop/shopData";
 
@@ -165,6 +169,8 @@ const AppInner = () => {
             <Route path="/trainer/dashboard" element={
               <OnboardingGuard><TrainerDashboard /></OnboardingGuard>
             } />
+            <Route path="/trainers" element={<TrainerDirectory />} />
+            <Route path="/trainers/:id" element={<TrainerProfile />} />
 
             {/* Gym landing pages */}
             <Route path="/gym/:slug" element={<GymLandingPage />} />

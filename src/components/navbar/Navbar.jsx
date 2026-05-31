@@ -6,6 +6,7 @@ import { HiMenu } from "react-icons/hi";
 import { FaUser, FaTrophy, FaQrcode, FaDumbbell } from "react-icons/fa";
 import { useAuth } from "../../context/AuthContext";
 import { useTheme } from "../../context/ThemeContext";
+import NotificationCenter from "../notifications/NotificationCenter";
 
 const Navbar = ({ toggle }) => {
   const [scrolled, setScrolled] = useState(false);
@@ -60,6 +61,8 @@ const Navbar = ({ toggle }) => {
           {theme === 'dark' ? '☀️' : '🌙'}
         </button>
 
+        {isAuthenticated && <NotificationCenter />}
+
         {isAuthenticated && user ? (
           <div className="user-menu" style={{ position: 'relative' }}>
             {/* Points display */}
@@ -99,6 +102,7 @@ const Navbar = ({ toggle }) => {
                 <NavDropItem to="/checkin" icon="📱" label="QR Check-In" onClick={() => setDropdownOpen(false)} />
                 <NavDropItem to="/achievements" icon="🏅" label="Achievements" onClick={() => setDropdownOpen(false)} />
                 <NavDropItem to="/leaderboard" icon="🏆" label="Leaderboard" onClick={() => setDropdownOpen(false)} />
+                <NavDropItem to="/trainers" icon="💪" label="Find Trainers" onClick={() => setDropdownOpen(false)} />
                 <NavDropItem to="/book-trainer" icon="👨‍💼" label="Book Trainer" onClick={() => setDropdownOpen(false)} />
                 <NavDropItem to="/community" icon="🤝" label="Community" onClick={() => setDropdownOpen(false)} />
                 <NavDropItem to="/my-orders" icon="📦" label="My Orders" onClick={() => setDropdownOpen(false)} />

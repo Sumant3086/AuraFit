@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '../../context/AuthContext';
+import { useSocket } from '../../context/SocketContext';
 import toast from 'react-hot-toast';
 
 const TYPE_FILTERS = [
@@ -22,6 +23,7 @@ const TYPE_COLORS = {
 
 export default function CommunityFeed() {
   const { apiClient, user } = useAuth();
+  const { socket } = useSocket();
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [posting, setPosting] = useState(false);
@@ -52,6 +54,22 @@ export default function CommunityFeed() {
     setPage(1);
     fetchPosts(true);
   }, [filter]);
+
+  // Real-time: receive new posts via WebSocket
+  useEffect(() => {
+    if (!socket) return;
+    const handleNewPost = (post) => {
+      // Don't add if it's the current user's post (they already see it)
+      if (String(post.userId) === String(user?._id)) return;
+      setPosts(prev => {
+        if (prev.find(p => p._id === post._id)) return prev;
+        return [{ ...post, isLiked: false }, ...prev];
+      });
+      toast(`${post.userName} posted in the community 💬`, { duration: 3000 });
+    };
+    socket.on('community:new-post', handleNewPost);
+    return () => socket.off('community:new-post', handleNewPost);
+  }, [socket, user?._id]);
 
   const handlePost = async () => {
     if (!newPost.trim()) return;
