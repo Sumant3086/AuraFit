@@ -2,12 +2,20 @@ import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 
-const NAV_ITEMS = [
+const NAV_ITEMS_AUTH = [
+  { path: '/dashboard', icon: '⚡', label: 'Home' },
+  { path: '/checkin', icon: '📱', label: 'Check-In' },
+  { path: '/community', icon: '🤝', label: 'Community' },
+  { path: '/leaderboard', icon: '🏆', label: 'Rank' },
+  { path: '/settings', icon: '⚙️', label: 'Settings' },
+];
+
+const NAV_ITEMS_PUBLIC = [
   { path: '/', icon: '🏠', label: 'Home' },
-  { path: '/checkin', icon: '📱', label: 'Check-In', requiresAuth: true },
-  { path: '/dashboard', icon: '⚡', label: 'Dashboard', requiresAuth: true },
-  { path: '/leaderboard', icon: '🏆', label: 'Rank', requiresAuth: true },
-  { path: '/profile', icon: '👤', label: 'Profile', requiresAuth: true },
+  { path: '/classes', icon: '🏋️', label: 'Classes' },
+  { path: '/pricing', icon: '💎', label: 'Pricing' },
+  { path: '/shop', icon: '🛍️', label: 'Shop' },
+  { path: '/login', icon: '👤', label: 'Login' },
 ];
 
 export default function BottomNav() {
@@ -18,7 +26,7 @@ export default function BottomNav() {
   const hideOn = ['/login', '/signup', '/forgot-password', '/admin', '/onboarding'];
   if (hideOn.some(p => location.pathname.startsWith(p))) return null;
 
-  const items = NAV_ITEMS.filter(item => !item.requiresAuth || isAuthenticated);
+  const items = isAuthenticated ? NAV_ITEMS_AUTH : NAV_ITEMS_PUBLIC;
 
   return (
     <nav style={{

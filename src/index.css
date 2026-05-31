@@ -12,8 +12,26 @@
     letter-spacing: 1px;
 }
 
-:root {
+/* ── Theme Variables ─────────────────────────────── */
+:root,
+[data-theme="dark"] {
     --color-bg: #000000;
+    --bg-primary: #000000;
+    --bg-secondary: #0a0a0a;
+    --bg-card: #111111;
+    --bg-card-hover: #1a1a1a;
+    --bg-elevated: #0f0f0f;
+    --text-primary: #ffffff;
+    --text-secondary: #cccccc;
+    --text-muted: #666666;
+    --text-dim: #333333;
+    --border-color: #1a1a1a;
+    --border-hover: #333333;
+    --input-bg: #0a0a0a;
+    --input-border: #222222;
+    --shadow-card: 0 4px 24px rgba(0,0,0,0.5);
+    --shadow-glow: 0 8px 32px rgba(157,0,255,0.2);
+    --scrollbar-bg: rgba(0,0,0,0.8);
     --color-cyan: #00d4ff;
     --color-cyan-bright: #00f5ff;
     --color-pink: #ff00ff;
@@ -23,8 +41,41 @@
     --gradient: linear-gradient(135deg, #00d4ff 0%, #0099ff 25%, #00f5ff 50%, #ff00ff 75%, #ff0080 100%);
     --gradient-vibrant: linear-gradient(135deg, #00f5ff 0%, #00d4ff 20%, #0099ff 40%, #9d00ff 60%, #ff00ff 80%, #ff0080 100%);
     --transition: all 0.5s ease;
-    --glow-cyan: 0 0 20px rgba(0, 245, 255, 0.5);
-    --glow-pink: 0 0 20px rgba(255, 0, 255, 0.5);
+    --glow-cyan: 0 0 20px rgba(0,245,255,0.5);
+    --glow-pink: 0 0 20px rgba(255,0,255,0.5);
+    --container-max-width: 1400px;
+    --section-padding: 80px 20px;
+}
+
+[data-theme="light"] {
+    --color-bg: #f0f2f5;
+    --bg-primary: #f0f2f5;
+    --bg-secondary: #ffffff;
+    --bg-card: #ffffff;
+    --bg-card-hover: #f8f9fa;
+    --bg-elevated: #ffffff;
+    --text-primary: #0a0a0a;
+    --text-secondary: #333333;
+    --text-muted: #888888;
+    --text-dim: #cccccc;
+    --border-color: #e8e8e8;
+    --border-hover: #d0d0d0;
+    --input-bg: #ffffff;
+    --input-border: #e0e0e0;
+    --shadow-card: 0 4px 24px rgba(0,0,0,0.08);
+    --shadow-glow: 0 8px 32px rgba(157,0,255,0.12);
+    --scrollbar-bg: rgba(240,242,245,0.8);
+    --color-cyan: #00a8cc;
+    --color-cyan-bright: #00b8d4;
+    --color-pink: #cc00cc;
+    --color-pink-bright: #cc0066;
+    --color-purple: #7a00cc;
+    --color-blue: #0077cc;
+    --gradient: linear-gradient(135deg, #00a8cc 0%, #0077cc 25%, #00b8d4 50%, #cc00cc 75%, #cc0066 100%);
+    --gradient-vibrant: linear-gradient(135deg, #00b8d4 0%, #00a8cc 20%, #0077cc 40%, #7a00cc 60%, #cc00cc 80%, #cc0066 100%);
+    --transition: all 0.5s ease;
+    --glow-cyan: 0 0 20px rgba(0,168,204,0.3);
+    --glow-pink: 0 0 20px rgba(204,0,204,0.3);
     --container-max-width: 1400px;
     --section-padding: 80px 20px;
 }
@@ -35,33 +86,55 @@ html {
 }
 
 ::-webkit-scrollbar {
-    background-color: rgba(0, 0, 0, 0.8);
+    background-color: var(--scrollbar-bg);
     width: 10px;
 }
 
 ::-webkit-scrollbar-thumb {
-    background: linear-gradient(180deg, #00d4ff 0%, #ff00ff 100%);
+    background: linear-gradient(180deg, var(--color-cyan) 0%, var(--color-pink) 100%);
     border-radius: 50px;
-    box-shadow: 0 0 10px rgba(0, 245, 255, 0.5);
+    box-shadow: var(--glow-cyan);
 }
 
 ::-webkit-scrollbar-thumb:hover {
-    background: linear-gradient(180deg, #00f5ff 0%, #ff0080 100%);
-    box-shadow: 0 0 15px rgba(0, 245, 255, 0.8);
+    background: linear-gradient(180deg, var(--color-cyan-bright) 0%, var(--color-pink-bright) 100%);
 }
 
 ::-webkit-scrollbar-track {
-    background-color: rgba(0, 0, 0, 0.5);
+    background-color: var(--bg-secondary);
     border-radius: 50px;
 }
 
 body {
-    background: var(--color-bg);
-    color: var(--color-cyan);
+    background: var(--bg-primary);
+    color: var(--text-primary);
     line-height: 1.7;
     overflow-x: hidden;
     width: 100%;
     max-width: 100vw;
+    transition: background 0.3s ease, color 0.3s ease;
+}
+
+/* Light mode overrides for existing dark components */
+[data-theme="light"] .navbar,
+[data-theme="light"] .navbar-active-color {
+    background: rgba(255, 255, 255, 0.95) !important;
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid #e8e8e8;
+}
+
+[data-theme="light"] .menu-items {
+    color: #333 !important;
+}
+
+[data-theme="light"] .menu-items:hover {
+    color: var(--color-purple) !important;
+}
+
+/* Skeleton pulse animation */
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
 }
 
 /* Global Container */

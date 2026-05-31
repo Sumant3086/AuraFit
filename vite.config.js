@@ -26,6 +26,12 @@ export default defineConfig({
         ],
         categories: ['health', 'fitness', 'sports'],
         screenshots: [],
+        shortcuts: [
+          { name: 'Dashboard', url: '/dashboard', icons: [{ src: '/icon-192.png', sizes: '192x192' }] },
+          { name: 'Check-In', url: '/checkin', icons: [{ src: '/icon-192.png', sizes: '192x192' }] },
+          { name: 'Community', url: '/community', icons: [{ src: '/icon-192.png', sizes: '192x192' }] },
+          { name: 'Leaderboard', url: '/leaderboard', icons: [{ src: '/icon-192.png', sizes: '192x192' }] },
+        ],
       },
       workbox: {
         runtimeCaching: [
@@ -48,6 +54,16 @@ export default defineConfig({
             urlPattern: /\/api\/classes/,
             handler: 'StaleWhileRevalidate',
             options: { cacheName: 'api-classes-cache', expiration: { maxEntries: 20, maxAgeSeconds: 60 * 5 } },
+          },
+          {
+            urlPattern: /\/api\/announcements/,
+            handler: 'StaleWhileRevalidate',
+            options: { cacheName: 'api-announcements-cache', expiration: { maxEntries: 10, maxAgeSeconds: 60 * 5 } },
+          },
+          {
+            urlPattern: /\/api\/achievements/,
+            handler: 'StaleWhileRevalidate',
+            options: { cacheName: 'api-achievements-cache', expiration: { maxEntries: 20, maxAgeSeconds: 60 * 10 } },
           },
         ],
         globPatterns: ['**/*.{js,css,html,ico,png,svg,webp}'],
