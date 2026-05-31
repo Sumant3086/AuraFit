@@ -1,49 +1,39 @@
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 
-const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key-change-in-production';
-const JWT_REFRESH_SECRET = process.env.JWT_REFRESH_SECRET || 'your-refresh-secret-key';
+const JWT_SECRET = process.env.JWT_SECRET || 'aura_fit_secret_key_2024';
+const JWT_REFRESH_SECRET = process.env.JWT_REFRESH_SECRET || 'aura_fit_refresh_secret';
 const ACCESS_TOKEN_EXPIRY = '15m';
 const REFRESH_TOKEN_EXPIRY = '7d';
 
-// Generate access token
-const generateAccessToken = (userId) => {
-  return jwt.sign({ userId }, JWT_SECRET, { expiresIn: ACCESS_TOKEN_EXPIRY });
+const generateAccessToken = (userId, role) => {
+  return jwt.sign({ userId, role }, JWT_SECRET, { expiresIn: ACCESS_TOKEN_EXPIRY });
 };
 
-// Generate refresh token
 const generateRefreshToken = (userId) => {
   return jwt.sign({ userId }, JWT_REFRESH_SECRET, { expiresIn: REFRESH_TOKEN_EXPIRY });
 };
 
-// Generate both tokens
-const generateTokens = (userId) => {
-  return {
-    accessToken: generateAccessToken(userId),
-    refreshToken: generateRefreshToken(userId),
-  };
-};
+const generateTokens = (userId, role) => ({
+  accessToken: generateAccessToken(userId, role),
+  refreshToken: generateRefreshToken(userId),
+});
 
-// Verify access token middleware
+// Verify token and attach user to req
 const verifyToken = async (req, res, next) => {
   try {
     const token = req.header('Authorization')?.replace('Bearer ', '');
-    
     if (!token) {
-      return res.status(401).json({
-        success: false,
-        message: 'Access denied. No token provided.',
-      });
+      return res.status(401).json({ success: false, message: 'Access denied. No token provided.' });
     }
 
     const decoded = jwt.verify(token, JWT_SECRET);
     const user = await User.findById(decoded.userId).select('-password');
-    
     if (!user) {
-      return res.status(401).json({
-        success: false,
-        message: 'Invalid token. User not found.',
-      });
+      return res.status(401).json({ success: false, message: 'Invalid token. User not found.' });
+    }
+    if (user.status === 'Suspended') {
+      return res.status(403).json({ success: false, message: 'Account suspended. Contact support.' });
     }
 
     req.user = user;
@@ -51,81 +41,58 @@ const verifyToken = async (req, res, next) => {
     next();
   } catch (error) {
     if (error.name === 'TokenExpiredError') {
-      return res.status(401).json({
-        success: false,
-        message: 'Token expired. Please refresh your token.',
-        code: 'TOKEN_EXPIRED',
-      });
+      return res.status(401).json({ success: false, message: 'Token expired.', code: 'TOKEN_EXPIRED' });
     }
-    
-    return res.status(401).json({
-      success: false,
-      message: 'Invalid token.',
-    });
+    return res.status(401).json({ success: false, message: 'Invalid token.' });
   }
 };
 
-// Refresh token endpoint
+// Refresh access token
 const refreshAccessToken = async (req, res) => {
   try {
     const { refreshToken } = req.body;
-    
     if (!refreshToken) {
-      return res.status(401).json({
-        success: false,
-        message: 'Refresh token required.',
-      });
+      return res.status(401).json({ success: false, message: 'Refresh token required.' });
     }
 
     const decoded = jwt.verify(refreshToken, JWT_REFRESH_SECRET);
-    const user = await User.findById(decoded.userId);
-    
+    const user = await User.findById(decoded.userId).select('-password');
     if (!user) {
-      return res.status(401).json({
-        success: false,
-        message: 'Invalid refresh token.',
-      });
+      return res.status(401).json({ success: false, message: 'Invalid refresh token.' });
     }
 
-    const tokens = generateTokens(user._id);
-    
-    res.json({
-      success: true,
-      data: tokens,
-    });
+    const tokens = generateTokens(user._id, user.role);
+    res.json({ success: true, data: { ...tokens, user: { id: user._id, name: user.name, email: user.email, role: user.role } } });
   } catch (error) {
-    res.status(401).json({
-      success: false,
-      message: 'Invalid or expired refresh token.',
-    });
+    res.status(401).json({ success: false, message: 'Invalid or expired refresh token.' });
   }
 };
 
-// Admin verification middleware
-const verifyAdmin = async (req, res, next) => {
-  try {
-    if (!req.user) {
-      return res.status(401).json({
-        success: false,
-        message: 'Authentication required.',
-      });
-    }
+// Role-based authorization factory
+const requireRole = (...allowedRoles) => async (req, res, next) => {
+  if (!req.user) {
+    return res.status(401).json({ success: false, message: 'Authentication required.' });
+  }
 
-    if (req.user.role !== 'admin') {
-      return res.status(403).json({
-        success: false,
-        message: 'Access denied. Admin privileges required.',
-      });
-    }
+  // Normalize legacy roles
+  const role = req.user.role;
+  const isAdmin = role === 'admin' || role === 'super_admin' || role === 'gym_admin';
+  const isAllowed = allowedRoles.includes(role) || (allowedRoles.includes('admin') && isAdmin);
 
-    next();
-  } catch (error) {
-    res.status(500).json({
+  if (!isAllowed) {
+    return res.status(403).json({
       success: false,
-      message: 'Authorization error.',
+      message: `Access denied. Required role: ${allowedRoles.join(' or ')}.`,
     });
   }
+  next();
 };
+
+// Shorthand middleware
+const verifyAdmin = [verifyToken, requireRole('admin', 'super_admin', 'gym_admin')];
+const verifyTrainer = [verifyToken, requireRole('admin', 'super_admin', 'gym_admin', 'trainer')];
+const verifySuperAdmin = [verifyToken, requireRole('admin', 'super_admin')];
+const verifyGymAdmin = [verifyToken, requireRole('admin', 'super_admin', 'gym_admin')];
 
 module.exports = {
   generateAccessToken,
@@ -133,5 +100,9 @@ module.exports = {
   generateTokens,
   verifyToken,
   refreshAccessToken,
+  requireRole,
   verifyAdmin,
+  verifyTrainer,
+  verifySuperAdmin,
+  verifyGymAdmin,
 };

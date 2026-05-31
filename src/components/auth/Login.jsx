@@ -1,12 +1,14 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { authAPI } from '../../services/api';
+import { useAuth } from '../../context/AuthContext';
 import './auth.css';
 import { FaEnvelope, FaLock, FaEye, FaEyeSlash } from 'react-icons/fa';
 import Logo from '../logo/Logo';
 
 const Login = () => {
   const navigate = useNavigate();
+  const { login } = useAuth();
   const [formData, setFormData] = useState({
     email: '',
     password: ''
@@ -43,28 +45,29 @@ const Login = () => {
       });
 
       if (data.success) {
-        // Save user to localStorage
-        localStorage.setItem('user', JSON.stringify({
-          id: data.data.id,
-          name: data.data.name,
-          email: data.data.email,
-          membership: data.data.membership
-        }));
-        
+        // Use AuthContext login to store tokens + user
+        if (data.data.accessToken) {
+          login(data.data.user, { accessToken: data.data.accessToken, refreshToken: data.data.refreshToken });
+        } else {
+          // Backward compat: server returned old format
+          localStorage.setItem('user', JSON.stringify(data.data));
+        }
+
         // Check if there's a pending action after login
         const redirectPath = localStorage.getItem('redirectAfterLogin');
         const pendingReservation = localStorage.getItem('pendingReservation');
-        
+
         if (redirectPath) {
           localStorage.removeItem('redirectAfterLogin');
           if (pendingReservation) {
             const classData = JSON.parse(pendingReservation);
             localStorage.removeItem('pendingReservation');
-            alert(`Welcome back! Your spot for ${classData.name} class is now reserved!`);
           }
           navigate(redirectPath);
+        } else if (data.data.user?.onboardingCompleted === false) {
+          navigate('/onboarding');
         } else {
-          navigate('/');
+          navigate('/dashboard');
         }
       } else {
         // Display the specific error message from server

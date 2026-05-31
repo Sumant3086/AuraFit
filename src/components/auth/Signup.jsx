@@ -1,12 +1,14 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { authAPI } from '../../services/api';
+import { useAuth } from '../../context/AuthContext';
 import './auth.css';
 import { FaUser, FaEnvelope, FaLock, FaPhone, FaEye, FaEyeSlash } from 'react-icons/fa';
 import Logo from '../logo/Logo';
 
 const Signup = () => {
   const navigate = useNavigate();
+  const { login } = useAuth();
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -62,23 +64,20 @@ const Signup = () => {
       });
 
       if (data.success) {
-        // Save user to localStorage
-        localStorage.setItem('user', JSON.stringify({
-          id: data.data.id,
-          name: data.data.name,
-          email: data.data.email,
-          membership: data.data.membership
-        }));
-        
-        alert('✅ Account created successfully!');
-        
-        // Check if there's a redirect after login
+        // Use AuthContext login to store tokens + user
+        if (data.data.accessToken) {
+          login(data.data.user, { accessToken: data.data.accessToken, refreshToken: data.data.refreshToken });
+        } else {
+          localStorage.setItem('user', JSON.stringify(data.data));
+        }
+
+        // Redirect to onboarding for new users
         const redirectPath = localStorage.getItem('redirectAfterLogin');
         if (redirectPath) {
           localStorage.removeItem('redirectAfterLogin');
           navigate(redirectPath);
         } else {
-          navigate('/');
+          navigate('/onboarding');
         }
       } else {
         // Display the specific error message from server
