@@ -22,6 +22,7 @@ import ProgressBar from "./components/common/ProgressBar";
 import LiveChat from "./components/chat/LiveChat";
 import BottomNav from "./components/common/BottomNav";
 import FitnessAssistant from "./components/chat/FitnessAssistant";
+import ErrorBoundary from "./components/common/ErrorBoundary";
 
 // Lazy loaded (code-split for performance)
 const Contact = lazy(() => import("./components/contact/Contact"));
@@ -111,6 +112,7 @@ const AppInner = () => {
           }}
         />
         <FitnessAssistant />
+        <ErrorBoundary>
         <Suspense fallback={<PageLoader />}>
           <Routes>
             {/* Auth routes (no navbar) */}
@@ -194,6 +196,7 @@ const AppInner = () => {
             } />
           </Routes>
         </Suspense>
+        </ErrorBoundary>
         <ScrollToTop />
         <ScrollToTopButton />
         <BottomNav />

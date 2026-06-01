@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
@@ -23,34 +23,14 @@ export default function NotificationCenter() {
   const [tab, setTab] = useState('All');
   const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    if (isAuthenticated) {
-      fetchUnreadCount();
-      if (open) fetchNotifications();
-    }
-  }, [isAuthenticated, open]);
-
-  // Merge real-time socket notifications
-  useEffect(() => {
-    if (socketNotifs.length > 0) {
-      const latest = socketNotifs[0];
-      setNotifications(prev => {
-        const exists = prev.find(n => n._id === latest._id);
-        if (exists) return prev;
-        return [{ ...latest, read: false }, ...prev];
-      });
-      setUnreadCount(c => c + 1);
-    }
-  }, [socketNotifs]);
-
-  const fetchUnreadCount = async () => {
+  const fetchUnreadCount = useCallback(async () => {
     try {
       const res = await apiClient.get('/notifications/unread-count');
       setUnreadCount(res.data.count || 0);
     } catch {}
-  };
+  }, [apiClient]);
 
-  const fetchNotifications = async () => {
+  const fetchNotifications = useCallback(async () => {
     setLoading(true);
     try {
       const res = await apiClient.get('/notifications?limit=30');
@@ -58,7 +38,24 @@ export default function NotificationCenter() {
       setUnreadCount(res.data.unreadCount || 0);
     } catch {}
     setLoading(false);
-  };
+  }, [apiClient]);
+
+  useEffect(() => {
+    if (!isAuthenticated) return;
+    fetchUnreadCount();
+    if (open) fetchNotifications();
+  }, [isAuthenticated, open, fetchUnreadCount, fetchNotifications]);
+
+  // Merge real-time socket notifications — deduplicate by _id
+  useEffect(() => {
+    if (!socketNotifs.length) return;
+    const latest = socketNotifs[0];
+    setNotifications(prev => {
+      if (prev.find(n => n._id === latest._id)) return prev;
+      return [{ ...latest, read: false }, ...prev];
+    });
+    setUnreadCount(c => c + 1);
+  }, [socketNotifs]);
 
   const markRead = async (id) => {
     try {

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
@@ -30,11 +30,7 @@ export default function TrainerDirectory() {
     return () => clearTimeout(t);
   }, [search]);
 
-  useEffect(() => {
-    fetchTrainers();
-  }, [debouncedSearch, spec]);
-
-  const fetchTrainers = async () => {
+  const fetchTrainers = useCallback(async () => {
     setLoading(true);
     try {
       const params = new URLSearchParams();
@@ -46,7 +42,11 @@ export default function TrainerDirectory() {
       setTrainers([]);
     }
     setLoading(false);
-  };
+  }, [apiClient, debouncedSearch, spec]);
+
+  useEffect(() => {
+    fetchTrainers();
+  }, [fetchTrainers]);
 
   return (
     <div style={{ minHeight: '100vh', background: '#0a0a0a', paddingBottom: 80 }}>

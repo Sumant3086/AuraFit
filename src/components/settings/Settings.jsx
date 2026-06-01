@@ -199,6 +199,7 @@ export default function Settings() {
 
           {/* PROFILE */}
           {tab === 'profile' && (
+            <>
             <Section title="Profile Photo">
               <div style={{ display: 'flex', alignItems: 'center', gap: 20, marginBottom: 8 }}>
                 <ImageUpload
@@ -219,8 +220,6 @@ export default function Settings() {
                 </div>
               </div>
             </Section>
-          )}
-          {tab === 'profile' && (
             <Section title="Personal Information">
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 16 }}>
                 {[
@@ -274,10 +273,12 @@ export default function Settings() {
               <button onClick={saveProfile} disabled={saving} style={{
                 marginTop: 20, padding: '12px 28px', background: 'linear-gradient(135deg, #9d00ff, #00d4ff)',
                 border: 'none', borderRadius: 10, color: '#fff', fontSize: 15, fontWeight: 700, cursor: 'pointer',
+                opacity: saving ? 0.7 : 1,
               }}>
                 {saving ? 'Saving...' : 'Save Profile'}
               </button>
             </Section>
+            </>
           )}
 
           {/* PREFERENCES */}

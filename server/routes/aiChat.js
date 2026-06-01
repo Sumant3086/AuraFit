@@ -22,6 +22,8 @@ router.post('/message', verifyToken, async (req, res) => {
   try {
     const { message, history = [] } = req.body;
     if (!message?.trim()) return res.status(400).json({ success: false, message: 'Message required.' });
+    if (message.length > 500) return res.status(400).json({ success: false, message: 'Message too long (max 500 characters).' });
+    if (!Array.isArray(history)) return res.status(400).json({ success: false, message: 'Invalid history format.' });
 
     // Build user context string
     const user = req.user;
