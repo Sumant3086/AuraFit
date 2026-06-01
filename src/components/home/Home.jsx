@@ -1,31 +1,31 @@
-import React from "react";
-import Header from "../header/Header";
-import Hero from "../hero/Hero";
-import Stats from "../stats/Stats";
-import FeaturesShowcase from "../featuresShowcase/FeaturesShowcase";
-import Membership from "../membership/Membership";
-import Testimonials from "../testimonials/Testimonials";
-import Playlist from "../playlist/Playlist";
-import Footer from "../footer/Footer";
-import { Fade } from "react-awesome-reveal";
+import React from 'react';
+import LandingHero from '../landing/LandingHero';
+import TrustBar from '../landing/TrustBar';
+import ProductShowcase from '../landing/ProductShowcase';
+import HowItWorks from '../landing/HowItWorks';
+import FeaturesShowcase from '../featuresShowcase/FeaturesShowcase';
+import TransformationStories from '../landing/TransformationStories';
+import LandingCTA from '../landing/LandingCTA';
+import Footer from '../footer/Footer';
 
-const Home = () => {
-  return (
-    <>
-      <Fade triggerOnce="true">
-        <Header />
-      </Fade>
-      <Hero />
-      <Stats />
-      <FeaturesShowcase />
-      <Membership />
-      <Testimonials />
-      <Fade bottom triggerOnce="true">
-        <Playlist />
-      </Fade>
-      <Footer />
-    </>
-  );
-};
+/*
+  Landing page composition — v2.4
+  Sections: Hero → Trust → Product → HowItWorks → Features → Stories → CTA → Footer
+
+  Old components (Header, Hero/hero.css, Stats, Membership, Testimonials, Playlist)
+  are preserved in their directories for potential future use but not rendered here.
+*/
+const Home = () => (
+  <div style={{ background: 'var(--surface-bg)' }}>
+    <LandingHero />
+    <TrustBar />
+    <ProductShowcase />
+    <HowItWorks />
+    <FeaturesShowcase />
+    <TransformationStories />
+    <LandingCTA />
+    <Footer />
+  </div>
+);
 
 export default Home;
