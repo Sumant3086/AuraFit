@@ -6,6 +6,7 @@ const { generateTokens, verifyToken, refreshAccessToken } = require('../middlewa
 const { authLimiter } = require('../middleware/security');
 const { processReferral } = require('../services/gamificationService');
 const { sendEmail, templates } = require('../services/emailService');
+const { recordSession } = require('./sessions');
 
 // POST /api/auth/signup
 router.post('/signup', authLimiter, async (req, res) => {
@@ -89,6 +90,9 @@ router.post('/login', authLimiter, async (req, res) => {
     });
 
     const tokens = generateTokens(user._id, user.role);
+
+    // Record session in background (non-blocking)
+    recordSession(user._id, tokens.refreshToken, req).catch(() => {});
 
     res.json({
       success: true,

@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useAuth } from '../../context/AuthContext';
 import { useTheme } from '../../context/ThemeContext';
+import ImageUpload from '../common/ImageUpload';
+import SecurityPanel from './SecurityPanel';
 import toast from 'react-hot-toast';
 
 const TABS = [
@@ -197,6 +199,28 @@ export default function Settings() {
 
           {/* PROFILE */}
           {tab === 'profile' && (
+            <Section title="Profile Photo">
+              <div style={{ display: 'flex', alignItems: 'center', gap: 20, marginBottom: 8 }}>
+                <ImageUpload
+                  currentImage={user?.profilePicture}
+                  initials={user?.name?.[0]?.toUpperCase()}
+                  size={80}
+                  onUpload={async (url) => {
+                    try {
+                      const res = await apiClient.put('/auth/profile', { profilePicture: url });
+                      updateUser(res.data.data);
+                    } catch { toast.error('Failed to save photo'); }
+                  }}
+                />
+                <div>
+                  <p style={{ color: '#fff', fontWeight: 700, margin: '0 0 4px' }}>{user?.name}</p>
+                  <p style={{ color: '#555', fontSize: 13, margin: '0 0 8px' }}>Click the photo to upload a new one</p>
+                  <p style={{ color: '#444', fontSize: 12, margin: 0 }}>Supports JPEG, PNG, WebP (max 5MB)</p>
+                </div>
+              </div>
+            </Section>
+          )}
+          {tab === 'profile' && (
             <Section title="Personal Information">
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 16 }}>
                 {[
@@ -362,6 +386,9 @@ export default function Settings() {
           {/* SECURITY */}
           {tab === 'security' && (
             <>
+              <Section title="Active Sessions">
+                <SecurityPanel />
+              </Section>
               <Section title="Change Password">
                 {[
                   { key: 'current', label: 'Current Password' },
