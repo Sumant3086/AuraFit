@@ -1,16 +1,30 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
 
+    <!-- Critical: prevent FOUC -->
+    <script>
+      try {
+        const t = localStorage.getItem('aurafit_theme');
+        if (t === 'light' || t === 'dark') document.documentElement.setAttribute('data-theme', t);
+      } catch(e) {}
+    </script>
+
     <!-- Primary SEO -->
-    <title>AuraFit - AI-Powered Fitness Platform | Smart Gym Management</title>
+    <title>AuraFit — AI-Powered Fitness Platform | Smart Gym Management</title>
     <meta name="description" content="AuraFit is an AI-powered fitness SaaS platform. Get personalized workouts, nutrition plans, QR check-ins, trainer bookings, and gamified fitness challenges. Join thousands transforming their health." />
-    <meta name="keywords" content="gym management, AI fitness, workout plans, nutrition plans, personal trainer booking, fitness tracking, gym app" />
+    <meta name="keywords" content="gym management, AI fitness, workout plans, nutrition plans, personal trainer booking, fitness tracking, gym app, cult.fit alternative" />
     <meta name="author" content="AuraFit" />
     <meta name="robots" content="index, follow" />
     <link rel="canonical" href="https://aurafitgymwebsite.onrender.com/" />
+
+    <!-- Performance: DNS prefetch -->
+    <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
+    <link rel="dns-prefetch" href="https://api.razorpay.com" />
+    <link rel="dns-prefetch" href="https://res.cloudinary.com" />
+    <link rel="dns-prefetch" href="https://generativelanguage.googleapis.com" />
 
     <!-- Open Graph (Social sharing) -->
     <meta property="og:type" content="website" />
@@ -42,9 +56,12 @@
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
     <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
 
-    <!-- Preconnect for performance -->
+    <!-- Performance: preconnect -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+
+    <!-- Accessibility: color-scheme -->
+    <meta name="color-scheme" content="dark light" />
 
     <!-- Razorpay SDK -->
     <script src="https://checkout.razorpay.com/v1/checkout.js" defer></script>
@@ -69,12 +86,13 @@
   </head>
   <body>
     <noscript>
-      <div style="text-align:center;padding:40px;background:#0a0a0a;color:#fff;font-family:sans-serif;">
-        <h1>AuraFit</h1>
-        <p>Please enable JavaScript to use AuraFit - the AI-powered fitness platform.</p>
+      <div style="text-align:center;padding:60px 40px;background:#0a0a0a;color:#fff;font-family:sans-serif;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;">
+        <h1 style="color:#9d00ff;font-size:32px;margin-bottom:16px;">AuraFit</h1>
+        <p style="color:#ccc;font-size:18px;max-width:400px;line-height:1.6;">AI-Powered Fitness Platform</p>
+        <p style="color:#666;font-size:14px;margin-top:16px;">Please enable JavaScript to use AuraFit.</p>
       </div>
     </noscript>
-    <div id="root"></div>
+    <div id="root" role="main" aria-label="AuraFit Application"></div>
     <script type="module" src="/src/index.jsx"></script>
   </body>
 </html>

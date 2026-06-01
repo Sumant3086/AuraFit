@@ -3,51 +3,61 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 const dotenv = require('dotenv');
 const path = require('path');
-const { helmetConfig, sanitizeInput, apiLimiter } = require('./middleware/security');
-const { requestLogger, errorHandler, logger } = require('./middleware/logger');
 
 dotenv.config();
 
+// Validate environment before anything else
+const { validateEnvironment } = require('./utils/envCheck');
+validateEnvironment();
+
+const { helmetConfig, sanitizeInput, apiLimiter, preventNoSQLInjection } = require('./middleware/security');
+const { requestLogger, errorHandler, logger } = require('./middleware/logger');
+const { metricsMiddleware } = require('./routes/metrics');
+
 const app = express();
 
-// Security Middleware
+// ── Security Middleware ──────────────────────────────────────
 app.use(helmetConfig);
 app.use(cors({
   origin: process.env.CLIENT_URL || 'http://localhost:3000',
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'x-razorpay-signature'],
 }));
 
-// Body parsing
+// ── Body parsing ─────────────────────────────────────────────
+// Webhooks need raw body — mount before json() for that path
+app.use('/api/webhooks', require('./routes/webhooks'));
+
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
-// Request logger
+// ── Observability ────────────────────────────────────────────
 app.use(requestLogger);
+app.use(metricsMiddleware);
 
-// Input sanitization
+// ── Input protection ─────────────────────────────────────────
 app.use(sanitizeInput);
+app.use(preventNoSQLInjection);
 
-// Rate limiting
+// ── Rate limiting ─────────────────────────────────────────────
 app.use('/api/', apiLimiter);
 
-// Serve static files (React build + PWA assets)
+// ── Static files ──────────────────────────────────────────────
 app.use(express.static(path.join(__dirname, '../build')));
 
-// MongoDB Connection
+// ── Database ──────────────────────────────────────────────────
 const { connectDB } = require('./config/database');
 connectDB();
 
-// Seed achievement catalog on startup
+// ── Startup services ──────────────────────────────────────────
 const { seedAchievements } = require('./services/gamificationService');
 seedAchievements();
 
-// Initialize cron jobs
 const { initCronJobs } = require('./jobs/cronJobs');
 initCronJobs();
 
-// ── API Routes ──────────────────────────────────────────────
+// ── API Routes ───────────────────────────────────────────────
 // Core
 app.use('/api/auth', require('./routes/auth'));
 app.use('/api/contact', require('./routes/contact'));
@@ -64,7 +74,7 @@ app.use('/api/workout-plans', require('./routes/workoutPlans'));
 app.use('/api/nutrition-plans', require('./routes/nutritionPlans'));
 app.use('/api/progress-tracker', require('./routes/progressTracker'));
 
-// New features
+// v2.0 features
 app.use('/api/gyms', require('./routes/gyms'));
 app.use('/api/attendance', require('./routes/attendance'));
 app.use('/api/achievements', require('./routes/achievements'));
@@ -80,19 +90,25 @@ app.use('/api/reports', require('./routes/reports'));
 // v2.2 features
 app.use('/api/notifications', require('./routes/notifications'));
 app.use('/api/trainers', require('./routes/trainers'));
+
+// v2.3 features
+app.use('/api/sessions', require('./routes/sessions'));
+app.use('/api/metrics', require('./routes/metrics'));
+app.use('/api/seed', require('./routes/seed'));
 // ────────────────────────────────────────────────────────────
 
 // Health check
 app.get('/api/health', (req, res) => {
   res.json({
     status: 'healthy',
-    version: '2.0.0',
+    version: '2.3.0',
     timestamp: new Date(),
     uptime: process.uptime(),
+    environment: process.env.NODE_ENV || 'development',
   });
 });
 
-// SPA fallback (must come after API routes)
+// SPA fallback
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, '../build', 'index.html'));
 });
@@ -103,9 +119,10 @@ app.use(errorHandler);
 const PORT = process.env.PORT || 5000;
 
 const server = app.listen(PORT, () => {
-  logger.info(`🚀 AuraFit v2.0 running on port ${PORT}`);
-  logger.info(`🔒 Security: Helmet, CORS, Rate Limiting active`);
+  logger.info(`🚀 AuraFit v2.3.0 running on port ${PORT}`);
+  logger.info(`🔒 Security: Helmet + CORS + Rate Limiting + NoSQL injection guard`);
   logger.info(`🌍 Environment: ${process.env.NODE_ENV || 'development'}`);
+  logger.info(`📊 Metrics: GET /api/metrics (admin only)`);
 });
 
 // Initialize WebSocket

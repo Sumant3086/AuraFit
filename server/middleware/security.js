@@ -34,31 +34,61 @@ const paymentLimiter = createRateLimiter(
   'Too many payment requests, please try again later.'
 );
 
-// Helmet security headers
+// Stricter rate limiter for search/AI endpoints
+const searchLimiter = createRateLimiter(
+  60 * 1000,
+  30,
+  'Search rate limit exceeded. Please slow down.'
+);
+
+const aiLimiter = createRateLimiter(
+  60 * 1000,
+  10,
+  'AI request limit exceeded. Please wait a moment.'
+);
+
+const uploadLimiter = createRateLimiter(
+  60 * 60 * 1000,
+  30,
+  'Upload limit exceeded for this hour.'
+);
+
+// Helmet security headers — production-grade CSP
 const helmetConfig = helmet({
   contentSecurityPolicy: {
     directives: {
       defaultSrc: ["'self'"],
-      styleSrc: ["'self'", "'unsafe-inline'", 'https://fonts.googleapis.com'],
+      styleSrc: ["'self'", "'unsafe-inline'", 'https://fonts.googleapis.com', 'https://res.cloudinary.com'],
       fontSrc: ["'self'", 'https://fonts.gstatic.com'],
-      imgSrc: ["'self'", 'data:', 'https:'],
+      imgSrc: ["'self'", 'data:', 'blob:', 'https:', 'https://res.cloudinary.com', 'https://lh3.googleusercontent.com'],
       scriptSrc: [
-        "'self'", 
+        "'self'",
         "'unsafe-inline'",
-        'https://checkout.razorpay.com'
+        'https://checkout.razorpay.com',
       ],
       connectSrc: [
-        "'self'", 
+        "'self'",
         'https://api.razorpay.com',
         'https://checkout.razorpay.com',
+        'https://api.cloudinary.com',
+        'https://generativelanguage.googleapis.com',
         'wss:',
-        'ws:'
+        'ws:',
       ],
       frameSrc: ["'self'", 'https://api.razorpay.com'],
+      workerSrc: ["'self'", 'blob:'],
+      manifestSrc: ["'self'"],
+      mediaSrc: ["'self'", 'https://res.cloudinary.com', 'blob:'],
     },
   },
   crossOriginEmbedderPolicy: false,
   crossOriginResourcePolicy: { policy: 'cross-origin' },
+  referrerPolicy: { policy: 'strict-origin-when-cross-origin' },
+  hsts: {
+    maxAge: 31536000,
+    includeSubDomains: true,
+    preload: true,
+  },
 });
 
 // Input sanitization middleware
@@ -124,12 +154,36 @@ const validationRules = {
     .withMessage(`Invalid ${field} format`),
 };
 
+// MongoDB injection prevention
+const preventNoSQLInjection = (req, res, next) => {
+  const checkForInjection = (obj) => {
+    if (typeof obj !== 'object' || obj === null) return false;
+    for (const key of Object.keys(obj)) {
+      if (key.startsWith('$') || key.includes('.')) return true;
+      if (typeof obj[key] === 'object' && checkForInjection(obj[key])) return true;
+    }
+    return false;
+  };
+
+  if (req.body && checkForInjection(req.body)) {
+    return res.status(400).json({ success: false, message: 'Invalid request parameters.' });
+  }
+  if (req.query && checkForInjection(req.query)) {
+    return res.status(400).json({ success: false, message: 'Invalid query parameters.' });
+  }
+  next();
+};
+
 module.exports = {
   apiLimiter,
   authLimiter,
   paymentLimiter,
+  searchLimiter,
+  aiLimiter,
+  uploadLimiter,
   helmetConfig,
   sanitizeInput,
+  preventNoSQLInjection,
   handleValidationErrors,
   validationRules,
 };

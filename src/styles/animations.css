@@ -1,8 +1,13 @@
-/* Global Animation Utilities */
+/* Global Animation Utilities — AuraFit v2.3 */
 
-/* Smooth transitions */
-* {
-  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+/* Selective transitions — only layout-safe properties */
+*, *::before, *::after {
+  transition: background-color 0.25s ease, color 0.25s ease, border-color 0.25s ease, opacity 0.2s ease;
+}
+
+/* Override: no transition on transform/size to avoid jank */
+button, a, input, textarea, select {
+  transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
 /* Reduce motion for accessibility */
@@ -198,17 +203,66 @@
   box-shadow: 0 0 20px rgba(157, 0, 255, 0.5);
 }
 
-/* Loading skeleton */
+/* Loading skeleton — dark theme aware */
 .skeleton {
   background: linear-gradient(
     90deg,
-    #f0f0f0 0%,
-    #e0e0e0 50%,
-    #f0f0f0 100%
+    var(--bg-card, #111) 0%,
+    var(--bg-card-hover, #1a1a1a) 50%,
+    var(--bg-card, #111) 100%
   );
   background-size: 200% 100%;
   animation: shimmer 1.5s ease-in-out infinite;
   border-radius: 4px;
+}
+
+/* Focus visible — accessibility */
+:focus-visible {
+  outline: 2px solid var(--color-purple, #9d00ff);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* Touch action for smooth mobile scroll */
+.scroll-container {
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+}
+
+/* Safe area for modern mobile devices */
+.safe-bottom {
+  padding-bottom: env(safe-area-inset-bottom, 16px);
+}
+
+/* Haptic feedback simulation via scale */
+.tap-scale:active {
+  transform: scale(0.97);
+  transition: transform 0.1s ease;
+}
+
+/* Micro-interaction: glow on focus */
+input:focus, textarea:focus, select:focus {
+  outline: none;
+  border-color: var(--color-purple, #9d00ff) !important;
+  box-shadow: 0 0 0 3px rgba(157, 0, 255, 0.15) !important;
+}
+
+/* Gradient text — reusable */
+.text-gradient {
+  background: var(--gradient, linear-gradient(135deg, #9d00ff, #00d4ff));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Card hover lift */
+.card-hover {
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease !important;
+}
+.card-hover:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 40px rgba(157, 0, 255, 0.15);
+  border-color: rgba(157, 0, 255, 0.3) !important;
 }
 
 /* Smooth scroll */

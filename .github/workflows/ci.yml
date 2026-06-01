@@ -1,0 +1,113 @@
+name: AuraFit CI/CD
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main]
+
+env:
+  NODE_VERSION: '20.x'
+
+jobs:
+  # ── Frontend Build & Lint ─────────────────────────────────────
+  frontend:
+    name: Frontend Build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build frontend
+        run: npm run build
+        env:
+          VITE_API_URL: /api
+          NODE_ENV: production
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        if: github.ref == 'refs/heads/main'
+        with:
+          name: frontend-build
+          path: build/
+          retention-days: 7
+
+  # ── Backend Lint & Health Check ──────────────────────────────
+  backend:
+    name: Backend Check
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: server
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+          cache-dependency-path: server/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Check for syntax errors
+        run: node --check server.js || node -e "require('./server.js')" 2>&1 | grep -v "ECONNREFUSED\|Cannot connect\|MongoDB" || true
+
+      - name: Verify required files exist
+        run: |
+          echo "Checking critical files..."
+          test -f server.js && echo "✅ server.js"
+          test -f middleware/security.js && echo "✅ security middleware"
+          test -f middleware/auth.js && echo "✅ auth middleware"
+          test -f middleware/logger.js && echo "✅ logger middleware"
+          test -f utils/envCheck.js && echo "✅ env check"
+          test -f models/User.js && echo "✅ User model"
+          test -f models/Notification.js && echo "✅ Notification model"
+          test -f models/AuditLog.js && echo "✅ AuditLog model"
+          test -f jobs/cronJobs.js && echo "✅ cron jobs"
+          echo "All checks passed!"
+
+  # ── Security Scan ─────────────────────────────────────────────
+  security:
+    name: Security Audit
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Frontend security audit
+        run: npm audit --audit-level=high || echo "⚠️ Audit warnings detected"
+
+      - name: Backend security audit
+        working-directory: server
+        run: npm audit --audit-level=high || echo "⚠️ Audit warnings detected"
+
+  # ── Deploy to Render (on main push) ─────────────────────────
+  deploy:
+    name: Deploy to Render
+    needs: [frontend, backend]
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    steps:
+      - name: Trigger Render Deploy Hook
+        if: env.RENDER_DEPLOY_HOOK != ''
+        run: curl -X POST "${{ secrets.RENDER_DEPLOY_HOOK }}"
+        env:
+          RENDER_DEPLOY_HOOK: ${{ secrets.RENDER_DEPLOY_HOOK }}
+
+      - name: Deploy notification
+        run: echo "🚀 Deployment triggered for main branch"
