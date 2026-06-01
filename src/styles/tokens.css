@@ -1,0 +1,159 @@
+/*
+  AuraFit Design Tokens — Single source of truth for visual constants.
+  Import this before index.css so variables are available everywhere.
+
+  Surface scale (dark mode): bg → surface → card → elevated → overlay
+  Typography scale: 11/12/13/14/15/16/18/20/24/28/32/40/48px
+  Spacing scale: 4/8/12/16/20/24/32/40/48/64/80/96px
+*/
+
+:root,
+[data-theme="dark"] {
+  /* ── Surfaces ──────────────────────────────────────────────── */
+  --surface-bg:        #050507;       /* deepest background */
+  --surface-base:      #0a0a0f;       /* page background */
+  --surface-raised:    #111118;       /* card background */
+  --surface-overlay:   #17171f;       /* elevated card, dropdown */
+  --surface-high:      #1c1c26;       /* hovered card, active item */
+  --surface-glass:     rgba(17,17,24,0.8);  /* glassmorphism */
+
+  /* ── Borders ───────────────────────────────────────────────── */
+  --border-subtle:     rgba(255,255,255,0.05);
+  --border-default:    rgba(255,255,255,0.09);
+  --border-strong:     rgba(255,255,255,0.15);
+  --border-accent:     rgba(157,0,255,0.35);
+
+  /* ── Text ──────────────────────────────────────────────────── */
+  --text-primary:      #f0f0f6;
+  --text-secondary:    #8e8ea8;
+  --text-muted:        #55556a;
+  --text-disabled:     #3a3a4a;
+
+  /* ── Brand colors ──────────────────────────────────────────── */
+  --brand-purple:      #9d00ff;
+  --brand-cyan:        #00d4ff;
+  --brand-purple-dim:  rgba(157,0,255,0.12);
+  --brand-cyan-dim:    rgba(0,212,255,0.10);
+  --brand-gradient:    linear-gradient(135deg, #9d00ff 0%, #00d4ff 100%);
+  --brand-gradient-soft: linear-gradient(135deg, rgba(157,0,255,0.2) 0%, rgba(0,212,255,0.15) 100%);
+
+  /* ── Semantic colors ───────────────────────────────────────── */
+  --color-success:     #10b981;
+  --color-warning:     #f59e0b;
+  --color-error:       #ef4444;
+  --color-info:        #3b82f6;
+  --color-success-dim: rgba(16,185,129,0.12);
+  --color-warning-dim: rgba(245,158,11,0.12);
+  --color-error-dim:   rgba(239,68,68,0.12);
+
+  /* ── Gold / gamification ───────────────────────────────────── */
+  --color-gold:        #f59e0b;
+  --color-silver:      #94a3b8;
+  --color-bronze:      #cd7c54;
+  --color-platinum:    #a5f3fc;
+
+  /* ── Shadows ───────────────────────────────────────────────── */
+  --shadow-xs:         0 1px 3px rgba(0,0,0,0.4);
+  --shadow-sm:         0 2px 8px rgba(0,0,0,0.5);
+  --shadow-md:         0 4px 16px rgba(0,0,0,0.5), 0 1px 4px rgba(0,0,0,0.3);
+  --shadow-lg:         0 8px 32px rgba(0,0,0,0.6), 0 2px 8px rgba(0,0,0,0.4);
+  --shadow-xl:         0 20px 60px rgba(0,0,0,0.7), 0 4px 16px rgba(0,0,0,0.5);
+  --shadow-glow-purple: 0 0 32px rgba(157,0,255,0.25), 0 0 8px rgba(157,0,255,0.15);
+  --shadow-glow-cyan:   0 0 32px rgba(0,212,255,0.2), 0 0 8px rgba(0,212,255,0.1);
+  --shadow-card:       0 1px 0 rgba(255,255,255,0.05) inset, 0 4px 20px rgba(0,0,0,0.4);
+
+  /* ── Border radius ─────────────────────────────────────────── */
+  --radius-xs:         4px;
+  --radius-sm:         8px;
+  --radius-md:         12px;
+  --radius-lg:         16px;
+  --radius-xl:         20px;
+  --radius-2xl:        24px;
+  --radius-pill:       9999px;
+
+  /* ── Typography ────────────────────────────────────────────── */
+  --font-sans:         'Sora', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-mono:         'SF Mono', 'Fira Code', 'Consolas', monospace;
+
+  --text-xs:           11px;
+  --text-sm:           13px;
+  --text-base:         15px;
+  --text-md:           16px;
+  --text-lg:           18px;
+  --text-xl:           20px;
+  --text-2xl:          24px;
+  --text-3xl:          28px;
+  --text-4xl:          36px;
+  --text-5xl:          48px;
+
+  --leading-tight:     1.2;
+  --leading-snug:      1.4;
+  --leading-normal:    1.6;
+  --leading-relaxed:   1.75;
+
+  --weight-regular:    400;
+  --weight-medium:     500;
+  --weight-semibold:   600;
+  --weight-bold:       700;
+  --weight-black:      800;
+
+  /* ── Spacing ───────────────────────────────────────────────── */
+  --space-1:   4px;
+  --space-2:   8px;
+  --space-3:   12px;
+  --space-4:   16px;
+  --space-5:   20px;
+  --space-6:   24px;
+  --space-8:   32px;
+  --space-10:  40px;
+  --space-12:  48px;
+  --space-16:  64px;
+  --space-20:  80px;
+  --space-24:  96px;
+
+  /* ── Motion ────────────────────────────────────────────────── */
+  --duration-fast:    150ms;
+  --duration-base:    250ms;
+  --duration-slow:    400ms;
+  --ease-out:         cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out:      cubic-bezier(0.45, 0, 0.55, 1);
+  --ease-spring:      cubic-bezier(0.34, 1.56, 0.64, 1);
+
+  /* ── Layout ────────────────────────────────────────────────── */
+  --container-sm:  480px;
+  --container-md:  720px;
+  --container-lg:  960px;
+  --container-xl:  1200px;
+  --container-max: 1400px;
+}
+
+[data-theme="light"] {
+  --surface-bg:        #f5f5f7;
+  --surface-base:      #ffffff;
+  --surface-raised:    #ffffff;
+  --surface-overlay:   #f0f0f5;
+  --surface-high:      #e8e8f0;
+  --surface-glass:     rgba(255,255,255,0.85);
+
+  --border-subtle:     rgba(0,0,0,0.05);
+  --border-default:    rgba(0,0,0,0.09);
+  --border-strong:     rgba(0,0,0,0.15);
+  --border-accent:     rgba(124,0,204,0.35);
+
+  --text-primary:      #0a0a10;
+  --text-secondary:    #5a5a7a;
+  --text-muted:        #9090a8;
+  --text-disabled:     #c0c0d0;
+
+  --brand-purple:      #7c00cc;
+  --brand-cyan:        #0099bb;
+  --brand-purple-dim:  rgba(124,0,204,0.10);
+  --brand-cyan-dim:    rgba(0,153,187,0.08);
+  --brand-gradient:    linear-gradient(135deg, #7c00cc 0%, #0099bb 100%);
+
+  --shadow-xs:         0 1px 3px rgba(0,0,0,0.08);
+  --shadow-sm:         0 2px 8px rgba(0,0,0,0.10);
+  --shadow-md:         0 4px 16px rgba(0,0,0,0.10), 0 1px 4px rgba(0,0,0,0.06);
+  --shadow-lg:         0 8px 32px rgba(0,0,0,0.12), 0 2px 8px rgba(0,0,0,0.08);
+  --shadow-card:       0 1px 0 rgba(255,255,255,0.8) inset, 0 2px 8px rgba(0,0,0,0.08);
+}
