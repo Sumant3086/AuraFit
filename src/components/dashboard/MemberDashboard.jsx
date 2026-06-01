@@ -26,6 +26,7 @@ export default function MemberDashboard() {
   const [downloadingReport, setDownloadingReport] = useState(false);
 
   useEffect(() => {
+    let cancelled = false;
     const loadDashboard = async () => {
       try {
         const [attRes, achRes, insightRes] = await Promise.all([
@@ -33,15 +34,17 @@ export default function MemberDashboard() {
           apiClient.get('/achievements/my').catch(() => ({ data: { data: [] } })),
           apiClient.get('/ai-chat/weekly-insight').catch(() => ({ data: { data: null } })),
         ]);
+        if (cancelled) return;
         setStats(attRes.data.data);
         const earned = achRes.data.data?.filter(a => a.earned) || [];
         setAchievements(earned.slice(0, 6));
         setWeeklyInsight(insightRes.data.data);
       } catch {}
-      setLoading(false);
+      if (!cancelled) setLoading(false);
     };
     loadDashboard();
-  }, []);
+    return () => { cancelled = true; };
+  }, [apiClient]);
 
   const downloadProgressReport = async () => {
     setDownloadingReport(true);

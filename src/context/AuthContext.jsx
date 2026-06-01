@@ -75,6 +75,8 @@ export const AuthProvider = ({ children }) => {
     localStorage.setItem('user', JSON.stringify(userData));
     setUser(userData);
     setIsAuthenticated(true);
+    // Notify SocketContext to authenticate with fresh credentials
+    window.dispatchEvent(new CustomEvent('aurafit:auth', { detail: { id: userData.id, role: userData.role } }));
   }, []);
 
   const logout = useCallback(() => {
@@ -83,6 +85,7 @@ export const AuthProvider = ({ children }) => {
     localStorage.removeItem('user');
     setUser(null);
     setIsAuthenticated(false);
+    window.dispatchEvent(new CustomEvent('aurafit:logout'));
   }, []);
 
   const updateUser = useCallback((updates) => {

@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '../../context/AuthContext';
 
@@ -8,8 +8,6 @@ const SUGGESTED = [
   'How much protein do I need?',
   'Tips for better sleep & recovery',
 ];
-
-const BOT_AVATAR = '🤖';
 
 export default function FitnessAssistant() {
   const { apiClient, isAuthenticated } = useAuth();
@@ -24,23 +22,24 @@ export default function FitnessAssistant() {
   const inputRef = useRef(null);
 
   useEffect(() => {
-    if (open) {
-      setTimeout(() => inputRef.current?.focus(), 100);
-      bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
-      if (!weeklyInsight && isAuthenticated) fetchWeeklyInsight();
-    }
-  }, [open]);
+    if (!open) return;
+    // Clear the timeout to prevent memory leak on unmount
+    const timer = setTimeout(() => inputRef.current?.focus(), 100);
+    bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
+    if (!weeklyInsight && isAuthenticated) fetchWeeklyInsight();
+    return () => clearTimeout(timer);
+  }, [open, isAuthenticated, weeklyInsight]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages, loading]);
 
-  const fetchWeeklyInsight = async () => {
+  const fetchWeeklyInsight = useCallback(async () => {
     try {
       const res = await apiClient.get('/ai-chat/weekly-insight');
       setWeeklyInsight(res.data.data);
     } catch {}
-  };
+  }, [apiClient]);
 
   const sendMessage = async (text) => {
     const msg = text || input.trim();

@@ -33,11 +33,35 @@ router.get('/feed', verifyToken, async (req, res) => {
   }
 });
 
+const VALID_POST_TYPES = ['achievement', 'progress', 'motivation', 'question', 'general'];
+const VALID_VISIBILITIES = ['public', 'members-only', 'private'];
+const MAX_CONTENT_LENGTH = 2000;
+const MAX_TAGS = 10;
+
 // Create post
 router.post('/', verifyToken, async (req, res) => {
   try {
     const { content, type = 'general', images = [], tags = [], visibility = 'members-only' } = req.body;
-    if (!content?.trim()) return res.status(400).json({ success: false, message: 'Content required.' });
+
+    // Server-side validation
+    if (!content?.trim()) return res.status(400).json({ success: false, message: 'Content is required.' });
+    if (content.trim().length > MAX_CONTENT_LENGTH) {
+      return res.status(400).json({ success: false, message: `Content cannot exceed ${MAX_CONTENT_LENGTH} characters.` });
+    }
+    if (!VALID_POST_TYPES.includes(type)) {
+      return res.status(400).json({ success: false, message: 'Invalid post type.' });
+    }
+    if (!VALID_VISIBILITIES.includes(visibility)) {
+      return res.status(400).json({ success: false, message: 'Invalid visibility setting.' });
+    }
+    if (!Array.isArray(tags) || tags.length > MAX_TAGS) {
+      return res.status(400).json({ success: false, message: `Maximum ${MAX_TAGS} tags allowed.` });
+    }
+    // Sanitize tags: lowercase, alphanumeric only, max 30 chars each
+    const sanitizedTags = tags
+      .filter(t => typeof t === 'string')
+      .map(t => t.toLowerCase().replace(/[^a-z0-9]/g, '').slice(0, 30))
+      .filter(Boolean);
 
     const post = await SocialPost.create({
       userId: String(req.user._id),
@@ -45,8 +69,8 @@ router.post('/', verifyToken, async (req, res) => {
       userAvatar: req.user.profilePicture || null,
       content: content.trim(),
       type,
-      images,
-      tags,
+      images: (images || []).slice(0, 4), // max 4 images
+      tags: sanitizedTags,
       visibility,
     });
 
@@ -97,6 +121,7 @@ router.post('/:id/comment', verifyToken, async (req, res) => {
   try {
     const { text } = req.body;
     if (!text?.trim()) return res.status(400).json({ success: false, message: 'Comment text required.' });
+    if (text.trim().length > 500) return res.status(400).json({ success: false, message: 'Comment cannot exceed 500 characters.' });
 
     const post = await SocialPost.findById(req.params.id);
     if (!post) return res.status(404).json({ success: false, message: 'Post not found.' });

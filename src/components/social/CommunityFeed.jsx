@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '../../context/AuthContext';
 import { useSocket } from '../../context/SocketContext';
@@ -37,23 +37,33 @@ export default function CommunityFeed() {
   const [showCompose, setShowCompose] = useState(false);
   const composeRef = useRef(null);
 
-  const fetchPosts = async (reset = false) => {
+  // Use a ref to track the current page for load-more (avoids stale closure)
+  const pageRef = useRef(1);
+
+  const fetchPosts = useCallback(async (reset = false) => {
     try {
-      const currentPage = reset ? 1 : page;
+      const currentPage = reset ? 1 : pageRef.current;
       const res = await apiClient.get(`/social/feed?page=${currentPage}&limit=15${filter ? `&type=${filter}` : ''}`);
       const data = res.data.data || [];
       setPosts(prev => reset ? data : [...prev, ...data]);
       setHasMore(data.length === 15);
-      if (!reset) setPage(p => p + 1);
-    } catch {}
+      if (!reset) {
+        pageRef.current += 1;
+        setPage(pageRef.current);
+      } else {
+        pageRef.current = 1;
+        setPage(1);
+      }
+    } catch {
+      if (reset) setPosts([]);
+    }
     setLoading(false);
-  };
+  }, [apiClient, filter]);
 
   useEffect(() => {
     setLoading(true);
-    setPage(1);
     fetchPosts(true);
-  }, [filter]);
+  }, [fetchPosts]);
 
   // Real-time: receive new posts via WebSocket
   useEffect(() => {

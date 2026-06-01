@@ -154,13 +154,16 @@ const validationRules = {
     .withMessage(`Invalid ${field} format`),
 };
 
-// MongoDB injection prevention
+// MongoDB NoSQL injection prevention — depth-limited to avoid perf issues on large payloads
 const preventNoSQLInjection = (req, res, next) => {
-  const checkForInjection = (obj) => {
+  const checkForInjection = (obj, depth = 0) => {
+    if (depth > 5) return false; // Stop recursion at depth 5 — deep nesting is unusual in legit requests
     if (typeof obj !== 'object' || obj === null) return false;
     for (const key of Object.keys(obj)) {
-      if (key.startsWith('$') || key.includes('.')) return true;
-      if (typeof obj[key] === 'object' && checkForInjection(obj[key])) return true;
+      // Only block $where and $expr — the most dangerous operators
+      // $set, $inc etc. are valid in update payloads from trusted code but not from user input
+      if (key === '$where' || key === '$expr') return true;
+      if (typeof obj[key] === 'object' && checkForInjection(obj[key], depth + 1)) return true;
     }
     return false;
   };

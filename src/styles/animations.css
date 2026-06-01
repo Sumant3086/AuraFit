@@ -1,13 +1,18 @@
 /* Global Animation Utilities — AuraFit v2.3 */
 
-/* Selective transitions — only layout-safe properties */
-*, *::before, *::after {
-  transition: background-color 0.25s ease, color 0.25s ease, border-color 0.25s ease, opacity 0.2s ease;
+/*
+  Targeted transitions only — never use `* { transition: color }` as it
+  forces the browser to create composited layers for every text node and
+  causes layout jank on every interaction. Instead, apply transitions
+  only to elements that actually need them.
+*/
+button, a {
+  transition: background-color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease, opacity 0.15s ease;
 }
 
-/* Override: no transition on transform/size to avoid jank */
-button, a, input, textarea, select {
-  transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+/* Theme-switch: only background transitions on the root shell elements */
+body, #root {
+  transition: background-color 0.3s ease;
 }
 
 /* Reduce motion for accessibility */
