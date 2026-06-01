@@ -1,6 +1,6 @@
 .features-showcase {
-  padding: 100px 20px;
-  background: linear-gradient(180deg, #0a0a0a 0%, #1a0a1a 100%);
+  padding: clamp(80px,10vw,120px) clamp(20px,4vw,60px);
+  background: var(--surface-bg);
   position: relative;
   overflow: hidden;
 }
@@ -24,10 +24,12 @@
 }
 
 .showcase-header h2 {
-  font-size: 48px;
-  font-weight: 900;
-  color: white;
+  font-size: clamp(28px,4vw,48px);
+  font-weight: 800;
+  color: var(--text-primary);
   margin-bottom: 15px;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
 }
 
 .gradient-text {
@@ -55,13 +57,12 @@
 }
 
 .showcase-card {
-  background: rgba(255, 255, 255, 0.03);
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 20px;
-  padding: 40px 30px;
+  background: var(--surface-raised);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-2xl);
+  padding: clamp(28px,3vw,40px) clamp(20px,2.5vw,30px);
   text-align: center;
-  transition: all 0.4s ease;
+  transition: border-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
   position: relative;
   overflow: hidden;
 }
@@ -83,9 +84,9 @@
 }
 
 .showcase-card:hover {
-  transform: translateY(-10px);
-  border-color: rgba(0, 245, 255, 0.3);
-  box-shadow: 0 20px 60px rgba(0, 245, 255, 0.2);
+  transform: translateY(-4px);
+  border-color: var(--border-accent);
+  box-shadow: var(--shadow-glow-purple);
 }
 
 .card-icon {
@@ -108,17 +109,18 @@
 }
 
 .showcase-card h3 {
-  font-size: 24px;
-  color: white;
-  margin-bottom: 15px;
+  font-size: clamp(18px,2vw,22px);
+  color: var(--text-primary);
+  margin-bottom: 12px;
   font-weight: 700;
+  letter-spacing: -0.01em;
 }
 
 .showcase-card p {
-  color: #aaa;
-  line-height: 1.6;
-  margin-bottom: 25px;
-  font-size: 15px;
+  color: var(--text-secondary);
+  line-height: 1.65;
+  margin-bottom: 20px;
+  font-size: 14px;
 }
 
 .card-link {
