@@ -1,32 +1,38 @@
+/* Base navbar — transparent over hero */
 .navbar {
-  background-color: transparent;
+  background: transparent;
   display: grid;
   grid-template-columns: 1fr auto 1fr;
   align-items: center;
-  font-size: 1rem;
+  font-size: 0.875rem;
   position: sticky;
-  top: 0px;
+  top: 0;
   z-index: 100;
-  padding: 8px 20px;
-  transition: var(--transition);
+  padding: 12px 24px;
+  transition: background 0.3s ease, border-color 0.3s ease, backdrop-filter 0.3s ease;
   width: 100%;
   max-width: 100%;
   gap: 20px;
+  border-bottom: 1px solid transparent;
 }
 
+/* Scrolled navbar — glassmorphism */
 .navbar-active-color {
-  background-color: #000;
+  background: rgba(5, 5, 7, 0.82);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
   display: grid;
   grid-template-columns: 1fr auto 1fr;
   align-items: center;
-  font-size: 1rem;
+  font-size: 0.875rem;
   position: sticky;
-  top: 0px;
+  top: 0;
   z-index: 100;
-  padding: 8px 20px;
-  transition: var(--transition);
+  padding: 12px 24px;
+  transition: background 0.3s ease, border-color 0.3s ease;
   width: 100%;
   gap: 20px;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
 }
 
 .nav-left {
@@ -57,17 +63,20 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  text-transform: uppercase;
-  font-size: 0.95rem;
-  font-weight: 700;
-  color: #fff;
-  padding: 8px 10px 4px;
-  transition: 0.1s ease;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: rgba(255,255,255,0.7);
+  padding: 6px 10px;
+  transition: color 0.15s ease;
   white-space: nowrap;
+  letter-spacing: 0.01em;
+  border-radius: 6px;
 }
 
 .menu-items:hover {
-  border-bottom: #fff solid 2px;
+  color: #fff;
+  background: rgba(255,255,255,0.06);
+  border-bottom: none;
 }
 
 .menu-bars {

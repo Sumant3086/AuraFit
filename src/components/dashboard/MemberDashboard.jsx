@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
@@ -7,19 +7,33 @@ import ActivityFeed from './ActivityFeed';
 import toast from 'react-hot-toast';
 
 const QUICK_ACTIONS = [
-  { label: 'Check-In', icon: '📱', path: '/checkin', color: '#9d00ff', desc: 'QR Check-In' },
-  { label: 'Workout', icon: '💪', path: '/features', color: '#00d4ff', desc: 'AI Generate' },
-  { label: 'Nutrition', icon: '🥗', path: '/features', color: '#00c853', desc: 'Meal Plan' },
-  { label: 'Community', icon: '🤝', path: '/community', color: '#ff6b35', desc: 'Social Feed' },
-  { label: 'Book Trainer', icon: '👨‍💼', path: '/book-trainer', color: '#ffd700', desc: 'Schedule' },
-  { label: 'Leaderboard', icon: '🏆', path: '/leaderboard', color: '#ff1493', desc: 'Rankings' },
+  { label: 'Check-In', icon: '📍', path: '/checkin', desc: 'QR scan' },
+  { label: 'Workout', icon: '🏋️', path: '/features', desc: 'AI plan' },
+  { label: 'Nutrition', icon: '🥗', path: '/features', desc: 'Meal plan' },
+  { label: 'Community', icon: '🤝', path: '/community', desc: 'Social feed' },
+  { label: 'Book Trainer', icon: '📅', path: '/book-trainer', desc: 'Schedule' },
+  { label: 'Rankings', icon: '🏆', path: '/leaderboard', desc: 'Leaderboard' },
 ];
+
+function getGreeting() {
+  const h = new Date().getHours();
+  if (h < 5) return 'Up late?';
+  if (h < 12) return 'Good morning';
+  if (h < 17) return 'Good afternoon';
+  return 'Good evening';
+}
+
+function getMembershipColor(plan) {
+  if (!plan || plan === 'None') return '#5a5a70';
+  if (plan === 'Premium') return '#f59e0b';
+  if (plan === 'Pro') return '#9d00ff';
+  return '#00d4ff';
+}
 
 export default function MemberDashboard() {
   const { user, apiClient } = useAuth();
   const [stats, setStats] = useState(null);
   const [achievements, setAchievements] = useState([]);
-  const [announcements, setAnnouncements] = useState([]);
   const [weeklyInsight, setWeeklyInsight] = useState(null);
   const [loading, setLoading] = useState(true);
   const [checkedInToday, setCheckedInToday] = useState(false);
@@ -27,7 +41,7 @@ export default function MemberDashboard() {
 
   useEffect(() => {
     let cancelled = false;
-    const loadDashboard = async () => {
+    const load = async () => {
       try {
         const [attRes, achRes, insightRes] = await Promise.all([
           apiClient.get('/attendance/stats/me').catch(() => ({ data: { data: null } })),
@@ -36,279 +50,390 @@ export default function MemberDashboard() {
         ]);
         if (cancelled) return;
         setStats(attRes.data.data);
-        const earned = achRes.data.data?.filter(a => a.earned) || [];
-        setAchievements(earned.slice(0, 6));
+        const earned = (achRes.data.data || []).filter(a => a.earned);
+        setAchievements(earned.slice(0, 4));
         setWeeklyInsight(insightRes.data.data);
       } catch {}
       if (!cancelled) setLoading(false);
     };
-    loadDashboard();
+    load();
     return () => { cancelled = true; };
   }, [apiClient]);
 
-  const downloadProgressReport = async () => {
-    setDownloadingReport(true);
-    try {
-      const res = await apiClient.get('/reports/progress', { responseType: 'blob' });
-      const url = URL.createObjectURL(new Blob([res.data], { type: 'application/pdf' }));
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `aurafit-progress-${new Date().toISOString().slice(0,10)}.pdf`;
-      a.click();
-      URL.revokeObjectURL(url);
-      toast.success('Progress report downloaded! 📊');
-    } catch {
-      toast.error('Failed to generate report. Try again.');
-    }
-    setDownloadingReport(false);
-  };
-
-  const handleQuickCheckIn = async () => {
+  const handleCheckIn = async () => {
     if (checkedInToday) return;
     try {
       const res = await apiClient.post('/attendance/self-checkin');
       setCheckedInToday(true);
-      toast.success(`✅ Checked in! +${res.data.pointsEarned} pts`);
-      if (res.data.streak > 1) toast(`🔥 ${res.data.streak} day streak!`, { icon: '🔥' });
+      toast.success(`+${res.data.pointsEarned} pts — Checked in! 🎯`);
+      if (res.data.streak > 1) toast(`🔥 ${res.data.streak}-day streak!`, { icon: '🔥' });
     } catch (err) {
       if (err.response?.data?.message?.includes('Already')) {
         setCheckedInToday(true);
         toast('Already checked in today! 👍');
       } else {
-        toast.error('Check-in failed');
+        toast.error('Check-in failed. Try again.');
       }
     }
   };
 
+  const downloadReport = async () => {
+    setDownloadingReport(true);
+    try {
+      const res = await apiClient.get('/reports/progress', { responseType: 'blob' });
+      const url = URL.createObjectURL(new Blob([res.data], { type: 'application/pdf' }));
+      const a = document.createElement('a');
+      a.href = url; a.download = `aurafit-${new Date().toISOString().slice(0,10)}.pdf`; a.click();
+      URL.revokeObjectURL(url);
+      toast.success('Report downloaded! 📊');
+    } catch {
+      toast.error('Failed to generate report.');
+    }
+    setDownloadingReport(false);
+  };
+
   const level = Math.floor((user?.points || 0) / 100) + 1;
-  const levelProgress = ((user?.points || 0) % 100);
-  const greeting = getGreeting();
+  const levelPts = (user?.points || 0) % 100;
+  const membershipColor = getMembershipColor(user?.membership);
 
   return (
-    <div style={{ minHeight: '100vh', background: '#0a0a0a', fontFamily: 'Arial, sans-serif', paddingBottom: 40 }}>
-      {/* Header */}
-      <div style={{ background: 'linear-gradient(135deg, #1a0a2e 0%, #0a1a2e 100%)', padding: '32px 20px 60px' }}>
-        <div style={{ maxWidth: 700, margin: '0 auto' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: 16 }}>
+    <div style={{ background: 'var(--surface-bg)', minHeight: '100vh', paddingBottom: 80 }}>
+
+      {/* Header band */}
+      <div style={{
+        background: 'linear-gradient(160deg, rgba(157,0,255,0.07) 0%, rgba(0,212,255,0.04) 100%)',
+        borderBottom: '1px solid var(--border-subtle)',
+        padding: 'var(--space-8) var(--space-4) var(--space-10)',
+      }}>
+        <div style={{ maxWidth: 'var(--container-md)', margin: '0 auto' }}>
+
+          {/* Greeting row */}
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: 'var(--space-4)', marginBottom: 'var(--space-6)' }}>
             <div>
-              <p style={{ color: '#666', fontSize: 14, margin: '0 0 4px' }}>{greeting}</p>
-              <h1 style={{ color: '#fff', fontSize: 28, fontWeight: 800, margin: '0 0 4px' }}>{user?.name?.split(' ')[0]} 👋</h1>
-              <p style={{ color: '#9d00ff', margin: 0, fontSize: 15 }}>Level {level} • {user?.points || 0} points</p>
+              <p style={{ color: 'var(--text-muted)', fontSize: 'var(--text-sm)', margin: '0 0 4px', fontWeight: 500 }}>
+                {getGreeting()},
+              </p>
+              <h1 style={{ color: 'var(--text-primary)', fontSize: 'var(--text-4xl)', fontWeight: 800, margin: '0 0 6px', letterSpacing: '-0.02em', lineHeight: 1.1 }}>
+                {user?.name?.split(' ')[0]} 👋
+              </h1>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-3)' }}>
+                <span style={{
+                  background: 'var(--brand-purple-dim)', border: '1px solid var(--border-accent)',
+                  borderRadius: 'var(--radius-pill)', padding: '3px 10px',
+                  color: 'var(--brand-purple)', fontSize: 'var(--text-xs)', fontWeight: 700,
+                }}>
+                  Level {level}
+                </span>
+                <span style={{ color: 'var(--text-muted)', fontSize: 'var(--text-sm)' }}>
+                  {user?.points || 0} pts
+                </span>
+                {(user?.membership && user.membership !== 'None') && (
+                  <span style={{
+                    background: `${membershipColor}18`,
+                    border: `1px solid ${membershipColor}44`,
+                    borderRadius: 'var(--radius-pill)', padding: '3px 10px',
+                    color: membershipColor, fontSize: 'var(--text-xs)', fontWeight: 700,
+                  }}>
+                    {user.membership}
+                  </span>
+                )}
+              </div>
             </div>
-            <div style={{ textAlign: 'right' }}>
-              <p style={{ color: '#ff6b35', fontSize: 22, fontWeight: 800, margin: '0 0 4px' }}>🔥 {user?.currentStreak || 0}</p>
-              <p style={{ color: '#666', fontSize: 12, margin: 0 }}>Day Streak</p>
+
+            {/* Streak */}
+            <div style={{
+              background: 'rgba(245,158,11,0.08)', border: '1px solid rgba(245,158,11,0.2)',
+              borderRadius: 'var(--radius-lg)', padding: 'var(--space-4) var(--space-5)',
+              textAlign: 'center',
+            }}>
+              <div style={{ fontSize: 28, lineHeight: 1, marginBottom: 4 }}>🔥</div>
+              <div style={{ color: 'var(--color-warning)', fontSize: 'var(--text-2xl)', fontWeight: 800, lineHeight: 1 }}>
+                {user?.currentStreak || 0}
+              </div>
+              <div style={{ color: 'var(--text-muted)', fontSize: 'var(--text-xs)', marginTop: 2, fontWeight: 500 }}>
+                day streak
+              </div>
             </div>
           </div>
 
-          {/* Level progress bar */}
-          <div style={{ marginTop: 20 }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 6 }}>
-              <span style={{ color: '#555', fontSize: 12 }}>Level {level}</span>
-              <span style={{ color: '#555', fontSize: 12 }}>Level {level + 1}</span>
+          {/* Level progress */}
+          <div>
+            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 'var(--space-2)' }}>
+              <span style={{ color: 'var(--text-muted)', fontSize: 'var(--text-xs)' }}>Lv {level}</span>
+              <span style={{ color: 'var(--text-muted)', fontSize: 'var(--text-xs)' }}>Lv {level + 1} — {100 - levelPts} pts away</span>
             </div>
-            <div style={{ height: 6, background: '#1a1a2e', borderRadius: 3, overflow: 'hidden' }}>
+            <div style={{ height: 4, background: 'var(--surface-high)', borderRadius: 'var(--radius-pill)', overflow: 'hidden' }}>
               <motion.div
-                style={{ height: '100%', background: 'linear-gradient(90deg, #9d00ff, #00d4ff)', borderRadius: 3 }}
-                animate={{ width: `${levelProgress}%` }}
-                transition={{ duration: 0.8, delay: 0.3 }}
+                style={{ height: '100%', background: 'var(--brand-gradient)', borderRadius: 'var(--radius-pill)' }}
+                animate={{ width: `${levelPts}%` }}
+                transition={{ duration: 1, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
               />
             </div>
-            <p style={{ color: '#555', fontSize: 11, margin: '4px 0 0', textAlign: 'center' }}>
-              {100 - levelProgress} points to next level
-            </p>
           </div>
         </div>
       </div>
 
-      <div style={{ maxWidth: 700, margin: '-32px auto 0', padding: '0 16px' }}>
-        {/* Announcements */}
-        <div style={{ marginBottom: 8 }}>
-          <AnnouncementBanner gymId={user?.gymId} />
-        </div>
+      <div style={{ maxWidth: 'var(--container-md)', margin: '-var(--space-6) auto 0', padding: '0 var(--space-4)' }}>
+        <div style={{ marginTop: -24 }}>
 
-        {/* Stats Cards */}
-        {stats && (
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 10, marginBottom: 20 }}>
-            <StatCard label="This Month" value={stats.thisMonth} icon="📅" />
-            <StatCard label="This Week" value={stats.thisWeek} icon="🗓️" />
-            <StatCard label="Total Visits" value={stats.total} icon="💯" />
+          {/* Announcement */}
+          <div style={{ marginBottom: 'var(--space-3)' }}>
+            <AnnouncementBanner gymId={user?.gymId} />
           </div>
-        )}
 
-        {/* Check-in CTA */}
-        <motion.button
-          whileTap={{ scale: 0.97 }}
-          onClick={handleQuickCheckIn}
-          style={{
-            width: '100%', padding: '16px', borderRadius: 14, border: 'none', cursor: checkedInToday ? 'default' : 'pointer',
-            background: checkedInToday ? '#111' : 'linear-gradient(135deg, #9d00ff, #00d4ff)',
-            color: checkedInToday ? '#555' : '#fff', fontSize: 16, fontWeight: 700, marginBottom: 24,
-            boxShadow: checkedInToday ? 'none' : '0 8px 32px rgba(157, 0, 255, 0.3)',
-          }}
-        >
-          {checkedInToday ? '✅ Checked in today • Great job!' : '📍 Check In Now & Earn Points'}
-        </motion.button>
-
-        {/* Quick Actions Grid */}
-        <h2 style={{ color: '#fff', fontSize: 18, fontWeight: 700, margin: '0 0 14px' }}>Quick Actions</h2>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 10, marginBottom: 28 }}>
-          {QUICK_ACTIONS.map(action => (
-            <Link key={action.label} to={action.path} style={{ textDecoration: 'none' }}>
-              <motion.div whileTap={{ scale: 0.95 }} style={{
-                background: '#111', border: '1px solid #1a1a1a', borderRadius: 14, padding: '16px 12px',
-                textAlign: 'center', cursor: 'pointer', transition: 'border 0.2s',
-              }}>
-                <div style={{ fontSize: 28, marginBottom: 6 }}>{action.icon}</div>
-                <p style={{ color: '#fff', fontWeight: 700, margin: '0 0 2px', fontSize: 13 }}>{action.label}</p>
-                <p style={{ color: '#555', fontSize: 11, margin: 0 }}>{action.desc}</p>
-              </motion.div>
-            </Link>
-          ))}
-        </div>
-
-        {/* Recent Achievements */}
-        {achievements.length > 0 && (
-          <div style={{ marginBottom: 28 }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 14 }}>
-              <h2 style={{ color: '#fff', fontSize: 18, fontWeight: 700, margin: 0 }}>Recent Achievements</h2>
-              <Link to="/achievements" style={{ color: '#9d00ff', fontSize: 13, textDecoration: 'none' }}>View all →</Link>
-            </div>
-            <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
-              {achievements.map(a => (
-                <div key={a.key} style={{
-                  background: '#111', border: '1px solid #222', borderRadius: 12, padding: '10px 14px',
-                  display: 'flex', alignItems: 'center', gap: 8,
+          {/* Stats */}
+          {stats && (
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 'var(--space-2)', marginBottom: 'var(--space-4)' }}>
+              {[
+                { label: 'This month', value: stats.thisMonth ?? 0, icon: '📅' },
+                { label: 'This week', value: stats.thisWeek ?? 0, icon: '🗓️' },
+                { label: 'All time', value: stats.total ?? 0, icon: '💯' },
+              ].map(s => (
+                <div key={s.label} style={{
+                  background: 'var(--surface-raised)', border: '1px solid var(--border-subtle)',
+                  borderRadius: 'var(--radius-lg)', padding: 'var(--space-4)',
+                  textAlign: 'center', boxShadow: 'var(--shadow-card)',
                 }}>
-                  <span style={{ fontSize: 24 }}>{a.icon}</span>
-                  <div>
-                    <p style={{ color: '#fff', fontSize: 13, fontWeight: 600, margin: 0 }}>{a.name}</p>
-                    <p style={{ color: '#ffd700', fontSize: 12, margin: 0 }}>+{a.points} pts</p>
-                  </div>
+                  <div style={{ fontSize: 18, marginBottom: 4 }}>{s.icon}</div>
+                  <div style={{ color: 'var(--brand-purple)', fontSize: 'var(--text-2xl)', fontWeight: 800, lineHeight: 1 }}>{s.value}</div>
+                  <div style={{ color: 'var(--text-muted)', fontSize: 'var(--text-xs)', marginTop: 3, fontWeight: 500 }}>{s.label}</div>
                 </div>
               ))}
             </div>
-          </div>
-        )}
+          )}
 
-        {/* Weekly AI Insight Card */}
-        {weeklyInsight && (
-          <div style={{
-            background: 'linear-gradient(135deg, #0a1a0a, #0a0a1a)', border: '1px solid #00c85333',
-            borderRadius: 16, padding: 20, marginBottom: 28,
-          }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 14 }}>
-              <h3 style={{ color: '#fff', margin: 0, fontSize: 16, fontWeight: 700 }}>✨ Weekly AI Insights</h3>
-              <button
-                onClick={downloadProgressReport}
-                disabled={downloadingReport}
-                style={{
-                  padding: '6px 14px', background: '#00d4ff22', border: '1px solid #00d4ff44',
-                  borderRadius: 20, color: '#00d4ff', cursor: 'pointer', fontSize: 12, fontWeight: 700,
-                }}
-              >
-                {downloadingReport ? '...' : '📊 Export PDF'}
-              </button>
-            </div>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-              <div style={{ display: 'flex', gap: 10, alignItems: 'flex-start' }}>
-                <span style={{ fontSize: 18, flexShrink: 0 }}>💪</span>
-                <p style={{ color: '#ccc', fontSize: 13, lineHeight: 1.5, margin: 0 }}>{weeklyInsight.workoutTip}</p>
-              </div>
-              <div style={{ display: 'flex', gap: 10, alignItems: 'flex-start' }}>
-                <span style={{ fontSize: 18, flexShrink: 0 }}>🥗</span>
-                <p style={{ color: '#ccc', fontSize: 13, lineHeight: 1.5, margin: 0 }}>{weeklyInsight.nutritionTip}</p>
-              </div>
-              <div style={{ display: 'flex', gap: 10, alignItems: 'flex-start' }}>
-                <span style={{ fontSize: 18, flexShrink: 0 }}>🎯</span>
-                <p style={{ color: '#00c853', fontSize: 13, lineHeight: 1.5, margin: 0, fontWeight: 600 }}>Goal: {weeklyInsight.weeklyGoal}</p>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* Referral Card */}
-        {user?.referralCode && (
-          <div style={{
-            background: 'linear-gradient(135deg, #1a0a2e, #0a1a2e)', border: '1px solid #333',
-            borderRadius: 16, padding: 20, marginBottom: 28,
-          }}>
-            <h3 style={{ color: '#fff', margin: '0 0 8px' }}>🎁 Refer & Earn</h3>
-            <p style={{ color: '#666', fontSize: 14, margin: '0 0 16px' }}>Invite friends and earn 100 points each!</p>
-            <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
-              <div style={{ flex: 1, background: '#111', border: '1px solid #333', borderRadius: 8, padding: '10px 14px', color: '#9d00ff', fontFamily: 'monospace', fontSize: 18, fontWeight: 800, letterSpacing: '3px' }}>
-                {user.referralCode}
-              </div>
-              <button onClick={() => { navigator.clipboard?.writeText(user.referralCode); toast.success('Referral code copied!'); }}
-                style={{ padding: '10px 16px', background: 'linear-gradient(135deg, #9d00ff, #00d4ff)', border: 'none', borderRadius: 8, color: '#fff', cursor: 'pointer', fontWeight: 700, whiteSpace: 'nowrap' }}>
-                Copy
-              </button>
-            </div>
-          </div>
-        )}
-
-        {/* Membership status */}
-        <div style={{ background: '#111', border: '1px solid #222', borderRadius: 16, padding: 20, marginBottom: 28 }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <div>
-              <p style={{ color: '#888', fontSize: 13, margin: '0 0 4px' }}>Membership</p>
-              <p style={{ color: '#fff', fontSize: 20, fontWeight: 800, margin: 0 }}>{user?.membership || 'None'}</p>
-              {user?.membershipEndDate && (
-                <p style={{ color: '#555', fontSize: 13, margin: '4px 0 0' }}>
-                  Expires: {new Date(user.membershipEndDate).toLocaleDateString()}
-                </p>
-              )}
-            </div>
-            {user?.membership === 'None' && (
-              <Link to="/pricing" style={{ textDecoration: 'none' }}>
-                <button style={{ padding: '10px 18px', background: 'linear-gradient(135deg, #9d00ff, #00d4ff)', border: 'none', borderRadius: 10, color: '#fff', cursor: 'pointer', fontWeight: 700 }}>
-                  Upgrade
-                </button>
-              </Link>
+          {/* Check-in CTA */}
+          <motion.button
+            whileTap={checkedInToday ? {} : { scale: 0.98 }}
+            onClick={handleCheckIn}
+            style={{
+              width: '100%', padding: 'var(--space-5)', marginBottom: 'var(--space-6)',
+              borderRadius: 'var(--radius-xl)', border: 'none',
+              background: checkedInToday
+                ? 'var(--surface-raised)'
+                : 'var(--brand-gradient)',
+              color: checkedInToday ? 'var(--text-muted)' : '#fff',
+              fontSize: 'var(--text-base)', fontWeight: 700, cursor: checkedInToday ? 'default' : 'pointer',
+              boxShadow: checkedInToday ? 'none' : 'var(--shadow-glow-purple)',
+              display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10,
+              letterSpacing: '0.01em',
+            }}
+          >
+            {checkedInToday ? (
+              <><span style={{ fontSize: 20 }}>✅</span> Checked in today — great work!</>
+            ) : (
+              <><span style={{ fontSize: 20 }}>📍</span> Check In & Earn Points</>
             )}
+          </motion.button>
+
+          {/* Quick actions */}
+          <div style={{ marginBottom: 'var(--space-6)' }}>
+            <h2 style={{ color: 'var(--text-primary)', fontSize: 'var(--text-base)', fontWeight: 700, margin: '0 0 var(--space-3)', letterSpacing: '-0.01em' }}>
+              Quick access
+            </h2>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 'var(--space-2)' }}>
+              {QUICK_ACTIONS.map(action => (
+                <Link key={action.label} to={action.path} style={{ textDecoration: 'none' }}>
+                  <motion.div
+                    whileHover={{ y: -2 }}
+                    whileTap={{ scale: 0.96 }}
+                    style={{
+                      background: 'var(--surface-raised)',
+                      border: '1px solid var(--border-subtle)',
+                      borderRadius: 'var(--radius-lg)', padding: 'var(--space-4)',
+                      textAlign: 'center', cursor: 'pointer',
+                      boxShadow: 'var(--shadow-card)',
+                      transition: 'border-color 0.2s ease, box-shadow 0.2s ease',
+                    }}
+                    onHoverStart={e => {}}
+                  >
+                    <div style={{ fontSize: 26, marginBottom: 'var(--space-2)', lineHeight: 1 }}>{action.icon}</div>
+                    <p style={{ color: 'var(--text-primary)', fontWeight: 700, margin: '0 0 2px', fontSize: 'var(--text-sm)' }}>{action.label}</p>
+                    <p style={{ color: 'var(--text-muted)', fontSize: 'var(--text-xs)', margin: 0 }}>{action.desc}</p>
+                  </motion.div>
+                </Link>
+              ))}
+            </div>
           </div>
-        </div>
 
-        {/* Activity Feed */}
-        <div style={{ background: '#111', border: '1px solid #1a1a1a', borderRadius: 16, padding: 20, marginBottom: 28 }}>
-          <ActivityFeed />
-        </div>
-
-        {/* Settings & quick links row */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 10 }}>
-          {[
-            { label: 'Settings', icon: '⚙️', path: '/settings' },
-            { label: 'Community', icon: '🤝', path: '/community' },
-            { label: 'Achievements', icon: '🏅', path: '/achievements' },
-            { label: 'My Orders', icon: '📦', path: '/my-orders' },
-          ].map(link => (
-            <Link key={link.label} to={link.path} style={{ textDecoration: 'none' }}>
-              <div style={{
-                background: '#0a0a0a', border: '1px solid #1a1a1a', borderRadius: 12,
-                padding: '12px 8px', textAlign: 'center',
-              }}>
-                <div style={{ fontSize: 22, marginBottom: 4 }}>{link.icon}</div>
-                <p style={{ color: '#555', fontSize: 11, margin: 0 }}>{link.label}</p>
+          {/* Weekly AI insight */}
+          {weeklyInsight && (
+            <div style={{
+              background: 'linear-gradient(135deg, rgba(16,185,129,0.07) 0%, var(--surface-raised) 60%)',
+              border: '1px solid rgba(16,185,129,0.2)',
+              borderRadius: 'var(--radius-xl)', padding: 'var(--space-5)',
+              marginBottom: 'var(--space-6)',
+            }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 'var(--space-4)' }}>
+                <div>
+                  <p style={{ color: 'var(--color-success)', fontSize: 'var(--text-xs)', fontWeight: 700, margin: 0, textTransform: 'uppercase', letterSpacing: '0.06em' }}>
+                    This week's AI insight
+                  </p>
+                </div>
+                <button
+                  onClick={downloadReport} disabled={downloadingReport}
+                  style={{
+                    padding: '5px 12px', background: 'rgba(0,212,255,0.1)',
+                    border: '1px solid rgba(0,212,255,0.2)', borderRadius: 'var(--radius-pill)',
+                    color: 'var(--brand-cyan)', cursor: 'pointer', fontSize: 'var(--text-xs)', fontWeight: 700,
+                  }}
+                >
+                  {downloadingReport ? '...' : '📊 PDF'}
+                </button>
               </div>
-            </Link>
-          ))}
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-3)' }}>
+                {[
+                  { icon: '💪', text: weeklyInsight.workoutTip },
+                  { icon: '🥗', text: weeklyInsight.nutritionTip },
+                ].map((tip, i) => (
+                  <div key={i} style={{ display: 'flex', gap: 10, alignItems: 'flex-start' }}>
+                    <span style={{ fontSize: 16, flexShrink: 0, marginTop: 1 }}>{tip.icon}</span>
+                    <p style={{ color: 'var(--text-secondary)', fontSize: 'var(--text-sm)', margin: 0, lineHeight: 'var(--leading-snug)' }}>{tip.text}</p>
+                  </div>
+                ))}
+                <div style={{
+                  background: 'rgba(16,185,129,0.08)', border: '1px solid rgba(16,185,129,0.15)',
+                  borderRadius: 'var(--radius-md)', padding: 'var(--space-3) var(--space-4)',
+                  display: 'flex', alignItems: 'center', gap: 8,
+                }}>
+                  <span style={{ fontSize: 16 }}>🎯</span>
+                  <p style={{ color: 'var(--color-success)', fontSize: 'var(--text-sm)', margin: 0, fontWeight: 600 }}>
+                    {weeklyInsight.weeklyGoal}
+                  </p>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Achievements */}
+          {achievements.length > 0 && (
+            <div style={{ marginBottom: 'var(--space-6)' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 'var(--space-3)' }}>
+                <h2 style={{ color: 'var(--text-primary)', fontSize: 'var(--text-base)', fontWeight: 700, margin: 0 }}>Recent achievements</h2>
+                <Link to="/achievements" style={{ color: 'var(--brand-purple)', fontSize: 'var(--text-sm)', fontWeight: 600 }}>View all →</Link>
+              </div>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 'var(--space-2)' }}>
+                {achievements.map(a => (
+                  <div key={a.key} style={{
+                    background: 'var(--surface-raised)', border: '1px solid var(--border-subtle)',
+                    borderRadius: 'var(--radius-lg)', padding: 'var(--space-3) var(--space-4)',
+                    display: 'flex', alignItems: 'center', gap: 'var(--space-3)',
+                  }}>
+                    <div style={{
+                      width: 40, height: 40, borderRadius: 'var(--radius-md)', flexShrink: 0,
+                      background: 'rgba(245,158,11,0.1)', border: '1px solid rgba(245,158,11,0.2)',
+                      display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 22,
+                    }}>
+                      {a.icon}
+                    </div>
+                    <div style={{ minWidth: 0 }}>
+                      <p style={{ color: 'var(--text-primary)', fontSize: 'var(--text-sm)', fontWeight: 600, margin: '0 0 2px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{a.name}</p>
+                      <p style={{ color: 'var(--color-gold)', fontSize: 'var(--text-xs)', margin: 0, fontWeight: 700 }}>+{a.points} pts</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Referral */}
+          {user?.referralCode && (
+            <div style={{
+              background: 'linear-gradient(135deg, rgba(157,0,255,0.07) 0%, rgba(0,212,255,0.04) 100%)',
+              border: '1px solid var(--border-accent)',
+              borderRadius: 'var(--radius-xl)', padding: 'var(--space-5)',
+              marginBottom: 'var(--space-6)',
+            }}>
+              <p style={{ color: 'var(--text-secondary)', fontSize: 'var(--text-xs)', fontWeight: 700, margin: '0 0 4px', textTransform: 'uppercase', letterSpacing: '0.07em' }}>
+                Refer & earn
+              </p>
+              <p style={{ color: 'var(--text-primary)', fontSize: 'var(--text-base)', fontWeight: 700, margin: '0 0 var(--space-4)' }}>
+                Invite friends • Earn 100 pts each
+              </p>
+              <div style={{ display: 'flex', gap: 'var(--space-2)' }}>
+                <div style={{
+                  flex: 1, background: 'var(--surface-overlay)', border: '1px solid var(--border-default)',
+                  borderRadius: 'var(--radius-md)', padding: '10px var(--space-4)',
+                  color: 'var(--brand-purple)', fontFamily: 'var(--font-mono)', fontSize: 'var(--text-xl)',
+                  fontWeight: 800, letterSpacing: '0.15em',
+                }}>
+                  {user.referralCode}
+                </div>
+                <button
+                  onClick={() => { navigator.clipboard?.writeText(user.referralCode); toast.success('Copied! 📋'); }}
+                  style={{
+                    padding: '10px var(--space-5)', background: 'var(--brand-gradient)',
+                    border: 'none', borderRadius: 'var(--radius-md)',
+                    color: '#fff', cursor: 'pointer', fontWeight: 700, fontSize: 'var(--text-sm)',
+                    whiteSpace: 'nowrap',
+                  }}
+                >
+                  Copy
+                </button>
+              </div>
+            </div>
+          )}
+
+          {/* Membership status */}
+          {(!user?.membership || user.membership === 'None') && (
+            <div style={{
+              background: 'var(--surface-raised)', border: '1px solid var(--border-default)',
+              borderRadius: 'var(--radius-xl)', padding: 'var(--space-5)',
+              marginBottom: 'var(--space-6)',
+              display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 'var(--space-4)',
+            }}>
+              <div>
+                <p style={{ color: 'var(--text-muted)', fontSize: 'var(--text-xs)', margin: '0 0 4px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.07em' }}>Membership</p>
+                <p style={{ color: 'var(--text-primary)', fontSize: 'var(--text-xl)', fontWeight: 800, margin: '0 0 4px' }}>Free Plan</p>
+                <p style={{ color: 'var(--text-muted)', fontSize: 'var(--text-xs)', margin: 0 }}>Upgrade to unlock all features</p>
+              </div>
+              <Link to="/pricing" style={{ textDecoration: 'none', flexShrink: 0 }}>
+                <motion.button
+                  whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}
+                  style={{
+                    padding: '10px 20px', background: 'var(--brand-gradient)',
+                    border: 'none', borderRadius: 'var(--radius-md)',
+                    color: '#fff', cursor: 'pointer', fontWeight: 700, fontSize: 'var(--text-sm)',
+                    boxShadow: 'var(--shadow-glow-purple)',
+                  }}
+                >
+                  Upgrade
+                </motion.button>
+              </Link>
+            </div>
+          )}
+
+          {/* Activity feed */}
+          <div style={{
+            background: 'var(--surface-raised)', border: '1px solid var(--border-subtle)',
+            borderRadius: 'var(--radius-xl)', padding: 'var(--space-5)',
+            marginBottom: 'var(--space-6)', boxShadow: 'var(--shadow-card)',
+          }}>
+            <ActivityFeed />
+          </div>
+
+          {/* Quick links row */}
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 'var(--space-2)' }}>
+            {[
+              { label: 'Settings', icon: '⚙️', path: '/settings' },
+              { label: 'Community', icon: '🤝', path: '/community' },
+              { label: 'Badges', icon: '🏅', path: '/achievements' },
+              { label: 'Orders', icon: '📦', path: '/my-orders' },
+            ].map(l => (
+              <Link key={l.label} to={l.path} style={{ textDecoration: 'none' }}>
+                <div style={{
+                  background: 'var(--surface-raised)', border: '1px solid var(--border-subtle)',
+                  borderRadius: 'var(--radius-lg)', padding: 'var(--space-3)',
+                  textAlign: 'center',
+                }}>
+                  <div style={{ fontSize: 20, marginBottom: 4 }}>{l.icon}</div>
+                  <p style={{ color: 'var(--text-muted)', fontSize: 10, margin: 0, fontWeight: 600 }}>{l.label}</p>
+                </div>
+              </Link>
+            ))}
+          </div>
         </div>
       </div>
     </div>
   );
 }
-
-const StatCard = ({ label, value, icon }) => (
-  <div style={{ background: '#111', border: '1px solid #1a1a1a', borderRadius: 12, padding: 14, textAlign: 'center' }}>
-    <div style={{ fontSize: 20, marginBottom: 4 }}>{icon}</div>
-    <div style={{ color: '#9d00ff', fontSize: 22, fontWeight: 800 }}>{value || 0}</div>
-    <div style={{ color: '#555', fontSize: 11 }}>{label}</div>
-  </div>
-);
-
-const getGreeting = () => {
-  const h = new Date().getHours();
-  if (h < 12) return 'Good morning,';
-  if (h < 17) return 'Good afternoon,';
-  return 'Good evening,';
-};
