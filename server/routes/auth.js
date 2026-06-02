@@ -24,12 +24,11 @@ router.post('/signup', authLimiter, async (req, res) => {
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    // Check admin credentials (backward compat)
-    const isAdmin = email === process.env.ADMIN_EMAIL && password === process.env.ADMIN_PASSWORD;
-
+    // All public signups create members only — admin role is set by the
+    // createAdmin script (server/scripts/createAdmin.js), never via signup.
     const user = await User.create({
       name, email, password: hashedPassword, phone,
-      role: isAdmin ? 'admin' : 'member',
+      role: 'member',
     });
 
     // Process referral after user creation
