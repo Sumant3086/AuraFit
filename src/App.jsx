@@ -1,6 +1,7 @@
 import React, { useState, useEffect, lazy, Suspense } from "react";
 import { Routes, Route, Navigate, useLocation } from "react-router-dom";
 import { AnimatePresence, motion } from "framer-motion";
+import logoImg from "./assets/logos/aurafit-logo.png";
 import { Toaster } from 'react-hot-toast';
 import AOS from 'aos';
 import 'aos/dist/aos.css';
@@ -61,7 +62,7 @@ const TrainerProfile = lazy(() => import("./components/trainers/TrainerProfile")
 // Lazy load shop data to avoid circular dependency
 import shopDataModule from "./components/shop/shopData";
 
-// Brand-consistent page loader — used for lazy chunk loading and auth checks
+// Page loader — shown during lazy chunk loading and auth checks
 const PageLoader = () => (
   <div style={{
     minHeight: '100vh',
@@ -69,18 +70,14 @@ const PageLoader = () => (
     display: 'flex', alignItems: 'center', justifyContent: 'center',
   }}>
     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 16 }}>
-      {/* Brand mark */}
-      <svg width="40" height="40" viewBox="0 0 40 40" fill="none" aria-hidden="true">
-        <defs>
-          <linearGradient id="pl-g" x1="0" y1="0" x2="1" y2="1">
-            <stop offset="0%" stopColor="#9d00ff" /><stop offset="100%" stopColor="#00d4ff" />
-          </linearGradient>
-        </defs>
-        <rect width="40" height="40" rx="10" fill="url(#pl-g)" />
-        <rect x="7" y="13.5" width="6" height="13" rx="2.5" fill="white" opacity="0.95" />
-        <rect x="13" y="17.5" width="14" height="5" rx="2" fill="white" opacity="0.85" />
-        <rect x="27" y="13.5" width="6" height="13" rx="2.5" fill="white" opacity="0.95" />
-      </svg>
+      {/* Real brand logo */}
+      <div style={{
+        background: '#fff', borderRadius: 12,
+        padding: '6px 12px',
+        boxShadow: '0 2px 16px rgba(0,0,0,0.2)',
+      }}>
+        <img src={logoImg} alt="AuraFit" style={{ height: 36, width: 'auto', display: 'block' }} />
+      </div>
       {/* Pulse dots */}
       <div style={{ display: 'flex', gap: 5 }}>
         {[0, 1, 2].map(i => (
