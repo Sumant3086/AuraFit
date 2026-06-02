@@ -1,7 +1,7 @@
 import React from "react"
 import "./contact.css"
 import Footer from "../footer/Footer"
-import { FaMapMarkerAlt, FaPhone, FaEnvelope, FaClock, FaChevronUp } from 'react-icons/fa'
+import { FaEnvelope, FaClock, FaChevronUp } from 'react-icons/fa'
 import classNames from 'classnames';
 import toast from 'react-hot-toast';
 
@@ -67,16 +67,14 @@ const Contact = () => {
             <h2>AuraFit</h2>
             <ul>
               <li>
-                <FaMapMarkerAlt className="contact-icon" />
-                Premium Fitness Center, India
-              </li>
-              <li>
                 <FaEnvelope className="contact-icon" />
-                <a href="mailto:support@aurafit.com" style={{color: '#fff'}}>support@aurafit.com</a>
+                <a href="mailto:sumantyadav3086@gmail.com" style={{color: '#fff'}}>
+                  sumantyadav3086@gmail.com
+                </a>
               </li>
               <li>
                 <FaClock className="contact-icon" />
-                Open 24/7 · 365 days
+                We reply within 24 hours
               </li>
             </ul>
           </div>
