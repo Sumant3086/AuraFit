@@ -2,12 +2,12 @@ import React from 'react';
 import { motion } from 'framer-motion';
 
 const TRUST = [
-  { icon: '🔒', label: 'Bank-grade security', desc: 'Razorpay encrypted payments' },
-  { icon: '🤖', label: 'Powered by Gemini AI', desc: 'Google AI for workouts & nutrition' },
-  { icon: '⚡', label: 'Instant activation', desc: 'Start training in under 2 mins' },
-  { icon: '🔄', label: 'Cancel anytime', desc: 'No lock-in contracts' },
-  { icon: '📱', label: 'Works offline', desc: 'Full PWA support' },
-  { icon: '🏅', label: '10,000+ transformations', desc: 'Real results, real people' },
+  { icon: '🔒', label: 'Secure payments', desc: 'Encrypted via Razorpay' },
+  { icon: '🤖', label: 'Google Gemini AI', desc: 'AI-powered workouts & nutrition' },
+  { icon: '⚡', label: 'Instant setup', desc: 'Start training in under 2 minutes' },
+  { icon: '🔄', label: 'Cancel anytime', desc: 'No lock-in, no hidden fees' },
+  { icon: '📱', label: 'Works offline', desc: 'Installable PWA' },
+  { icon: '🎯', label: 'Personalized to you', desc: 'Plans built around your goals' },
 ];
 
 export default function TrustBar() {
@@ -30,7 +30,7 @@ export default function TrustBar() {
             textTransform: 'uppercase', marginBottom: 'clamp(20px,3vw,32px)',
           }}
         >
-          Trusted by thousands across India
+          Built with these in mind
         </motion.p>
 
         <div style={{

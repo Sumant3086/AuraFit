@@ -172,7 +172,7 @@ export default function HowItWorks() {
           style={{ textAlign: 'center', marginTop: 'clamp(40px,5vw,60px)' }}
         >
           <p style={{ color: 'var(--text-muted)', fontSize: 14, margin: '0 0 16px' }}>
-            Join 5,000+ members already on their journey
+            Ready to build a real fitness routine?
           </p>
           <Link to="/signup" style={{ textDecoration: 'none' }}>
             <motion.div

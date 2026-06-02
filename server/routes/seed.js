@@ -46,7 +46,8 @@ router.post('/', verifyToken, requireRole('admin', 'super_admin'), async (req, r
 
   try {
     const results = { users: 0, posts: 0, attendance: 0, notifications: 0 };
-    const password = await bcrypt.hash('Demo@2024!', 10);
+    const demoPass = process.env.SEED_DEMO_PASSWORD || 'AuraFit_Demo_2024';
+    const password = await bcrypt.hash(demoPass, 10);
     const createdUsers = [];
 
     // Create demo users (skip if email already exists)
@@ -127,7 +128,7 @@ router.post('/', verifyToken, requireRole('admin', 'super_admin'), async (req, r
       success: true,
       message: 'Demo data seeded successfully!',
       results,
-      demoCredentials: DEMO_USERS.map(u => ({ name: u.name, email: u.email, password: 'Demo@2024!', role: u.role })),
+      demoCredentials: DEMO_USERS.map(u => ({ name: u.name, email: u.email, password: demoPass, role: u.role })),
     });
   } catch (err) {
     logger.error('Seed error:', err.message);

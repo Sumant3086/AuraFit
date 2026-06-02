@@ -1,8 +1,8 @@
-import React, { useState, useEffect, useMemo } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import React, { useState, useEffect, useCallback } from 'react';
+import { motion } from 'framer-motion';
 import { useAuth } from '../../context/AuthContext';
 
-const ACTIVITY_ICONS = {
+const TYPE_ICONS = {
   checkin: '📍',
   achievement: '🏅',
   workout: '💪',
@@ -13,17 +13,6 @@ const ACTIVITY_ICONS = {
   membership: '💎',
 };
 
-// Stable mock entries — no random, deterministic order so React reconciliation is stable
-const MOCK_ENTRIES = [
-  { id: 'mock-2', type: 'achievement', user: 'Vikram J.', message: 'earned the "Consistency King" badge 🏅', minsAgo: 12 },
-  { id: 'mock-3', type: 'streak', user: 'Priya S.', message: 'hit a 15-day streak! 🔥', minsAgo: 25 },
-  { id: 'mock-4', type: 'community_post', user: 'Rahul M.', message: 'posted: "New PR on bench press!"', minsAgo: 41 },
-  { id: 'mock-5', type: 'level_up', user: 'Meera P.', message: 'reached Level 8! ⬆️', minsAgo: 58 },
-  { id: 'mock-6', type: 'workout', user: 'Ananya K.', message: 'completed an AI workout plan 💪', minsAgo: 73 },
-  { id: 'mock-7', type: 'checkin', user: 'Arjun D.', message: 'checked in to the gym', minsAgo: 92 },
-  { id: 'mock-8', type: 'referral', user: 'Karthik R.', message: 'referred a friend and earned 100 points 🎁', minsAgo: 110 },
-];
-
 function timeAgo(date) {
   const diff = (Date.now() - new Date(date)) / 1000;
   if (diff < 60) return 'just now';
@@ -33,65 +22,41 @@ function timeAgo(date) {
 }
 
 export default function ActivityFeed() {
-  const { user, apiClient } = useAuth();
-  const [activities, setActivities] = useState([]);
+  const { apiClient, user } = useAuth();
+  const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // Stable "me checked in" entry — only recomputed when user identity changes
-  const myEntry = useMemo(() => ({
-    id: 'mock-1',
-    type: 'checkin',
-    user: user?.name?.split(' ')[0] || 'You',
-    message: 'checked in to the gym',
-    time: new Date(Date.now() - 3 * 60000),
-    isMe: true,
-  }), [user?._id]); // eslint-disable-line react-hooks/exhaustive-deps
+  const load = useCallback(async () => {
+    try {
+      const res = await apiClient.get('/social/feed?limit=8');
+      const data = (res.data.data || []).map(p => ({
+        id: p._id,
+        type: p.type === 'achievement' ? 'achievement' : 'community_post',
+        user: p.userName,
+        message: p.content.slice(0, 65) + (p.content.length > 65 ? '…' : ''),
+        time: p.createdAt,
+        isMe: String(p.userId) === String(user?._id),
+      }));
+      setPosts(data);
+    } catch {
+      setPosts([]);
+    } finally {
+      setLoading(false);
+    }
+  }, [apiClient, user?._id]);
 
-  const stableMockFeed = useMemo(() => {
-    return MOCK_ENTRIES.map(e => ({
-      ...e,
-      time: new Date(Date.now() - e.minsAgo * 60000),
-      isMe: false,
-    }));
-  }, []); // Created once — deterministic
-
-  useEffect(() => {
-    let cancelled = false;
-    const load = async () => {
-      try {
-        const res = await apiClient.get('/social/feed?limit=5');
-        if (cancelled) return;
-        const posts = (res.data.data || []).map(p => ({
-          id: p._id,
-          type: p.type === 'achievement' ? 'achievement' : 'community_post',
-          user: p.userName,
-          message: p.content.slice(0, 60) + (p.content.length > 60 ? '...' : ''),
-          time: p.createdAt,
-          isMe: String(p.userId) === String(user?._id),
-        }));
-
-        const combined = [myEntry, ...posts, ...stableMockFeed.slice(0, 3)]
-          .sort((a, b) => new Date(b.time) - new Date(a.time))
-          .slice(0, 8);
-        setActivities(combined);
-      } catch {
-        setActivities([myEntry, ...stableMockFeed]);
-      }
-      if (!cancelled) setLoading(false);
-    };
-    load();
-    return () => { cancelled = true; };
-  }, [user?._id]); // eslint-disable-line react-hooks/exhaustive-deps
+  useEffect(() => { load(); }, [load]);
 
   if (loading) {
     return (
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+      <div>
+        <p style={{ color: 'var(--text-secondary)', fontSize: 15, fontWeight: 700, margin: '0 0 12px' }}>Community activity</p>
         {[1, 2, 3].map(i => (
-          <div key={i} style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
-            <div style={{ width: 32, height: 32, borderRadius: '50%', background: '#1a1a1a', flexShrink: 0 }} />
+          <div key={i} style={{ display: 'flex', gap: 10, marginBottom: 10 }}>
+            <div style={{ width: 28, height: 28, borderRadius: '50%', background: 'var(--surface-high)', flexShrink: 0, animation: 'pulse 1.5s infinite' }} />
             <div style={{ flex: 1 }}>
-              <div style={{ width: '70%', height: 10, background: '#1a1a1a', borderRadius: 4, marginBottom: 4 }} />
-              <div style={{ width: '40%', height: 8, background: '#1a1a1a', borderRadius: 4 }} />
+              <div style={{ width: '65%', height: 10, background: 'var(--surface-high)', borderRadius: 4, marginBottom: 5, animation: 'pulse 1.5s infinite' }} />
+              <div style={{ width: '35%', height: 8, background: 'var(--surface-high)', borderRadius: 4, animation: 'pulse 1.5s infinite' }} />
             </div>
           </div>
         ))}
@@ -99,47 +64,65 @@ export default function ActivityFeed() {
     );
   }
 
-  return (
-    <div>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 14 }}>
-        <h2 style={{ color: '#fff', fontSize: 18, fontWeight: 700, margin: 0 }}>Live Activity 🌐</h2>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
-          <div style={{ width: 6, height: 6, borderRadius: '50%', background: '#00c853', animation: 'pulse 2s infinite' }} />
-          <span style={{ color: '#00c853', fontSize: 11 }}>LIVE</span>
+  if (posts.length === 0) {
+    return (
+      <div>
+        <p style={{ color: 'var(--text-secondary)', fontSize: 15, fontWeight: 700, margin: '0 0 16px' }}>Community activity</p>
+        <div style={{
+          padding: '24px 16px', textAlign: 'center',
+          background: 'var(--surface-overlay)', borderRadius: 12,
+          border: '1px dashed var(--border-default)',
+        }}>
+          <p style={{ color: 'var(--text-muted)', fontSize: 14, margin: '0 0 4px' }}>No activity yet</p>
+          <p style={{ color: 'var(--text-muted)', fontSize: 12, margin: 0 }}>
+            Post in the community to appear here
+          </p>
         </div>
       </div>
+    );
+  }
+
+  return (
+    <div>
+      <p style={{ color: 'var(--text-secondary)', fontSize: 15, fontWeight: 700, margin: '0 0 12px' }}>
+        Community activity
+      </p>
       <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-        {activities.map((activity, i) => (
+        {posts.map((post, i) => (
           <motion.div
-            key={activity.id}
-            initial={{ opacity: 0, x: -10 }}
+            key={post.id}
+            initial={{ opacity: 0, x: -8 }}
             animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: i * 0.05 }}
+            transition={{ delay: i * 0.04 }}
             style={{
-              display: 'flex', gap: 10, alignItems: 'center',
-              padding: '10px 12px', borderRadius: 10,
-              background: activity.isMe ? '#1a0a2e' : 'transparent',
-              border: `1px solid ${activity.isMe ? '#9d00ff22' : 'transparent'}`,
+              display: 'flex', gap: 10, alignItems: 'flex-start',
+              padding: '9px 10px', borderRadius: 10,
+              background: post.isMe ? 'var(--brand-purple-dim)' : 'transparent',
             }}
           >
             <div style={{
-              width: 32, height: 32, borderRadius: '50%', flexShrink: 0,
-              background: activity.isMe ? 'linear-gradient(135deg, #9d00ff, #00d4ff)' : '#1a1a1a',
-              display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 16,
+              width: 28, height: 28, borderRadius: '50%', flexShrink: 0,
+              background: post.isMe ? 'linear-gradient(135deg, #9d00ff, #00d4ff)' : 'var(--surface-overlay)',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              fontSize: 14, border: '1px solid var(--border-subtle)',
             }}>
-              {ACTIVITY_ICONS[activity.type] || '⚡'}
+              {TYPE_ICONS[post.type] || '💬'}
             </div>
             <div style={{ flex: 1, minWidth: 0 }}>
-              <p style={{ color: '#ccc', fontSize: 13, margin: 0, lineHeight: 1.4, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                <span style={{ color: activity.isMe ? '#9d00ff' : '#fff', fontWeight: 700 }}>{activity.user}</span>
-                {' '}{activity.message}
+              <p style={{
+                color: 'var(--text-secondary)', fontSize: 13, margin: 0,
+                lineHeight: 1.4, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
+              }}>
+                <span style={{ color: post.isMe ? 'var(--brand-purple)' : 'var(--text-primary)', fontWeight: 600 }}>
+                  {post.isMe ? 'You' : post.user}
+                </span>
+                {' '}{post.message}
               </p>
-              <p style={{ color: '#444', fontSize: 11, margin: '2px 0 0' }}>{timeAgo(activity.time)}</p>
+              <p style={{ color: 'var(--text-muted)', fontSize: 11, margin: '2px 0 0' }}>{timeAgo(post.time)}</p>
             </div>
           </motion.div>
         ))}
       </div>
-      <style>{`@keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.4; } }`}</style>
     </div>
   );
 }

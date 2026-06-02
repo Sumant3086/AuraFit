@@ -31,51 +31,30 @@ const Login = () => {
     setError('');
 
     try {
-      // Block admin email from user login
-      if (formData.email === 'sumant@gmail.com') {
-        setError('This is an admin account. Please use the admin portal to login.');
-        setLoading(false);
-        return;
-      }
-
-      // Call login API
-      const data = await authAPI.login({
-        email: formData.email,
-        password: formData.password
-      });
+      const data = await authAPI.login({ email: formData.email, password: formData.password });
 
       if (data.success) {
-        // Use AuthContext login to store tokens + user
+        const user = data.data.user;
         if (data.data.accessToken) {
-          login(data.data.user, { accessToken: data.data.accessToken, refreshToken: data.data.refreshToken });
+          login(user, { accessToken: data.data.accessToken, refreshToken: data.data.refreshToken });
         } else {
-          // Backward compat: server returned old format
           localStorage.setItem('user', JSON.stringify(data.data));
         }
 
-        // Check if there's a pending action after login
         const redirectPath = localStorage.getItem('redirectAfterLogin');
-        const pendingReservation = localStorage.getItem('pendingReservation');
-
         if (redirectPath) {
           localStorage.removeItem('redirectAfterLogin');
-          if (pendingReservation) {
-            const classData = JSON.parse(pendingReservation);
-            localStorage.removeItem('pendingReservation');
-          }
           navigate(redirectPath);
-        } else if (data.data.user?.onboardingCompleted === false) {
+        } else if (user?.onboardingCompleted === false) {
           navigate('/onboarding');
         } else {
           navigate('/dashboard');
         }
       } else {
-        // Display the specific error message from server
-        setError(data.message || 'Invalid email or password');
+        setError(data.message || 'Incorrect email or password.');
       }
-    } catch (err) {
-      console.error('Login error:', err);
-      setError('Network error. Please check your connection and try again.');
+    } catch {
+      setError('Connection error. Please check your internet and try again.');
     } finally {
       setLoading(false);
     }
