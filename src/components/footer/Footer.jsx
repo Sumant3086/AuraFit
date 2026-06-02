@@ -2,7 +2,7 @@ import React from 'react';
 import './footer.css';
 import Logo from '../logo/Logo';
 import { Link } from 'react-router-dom';
-import { FaInstagram, FaYoutube, FaTwitter, FaEnvelope, FaMapMarkerAlt } from 'react-icons/fa';
+import { FaEnvelope } from 'react-icons/fa';
 
 const LINKS = {
   product: [
@@ -18,6 +18,8 @@ const LINKS = {
     { to: '/leaderboard', label: 'Leaderboard' },
   ],
 };
+
+const CONTACT_EMAIL = 'sumantyadav3086@gmail.com';
 
 export default function Footer() {
   return (
@@ -47,37 +49,39 @@ export default function Footer() {
             }}>
               The AI-powered fitness platform for people who train seriously.
             </p>
-            <div style={{ display: 'flex', gap: 12 }}>
-              {[
-                { href: 'https://www.instagram.com', icon: <FaInstagram />, label: 'Instagram' },
-                { href: 'https://www.youtube.com', icon: <FaYoutube />, label: 'YouTube' },
-                { href: 'https://www.twitter.com', icon: <FaTwitter />, label: 'Twitter' },
-              ].map(s => (
-                <a
-                  key={s.label}
-                  href={s.href}
-                  target="_blank" rel="noopener noreferrer"
-                  aria-label={s.label}
-                  style={{
-                    width: 36, height: 36, borderRadius: 8,
-                    background: 'var(--surface-overlay)',
-                    border: '1px solid var(--border-subtle)',
-                    display: 'flex', alignItems: 'center', justifyContent: 'center',
-                    color: 'var(--text-muted)', fontSize: 16,
-                    transition: 'border-color 0.2s ease, color 0.2s ease',
-                  }}
-                  onMouseEnter={e => { e.currentTarget.style.borderColor = 'var(--border-strong)'; e.currentTarget.style.color = 'var(--text-secondary)'; }}
-                  onMouseLeave={e => { e.currentTarget.style.borderColor = 'var(--border-subtle)'; e.currentTarget.style.color = 'var(--text-muted)'; }}
-                >
-                  {s.icon}
-                </a>
-              ))}
-            </div>
+
+            {/* Contact — email only */}
+            <a
+              href={`mailto:${CONTACT_EMAIL}`}
+              style={{
+                display: 'inline-flex', alignItems: 'center', gap: 8,
+                color: 'var(--text-muted)', fontSize: 13, textDecoration: 'none',
+                padding: '8px 14px',
+                background: 'var(--surface-overlay)',
+                border: '1px solid var(--border-subtle)',
+                borderRadius: 8,
+                transition: 'border-color 0.2s, color 0.2s',
+              }}
+              onMouseEnter={e => {
+                e.currentTarget.style.borderColor = 'var(--border-strong)';
+                e.currentTarget.style.color = 'var(--text-primary)';
+              }}
+              onMouseLeave={e => {
+                e.currentTarget.style.borderColor = 'var(--border-subtle)';
+                e.currentTarget.style.color = 'var(--text-muted)';
+              }}
+            >
+              <FaEnvelope style={{ fontSize: 13, flexShrink: 0 }} />
+              {CONTACT_EMAIL}
+            </a>
           </div>
 
           {/* Product links */}
           <div>
-            <p style={{ color: 'var(--text-secondary)', fontSize: 12, fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase', margin: '0 0 16px' }}>
+            <p style={{
+              color: 'var(--text-secondary)', fontSize: 12, fontWeight: 700,
+              letterSpacing: '0.08em', textTransform: 'uppercase', margin: '0 0 16px',
+            }}>
               Product
             </p>
             <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: 10 }}>
@@ -99,7 +103,10 @@ export default function Footer() {
 
           {/* Company links */}
           <div>
-            <p style={{ color: 'var(--text-secondary)', fontSize: 12, fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase', margin: '0 0 16px' }}>
+            <p style={{
+              color: 'var(--text-secondary)', fontSize: 12, fontWeight: 700,
+              letterSpacing: '0.08em', textTransform: 'uppercase', margin: '0 0 16px',
+            }}>
               Company
             </p>
             <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: 10 }}>
@@ -116,18 +123,6 @@ export default function Footer() {
                   </Link>
                 </li>
               ))}
-              <li>
-                <a href="mailto:support@aurafit.com" style={{
-                  display: 'flex', alignItems: 'center', gap: 6,
-                  color: 'var(--text-muted)', fontSize: 14, textDecoration: 'none',
-                  transition: 'color 0.15s',
-                }}
-                  onMouseEnter={e => e.currentTarget.style.color = 'var(--text-primary)'}
-                  onMouseLeave={e => e.currentTarget.style.color = 'var(--text-muted)'}
-                >
-                  <FaEnvelope style={{ fontSize: 12 }} /> support@aurafit.com
-                </a>
-              </li>
             </ul>
           </div>
         </div>
@@ -142,11 +137,11 @@ export default function Footer() {
           <p style={{ color: 'var(--text-muted)', fontSize: 13, margin: 0 }}>
             © {new Date().getFullYear()} AuraFit. All rights reserved.
           </p>
-          <div style={{ display: 'flex', gap: 20, alignItems: 'center' }}>
+          <div style={{ display: 'flex', gap: 16, alignItems: 'center' }}>
             <p style={{ color: 'var(--text-muted)', fontSize: 12, margin: 0 }}>
               Powered by Gemini AI
             </p>
-            <Link to="/admin/login" style={{ color: 'var(--text-muted)', fontSize: 11, opacity: 0.4 }}>
+            <Link to="/admin/login" style={{ color: 'var(--text-muted)', fontSize: 11, opacity: 0.35 }}>
               ·
             </Link>
           </div>
