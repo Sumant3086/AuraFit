@@ -38,7 +38,7 @@ const Navbar = ({ toggle }) => {
 
       <div className="nav-center">
         <Link to="/" className="logo-link">
-          <Logo size="medium" color={scrolled ? "gradient" : "white"} />
+          <Logo size="medium" theme={scrolled ? "gradient" : "dark"} />
         </Link>
       </div>
 
