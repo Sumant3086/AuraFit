@@ -1,34 +1,32 @@
 import { Navigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 
-const ProtectedAdminRoute = ({ children }) => {
+/**
+ * ProtectedAdminRoute — only allows access for authenticated users
+ * whose JWT-verified role is 'admin', 'super_admin', or 'gym_admin'.
+ *
+ * Previously used a client-side localStorage check which could be bypassed.
+ * Now relies entirely on the JWT token role verified by the backend.
+ */
+export default function ProtectedAdminRoute({ children }) {
   const { isAuthenticated, isAdmin, loading } = useAuth();
 
-  // Still loading auth state
   if (loading) {
     return (
-      <div style={{ minHeight: '100vh', background: '#0a0a0a', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-        <div style={{ color: '#9d00ff' }}>Loading...</div>
+      <div style={{
+        minHeight: '100vh', background: 'var(--surface-bg, #050507)',
+        display: 'flex', alignItems: 'center', justifyContent: 'center',
+      }}>
+        <div style={{ color: 'var(--brand-purple, #9d00ff)', fontSize: 15, fontWeight: 600 }}>
+          Verifying access…
+        </div>
       </div>
     );
   }
 
-  // Fallback: also check legacy localStorage admin key
-  const legacyAdmin = localStorage.getItem('admin');
-  const ADMIN_EMAIL = import.meta.env.VITE_ADMIN_EMAIL || 'sumant@gmail.com';
-  let legacyAdminValid = false;
-  if (legacyAdmin) {
-    try {
-      const adminData = JSON.parse(legacyAdmin);
-      legacyAdminValid = adminData.email === ADMIN_EMAIL && adminData.role === 'admin';
-    } catch {}
-  }
-
-  if ((isAuthenticated && isAdmin) || legacyAdminValid) {
+  if (isAuthenticated && isAdmin) {
     return children;
   }
 
   return <Navigate to="/admin/login" replace />;
-};
-
-export default ProtectedAdminRoute;
+}
