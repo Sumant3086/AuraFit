@@ -46,7 +46,15 @@ router.post('/', verifyToken, requireRole('admin', 'super_admin'), async (req, r
 
   try {
     const results = { users: 0, posts: 0, attendance: 0, notifications: 0 };
-    const demoPass = process.env.SEED_DEMO_PASSWORD || 'AuraFit_Demo_2024';
+
+    // SEED_DEMO_PASSWORD must be set explicitly — no hardcoded fallback
+    if (!process.env.SEED_DEMO_PASSWORD) {
+      return res.status(400).json({
+        success: false,
+        message: 'Set SEED_DEMO_PASSWORD in your environment variables before seeding.',
+      });
+    }
+    const demoPass = process.env.SEED_DEMO_PASSWORD;
     const password = await bcrypt.hash(demoPass, 10);
     const createdUsers = [];
 

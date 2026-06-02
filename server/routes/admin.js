@@ -16,7 +16,7 @@ const adminGuard = async (req, res, next) => {
   if (token) {
     try {
       const jwt = require('jsonwebtoken');
-      const decoded = jwt.verify(token, process.env.JWT_SECRET || 'aura_fit_secret_key_2024');
+      const decoded = jwt.verify(token, process.env.JWT_SECRET);
       const user = await User.findById(decoded.userId).select('-password');
       if (user && (user.role === 'admin' || user.role === 'super_admin' || user.role === 'gym_admin')) {
         req.user = user;
