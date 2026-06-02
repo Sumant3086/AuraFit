@@ -3,6 +3,7 @@ import "./contact.css"
 import Footer from "../footer/Footer"
 import { FaMapMarkerAlt, FaPhone, FaEnvelope, FaClock, FaChevronUp } from 'react-icons/fa'
 import classNames from 'classnames';
+import toast from 'react-hot-toast';
 
 
 const contactData = [
@@ -63,28 +64,28 @@ const Contact = () => {
       <h1 className="contact-title">Reach out to us!</h1>
       <div className="contact-container">
           <div className="contact-london">
-            <h2>Fitness Edge Gym</h2>
+            <h2>AuraFit</h2>
             <ul>
               <li>
                 <FaMapMarkerAlt className="contact-icon" />
-                Sports Complex, Downtown
-              </li>
-              <li>
-                <FaPhone className="contact-icon" />
-                +91 9599 617 479
+                Premium Fitness Center, India
               </li>
               <li>
                 <FaEnvelope className="contact-icon" />
-                <a href="mailto:sumantyadav3086@gmail.com" style={{color: '#fff'}}>sumantyadav3086@gmail.com</a>
+                <a href="mailto:support@aurafit.com" style={{color: '#fff'}}>support@aurafit.com</a>
               </li>
               <li>
                 <FaClock className="contact-icon" />
-                MON - SUN  24/7
+                Open 24/7 · 365 days
               </li>
             </ul>
           </div>
 
-        <form onSubmit={(e) => { e.preventDefault(); alert('Message sent! We will contact you soon.'); }}>
+        <form onSubmit={(e) => {
+          e.preventDefault();
+          toast.success("Message received! We'll get back to you within 24 hours.");
+          e.target.reset();
+        }}>
           <div className="contact-form-bg">
             <div className="contact-form">
               <div className="first-row">

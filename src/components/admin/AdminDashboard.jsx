@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
+import toast from 'react-hot-toast';
 import { 
   FiUsers, FiDollarSign, FiShoppingBag, FiTrendingUp, 
   FiActivity, FiUserPlus, FiCheckCircle, FiXCircle,
@@ -139,7 +140,7 @@ const AdminDashboard = () => {
       const existingClasses = existingClassesRes?.data || [];
 
       if (existingProducts.length > 0 && existingClasses.length > 0) {
-        alert(`Database already has ${existingProducts.length} products and ${existingClasses.length} classes.`);
+        toast(`Database already has ${existingProducts.length} products and ${existingClasses.length} classes.`, { icon: 'ℹ️' });
         setSeeding(false);
         return;
       }
@@ -192,11 +193,10 @@ const AdminDashboard = () => {
         }
       }
 
-      alert(`✅ Seeding complete!\n${productsSeeded} products and ${classesSeeded} classes added.`);
+      toast.success(`Seeded ${productsSeeded} products and ${classesSeeded} classes.`);
       await loadDashboardData();
     } catch (error) {
-      console.error('Seeding error:', error);
-      alert(`❌ Seeding failed: ${error.message}`);
+      toast.error(`Seeding failed: ${error.message}`);
     } finally {
       setSeeding(false);
     }
@@ -210,12 +210,12 @@ const AdminDashboard = () => {
       });
       const data = await response.json();
       if (data.success) {
-        alert('✅ Membership approved!');
+        toast.success('Membership approved.');
         loadMemberships();
         loadStats();
       }
-    } catch (error) {
-      alert('❌ Error approving membership');
+    } catch {
+      toast.error('Failed to approve membership.');
     }
   };
 
@@ -227,12 +227,12 @@ const AdminDashboard = () => {
       });
       const data = await response.json();
       if (data.success) {
-        alert('❌ Membership rejected');
+        toast.success('Membership rejected.');
         loadMemberships();
         loadStats();
       }
-    } catch (error) {
-      alert('❌ Error rejecting membership');
+    } catch {
+      toast.error('Failed to reject membership.');
     }
   };
 

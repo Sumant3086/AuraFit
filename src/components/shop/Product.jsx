@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
-import './product.css'
+import './product.css';
 import { useParams } from 'react-router-dom';
 import Footer from '../footer/Footer';
 import ShoppingCartModal from './ShoppingCart';
 import { useCart } from '../../context/CartContext';
+import toast from 'react-hot-toast';
 
 const Product = ({ shopData }) => {
     const { id } = useParams();
@@ -27,7 +28,7 @@ const Product = ({ shopData }) => {
       
       if (!user) {
         localStorage.setItem('redirectAfterLogin', window.location.pathname);
-        alert('Please login to add items to cart');
+        toast.error('Sign in to add items to your cart.');
         window.location.href = '/login';
         return;
       }

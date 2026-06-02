@@ -4,6 +4,7 @@ import './userProfile.css';
 import { FaUser, FaSave, FaEdit, FaArrowLeft } from 'react-icons/fa';
 import Navbar from '../navbar/Navbar';
 import Dropdown from '../navbar/Dropdown';
+import toast from 'react-hot-toast';
 
 const UserProfile = () => {
   const navigate = useNavigate();
@@ -75,7 +76,7 @@ const UserProfile = () => {
     localStorage.setItem('userProfile', JSON.stringify(profileData));
     
     setIsEditing(false);
-    alert('Profile saved successfully! Your data will be used across all features.');
+    toast.success('Profile saved.');
   };
 
   const calculateBMI = () => {
