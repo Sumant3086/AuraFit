@@ -125,6 +125,17 @@ const server = app.listen(PORT, () => {
   logger.info(`📊 Metrics: GET /api/metrics (admin only)`);
 });
 
+server.on('error', (err) => {
+  if (err.code === 'EADDRINUSE') {
+    logger.error(`❌ Port ${PORT} is already in use.`);
+    logger.error(`   Run: npx kill-port ${PORT}  (or close the other server instance)`);
+    logger.error(`   Or set a different PORT in server/.env`);
+    process.exit(1);
+  } else {
+    throw err;
+  }
+});
+
 // Initialize WebSocket
 const { initializeSocket } = require('./socket/socketServer');
 initializeSocket(server);

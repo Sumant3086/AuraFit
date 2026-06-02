@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import toast from 'react-hot-toast';
+import logoImg from '../../assets/logos/aurafit-logo.png';
 
 const STEPS = [
   { id: 'welcome', title: 'Welcome', subtitle: "Let's personalize your journey" },
@@ -88,19 +89,20 @@ export default function OnboardingFlow() {
         pointerEvents: 'none',
       }} />
 
-      {/* Brand mark */}
+      {/* Brand logo */}
       <motion.div
         initial={{ opacity: 0, y: -10 }}
         animate={{ opacity: 1, y: 0 }}
         style={{ marginBottom: 'var(--space-8)', textAlign: 'center' }}
       >
-        <h1 style={{
-          background: 'var(--brand-gradient)', WebkitBackgroundClip: 'text',
-          WebkitTextFillColor: 'transparent', fontSize: 'var(--text-2xl)',
-          fontWeight: 800, margin: 0, letterSpacing: '0.1em',
+        <div style={{
+          background: 'rgba(255,255,255,0.9)',
+          borderRadius: 12, padding: '7px 16px',
+          display: 'inline-flex', alignItems: 'center',
+          boxShadow: '0 2px 16px rgba(0,0,0,0.2)',
         }}>
-          AURA FIT
-        </h1>
+          <img src={logoImg} alt="AuraFit" style={{ height: 40, width: 'auto' }} />
+        </div>
       </motion.div>
 
       {/* Progress */}
