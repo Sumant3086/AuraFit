@@ -1,10 +1,25 @@
 User-agent: *
 Allow: /
+Allow: /pricing
+Allow: /classes
+Allow: /features
+Allow: /contact
+Allow: /trainers
+Allow: /shop
+
+# Private/authenticated areas
 Disallow: /admin/
 Disallow: /api/
 Disallow: /dashboard
 Disallow: /profile
 Disallow: /my-orders
+Disallow: /checkin
+Disallow: /settings
+Disallow: /onboarding
+Disallow: /trainer/dashboard
 
-# Sitemaps
+# Sitemap
 Sitemap: https://aurafitgymwebsite.onrender.com/sitemap.xml
+
+# Crawl-delay for well-behaved bots
+Crawl-delay: 1

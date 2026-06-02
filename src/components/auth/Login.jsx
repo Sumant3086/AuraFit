@@ -85,44 +85,41 @@ const Login = () => {
     <div className="auth-container">
       <div className="auth-card">
         <div className="auth-header">
-          <Logo size="medium" color="gradient" />
-          <h1>Welcome Back</h1>
-          <p>Login to continue your fitness journey</p>
+          <Logo size="medium" />
+          <h1>Welcome back</h1>
+          <p>Sign in to continue your training</p>
         </div>
 
         <form onSubmit={handleSubmit} className="auth-form">
           {error && <div className="error-message">{error}</div>}
-          
+
           <div className="form-group">
-            <label><FaEnvelope style={{ marginRight: '8px' }} />Email Address</label>
+            <label>Email</label>
             <div className="input-wrapper">
               <input
-                type="email"
-                name="email"
+                type="email" name="email"
                 value={formData.email}
                 onChange={handleChange}
-                placeholder="Enter your email"
+                placeholder="you@example.com"
+                autoComplete="email"
                 required
               />
             </div>
           </div>
 
           <div className="form-group">
-            <label><FaLock style={{ marginRight: '8px' }} />Password</label>
+            <label>Password</label>
             <div className="input-wrapper">
               <input
                 type={showPassword ? 'text' : 'password'}
                 name="password"
                 value={formData.password}
                 onChange={handleChange}
-                placeholder="Enter your password"
+                placeholder="••••••••"
+                autoComplete="current-password"
                 required
               />
-              <button
-                type="button"
-                className="toggle-password"
-                onClick={() => setShowPassword(!showPassword)}
-              >
+              <button type="button" className="toggle-password" onClick={() => setShowPassword(!showPassword)} aria-label={showPassword ? 'Hide password' : 'Show password'}>
                 {showPassword ? <FaEyeSlash /> : <FaEye />}
               </button>
             </div>
@@ -131,25 +128,41 @@ const Login = () => {
           <div className="form-options">
             <label className="remember-me">
               <input type="checkbox" />
-              <span>Remember me</span>
+              <span>Stay signed in</span>
             </label>
-            <Link to="/forgot-password" className="forgot-password">
-              Forgot Password?
-            </Link>
+            <Link to="/forgot-password" className="forgot-password">Forgot password?</Link>
           </div>
 
           <button type="submit" className="auth-btn" disabled={loading}>
-            {loading ? 'Logging in...' : 'Login'}
+            {loading ? 'Signing in…' : 'Continue'}
           </button>
         </form>
 
         <div className="auth-footer">
-          <p>Don't have an account? <Link to="/signup">Sign Up</Link></p>
-          <p style={{ marginTop: '15px', paddingTop: '15px', borderTop: '1px solid rgba(255, 255, 255, 0.1)' }}>
-            <Link to="/admin/login" style={{ color: '#ff00ff', fontSize: '0.9rem' }}>
-              Admin Login →
+          <p>New to AuraFit? <Link to="/signup">Create an account</Link></p>
+          <p style={{ marginTop: 14 }}>
+            <Link to="/admin/login" style={{ color: 'var(--text-muted)', fontSize: 12 }}>
+              Admin portal →
             </Link>
           </p>
+        </div>
+
+        {/* Social proof */}
+        <div className="auth-social-proof">
+          <div className="proof-item">
+            <span className="proof-value">5k+</span>
+            <span className="proof-label">Members</span>
+          </div>
+          <div className="proof-sep" />
+          <div className="proof-item">
+            <span className="proof-value">4.9★</span>
+            <span className="proof-label">Rating</span>
+          </div>
+          <div className="proof-sep" />
+          <div className="proof-item">
+            <span className="proof-value">98%</span>
+            <span className="proof-label">Satisfaction</span>
+          </div>
         </div>
       </div>
     </div>

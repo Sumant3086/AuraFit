@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" fill="none">
+  <defs>
+    <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#9d00ff"/>
+      <stop offset="100%" stop-color="#00d4ff"/>
+    </linearGradient>
+  </defs>
+  <!-- Background -->
+  <rect width="32" height="32" rx="8" fill="url(#g)"/>
+  <!-- Left plate -->
+  <rect x="5.5" y="10.5" width="5" height="11" rx="2" fill="white" opacity="0.95"/>
+  <!-- Bar -->
+  <rect x="10.5" y="13.5" width="11" height="5" rx="1.5" fill="white" opacity="0.85"/>
+  <!-- Right plate -->
+  <rect x="21.5" y="10.5" width="5" height="11" rx="2" fill="white" opacity="0.95"/>
+  <!-- Energy dot -->
+  <circle cx="27" cy="7.5" r="1.2" fill="white" opacity="0.55"/>
+</svg>
