@@ -1,5 +1,6 @@
 import React, { useState, useEffect, lazy, Suspense } from "react";
 import { Routes, Route, Navigate, useLocation } from "react-router-dom";
+import { AnimatePresence, motion } from "framer-motion";
 import { Toaster } from 'react-hot-toast';
 import AOS from 'aos';
 import 'aos/dist/aos.css';
@@ -124,6 +125,7 @@ const AOS_CONFIG = { duration: 800, once: true, offset: 100, easing: 'ease-out' 
 const AppInner = () => {
   const [isOpen, setIsOpen] = useState(false);
   const toggle = () => setIsOpen(o => !o);
+  const location = useLocation();
 
   useEffect(() => { AOS.init(AOS_CONFIG); }, []);
 
@@ -161,8 +163,17 @@ const AppInner = () => {
         />
         <FitnessAssistant />
         <ErrorBoundary>
+        <AnimatePresence mode="wait" initial={false}>
+        <motion.div
+          key={location.pathname}
+          initial={{ opacity: 0, y: 6 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.18, ease: [0.16, 1, 0.3, 1] }}
+          style={{ minHeight: '100vh' }}
+        >
         <Suspense fallback={<PageLoader />}>
-          <Routes>
+          <Routes location={location} key={location.pathname}>
             {/* Auth routes (no navbar) */}
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
@@ -244,6 +255,8 @@ const AppInner = () => {
             } />
           </Routes>
         </Suspense>
+        </motion.div>
+        </AnimatePresence>
         </ErrorBoundary>
         <ScrollToTop />
         <ScrollToTopButton />

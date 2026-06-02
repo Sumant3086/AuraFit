@@ -50,13 +50,10 @@ const MyOrders = () => {
         }));
         
         setOrders(transformedOrders);
-        console.log(`📦 Loaded ${transformedOrders.length} orders`);
       } else {
-        console.log('No orders found for this user');
         setOrders([]);
       }
-    } catch (error) {
-      console.error('Error loading orders:', error);
+    } catch {
       setOrders([]);
     }
   };
