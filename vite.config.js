@@ -38,7 +38,14 @@ export default defineConfig({
         ],
       },
       workbox: {
-        maximumFileSizeToCacheInBytes: 4 * 1024 * 1024, // 4 MiB — allows the logo PNG
+        maximumFileSizeToCacheInBytes: 3 * 1024 * 1024,
+        // Large icon copies are served from the network — no value in precaching them
+        globIgnores: [
+          '**/icon-192.png', '**/icon-512.png',
+          '**/apple-touch-icon.png',
+          '**/favicon-16x16.png', '**/favicon-32x32.png',
+          '**/logo.png',
+        ],
         runtimeCaching: [
           {
             urlPattern: /^https:\/\/fonts\.googleapis\.com\/.*/i,

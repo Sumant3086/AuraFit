@@ -1,0 +1,62 @@
+services:
+  # ── Full-stack web service (serves React build + Express API) ──
+  - type: web
+    name: aurafit
+    runtime: node
+    plan: free
+    region: singapore  # Closest to India
+
+    # Build
+    buildCommand: npm ci && npm run build && cd server && npm ci
+    startCommand: cd server && node server.js
+
+    # Health check
+    healthCheckPath: /api/health
+
+    # Auto-deploy on push to main
+    autoDeploy: true
+    branch: main
+
+    # Environment variables — set these in Render Dashboard
+    # Never commit actual values here
+    envVars:
+      - key: NODE_ENV
+        value: production
+
+      - key: PORT
+        value: 10000        # Render assigns this; set it explicitly
+
+      - key: CLIENT_URL
+        sync: false         # Set in Render dashboard
+
+      # Database
+      - key: MONGODB_URI
+        sync: false         # Set in Render dashboard (MongoDB Atlas)
+
+      # Security
+      - key: JWT_SECRET
+        generateValue: true  # Render auto-generates a strong value
+      - key: JWT_REFRESH_SECRET
+        generateValue: true
+
+      # AI
+      - key: GOOGLE_API_KEY
+        sync: false
+
+      # Payments
+      - key: RAZORPAY_KEY_ID
+        sync: false
+      - key: RAZORPAY_KEY_SECRET
+        sync: false
+
+      # Email
+      - key: EMAIL_USER
+        sync: false
+      - key: EMAIL_APP_PASSWORD
+        sync: false
+
+      # Admin
+      - key: ADMIN_EMAIL
+        sync: false
+      - key: ADMIN_NAME
+        sync: false

@@ -1,0 +1,19 @@
+# Environment variables — NEVER commit
+.env
+.env.*
+
+# Logs
+logs/
+*.log
+
+# Runtime
+node_modules/
+*.pid
+
+# Generated files
+invoices/
+uploads/
+
+# OS
+.DS_Store
+Thumbs.db
