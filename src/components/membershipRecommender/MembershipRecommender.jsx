@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import './membershipRecommender.css';
 import { FaCalculator, FaCheckCircle } from 'react-icons/fa';
+import toast from 'react-hot-toast';
 
 const MembershipRecommender = () => {
   const [visits, setVisits] = useState('');
@@ -10,7 +11,7 @@ const MembershipRecommender = () => {
     const monthlyVisits = parseInt(visits);
     
     if (!monthlyVisits || monthlyVisits < 1) {
-      alert('Please enter valid number of visits');
+      toast.error('Please enter a valid number of visits.');
       return;
     }
 

@@ -4,6 +4,7 @@ import { authAPI } from '../../services/api';
 import './auth.css';
 import { FaEnvelope, FaLock, FaEye, FaEyeSlash, FaArrowLeft } from 'react-icons/fa';
 import Logo from '../logo/Logo';
+import toast from 'react-hot-toast';
 
 const ForgotPassword = () => {
   const navigate = useNavigate();
@@ -74,7 +75,7 @@ const ForgotPassword = () => {
       });
       
       if (response.success) {
-        alert('✅ Password reset successfully! You can now login with your new password.');
+        toast.success('Password reset. Sign in with your new password.');
         navigate('/login');
       } else {
         setError(response.message || 'Failed to reset password. Please try again.');
@@ -91,9 +92,9 @@ const ForgotPassword = () => {
     <div className="auth-container">
       <div className="auth-card">
         <div className="auth-header">
-          <Logo size="medium" color="gradient" />
-          <h1>{step === 1 ? 'Forgot Password?' : 'Reset Password'}</h1>
-          <p>{step === 1 ? 'Enter your email to reset password' : 'Enter your new password'}</p>
+          <Logo size="medium" />
+          <h1>{step === 1 ? 'Reset your password' : 'Choose a new password'}</h1>
+          <p>{step === 1 ? 'Enter your email and we\'ll verify your account' : 'Make it strong and memorable'}</p>
         </div>
 
         {step === 1 ? (

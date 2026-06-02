@@ -60,14 +60,42 @@ const TrainerProfile = lazy(() => import("./components/trainers/TrainerProfile")
 // Lazy load shop data to avoid circular dependency
 import shopDataModule from "./components/shop/shopData";
 
-// Loading spinner
+// Brand-consistent page loader — used for lazy chunk loading and auth checks
 const PageLoader = () => (
-  <div style={{ minHeight: '100vh', background: '#0a0a0a', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-    <div style={{ textAlign: 'center' }}>
-      <div style={{ width: 40, height: 40, border: '3px solid #1a1a1a', borderTop: '3px solid #9d00ff', borderRadius: '50%', animation: 'spin 0.8s linear infinite', margin: '0 auto 16px' }} />
-      <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
-      <p style={{ color: '#444', fontSize: 14, margin: 0 }}>Loading...</p>
+  <div style={{
+    minHeight: '100vh',
+    background: 'var(--surface-bg, #050507)',
+    display: 'flex', alignItems: 'center', justifyContent: 'center',
+  }}>
+    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 16 }}>
+      {/* Brand mark */}
+      <svg width="40" height="40" viewBox="0 0 40 40" fill="none" aria-hidden="true">
+        <defs>
+          <linearGradient id="pl-g" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stopColor="#9d00ff" /><stop offset="100%" stopColor="#00d4ff" />
+          </linearGradient>
+        </defs>
+        <rect width="40" height="40" rx="10" fill="url(#pl-g)" />
+        <rect x="7" y="13.5" width="6" height="13" rx="2.5" fill="white" opacity="0.95" />
+        <rect x="13" y="17.5" width="14" height="5" rx="2" fill="white" opacity="0.85" />
+        <rect x="27" y="13.5" width="6" height="13" rx="2.5" fill="white" opacity="0.95" />
+      </svg>
+      {/* Pulse dots */}
+      <div style={{ display: 'flex', gap: 5 }}>
+        {[0, 1, 2].map(i => (
+          <div key={i} style={{
+            width: 4, height: 4, borderRadius: '50%', background: '#9d00ff',
+            animation: `pl-dot 1.2s ease-in-out ${i * 0.2}s infinite`,
+          }} />
+        ))}
+      </div>
     </div>
+    <style>{`
+      @keyframes pl-dot {
+        0%, 80%, 100% { opacity: 0.2; transform: scale(0.8); }
+        40% { opacity: 1; transform: scale(1); }
+      }
+    `}</style>
   </div>
 );
 
@@ -106,9 +134,29 @@ const AppInner = () => {
         <Toaster
           position="top-right"
           reverseOrder={false}
+          gutter={8}
           toastOptions={{
-            duration: 3000,
-            style: { background: '#1a1a1a', color: '#fff', border: '1px solid #9d00ff', borderRadius: '10px' },
+            duration: 3500,
+            style: {
+              background: 'var(--surface-overlay, #17171f)',
+              color: 'var(--text-primary, #f0f0f6)',
+              border: '1px solid var(--border-default, rgba(255,255,255,0.09))',
+              borderRadius: '12px',
+              fontSize: '14px',
+              fontWeight: 500,
+              boxShadow: '0 8px 32px rgba(0,0,0,0.5)',
+              padding: '12px 16px',
+              maxWidth: '380px',
+            },
+            success: {
+              iconTheme: { primary: '#10b981', secondary: 'var(--surface-overlay, #17171f)' },
+            },
+            error: {
+              iconTheme: { primary: '#ef4444', secondary: 'var(--surface-overlay, #17171f)' },
+            },
+            loading: {
+              iconTheme: { primary: '#9d00ff', secondary: 'var(--surface-overlay, #17171f)' },
+            },
           }}
         />
         <FitnessAssistant />

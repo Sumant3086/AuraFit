@@ -1,73 +1,167 @@
-import React from 'react'
-import './footer.css'
-import Logo from '../logo/Logo'
-import { Link } from 'react-router-dom'
-import { FaInstagram, FaYoutube, FaFacebook, FaTwitter, FaEnvelope, FaPhone, FaMapMarkerAlt } from 'react-icons/fa'
+import React from 'react';
+import './footer.css';
+import Logo from '../logo/Logo';
+import { Link } from 'react-router-dom';
+import { FaInstagram, FaYoutube, FaTwitter, FaEnvelope, FaMapMarkerAlt } from 'react-icons/fa';
 
-const Footer = () => {
+const LINKS = {
+  product: [
+    { to: '/features', label: 'Features' },
+    { to: '/pricing', label: 'Pricing' },
+    { to: '/classes', label: 'Classes' },
+    { to: '/shop', label: 'Shop' },
+    { to: '/trainers', label: 'Trainers' },
+  ],
+  company: [
+    { to: '/contact', label: 'Contact' },
+    { to: '/community', label: 'Community' },
+    { to: '/leaderboard', label: 'Leaderboard' },
+  ],
+};
+
+export default function Footer() {
   return (
-    <section id='footer'>
-      <div className="footer-container">
-        <div className="col1">
-          <h3 className='footer-title'><span className="underline">AURA FIT</span></h3>
-          <ul className='footer-text'>
-            <li><FaMapMarkerAlt /> Premium Fitness Center</li>
-            <li>Sports Complex, Downtown</li>
-            <li>Open 24/7 - 365 Days</li>
-          </ul>
-        </div>
+    <footer style={{
+      background: 'var(--surface-raised)',
+      borderTop: '1px solid var(--border-subtle)',
+    }}>
+      <div style={{
+        maxWidth: 1280, margin: '0 auto',
+        padding: 'clamp(48px,6vw,80px) clamp(20px,4vw,60px) clamp(24px,3vw,32px)',
+      }}>
+        {/* Top row */}
+        <div style={{
+          display: 'grid',
+          gridTemplateColumns: 'minmax(200px,1fr) repeat(2,minmax(120px,auto))',
+          gap: 'clamp(32px,5vw,64px)',
+          marginBottom: 'clamp(32px,4vw,48px)',
+          flexWrap: 'wrap',
+        }} className="footer-grid">
 
-        <div className="col2">
-          <h3 className='footer-title'><span className="underline">Quick Links</span></h3>
-          <ul className='footer-text'>
-            <li><Link to="/classes">Classes</Link></li>
-            <li><Link to="/pricing">Membership</Link></li>
-            <li><Link to="/features">Features</Link></li>
-            <li><Link to="/shop">Shop</Link></li>
-            <li><Link to="/contact">Contact</Link></li>
-          </ul>
-        </div>
+          {/* Brand column */}
+          <div>
+            <Logo size="medium" style={{ marginBottom: 16 }} />
+            <p style={{
+              color: 'var(--text-muted)', fontSize: 14,
+              lineHeight: 1.65, maxWidth: 260, margin: '0 0 20px',
+            }}>
+              The AI-powered fitness platform for people who train seriously.
+            </p>
+            <div style={{ display: 'flex', gap: 12 }}>
+              {[
+                { href: 'https://www.instagram.com', icon: <FaInstagram />, label: 'Instagram' },
+                { href: 'https://www.youtube.com', icon: <FaYoutube />, label: 'YouTube' },
+                { href: 'https://www.twitter.com', icon: <FaTwitter />, label: 'Twitter' },
+              ].map(s => (
+                <a
+                  key={s.label}
+                  href={s.href}
+                  target="_blank" rel="noopener noreferrer"
+                  aria-label={s.label}
+                  style={{
+                    width: 36, height: 36, borderRadius: 8,
+                    background: 'var(--surface-overlay)',
+                    border: '1px solid var(--border-subtle)',
+                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    color: 'var(--text-muted)', fontSize: 16,
+                    transition: 'border-color 0.2s ease, color 0.2s ease',
+                  }}
+                  onMouseEnter={e => { e.currentTarget.style.borderColor = 'var(--border-strong)'; e.currentTarget.style.color = 'var(--text-secondary)'; }}
+                  onMouseLeave={e => { e.currentTarget.style.borderColor = 'var(--border-subtle)'; e.currentTarget.style.color = 'var(--text-muted)'; }}
+                >
+                  {s.icon}
+                </a>
+              ))}
+            </div>
+          </div>
 
-        <div className="col4">
-          <h3 className='footer-title'><span className="underline">Get in Touch</span></h3>
-          <ul className='footer-text'>
-            <li><a href="mailto:sumantyadav3086@gmail.com"><FaEnvelope /> sumantyadav3086@gmail.com</a></li>
-            <li><a href="tel:+919599617479"><FaPhone /> +91 9599 617 479</a></li>
-          </ul>
-        </div>
+          {/* Product links */}
+          <div>
+            <p style={{ color: 'var(--text-secondary)', fontSize: 12, fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase', margin: '0 0 16px' }}>
+              Product
+            </p>
+            <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: 10 }}>
+              {LINKS.product.map(l => (
+                <li key={l.to}>
+                  <Link to={l.to} style={{
+                    color: 'var(--text-muted)', fontSize: 14, textDecoration: 'none',
+                    transition: 'color 0.15s',
+                  }}
+                    onMouseEnter={e => e.target.style.color = 'var(--text-primary)'}
+                    onMouseLeave={e => e.target.style.color = 'var(--text-muted)'}
+                  >
+                    {l.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
 
-        <div className="col5">
-          <h3 className='footer-title'><span className="underline">Follow Us</span></h3>
-          <div className="footer-socials">
-            <a href="https://www.instagram.com" target="_blank" rel="noopener noreferrer" className="social-link">
-              <FaInstagram />
-            </a>
-            <a href="https://www.youtube.com" target="_blank" rel="noopener noreferrer" className="social-link">
-              <FaYoutube />
-            </a>
-            <a href="https://www.facebook.com" target="_blank" rel="noopener noreferrer" className="social-link">
-              <FaFacebook />
-            </a>
-            <a href="https://www.twitter.com" target="_blank" rel="noopener noreferrer" className="social-link">
-              <FaTwitter />
-            </a>
+          {/* Company links */}
+          <div>
+            <p style={{ color: 'var(--text-secondary)', fontSize: 12, fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase', margin: '0 0 16px' }}>
+              Company
+            </p>
+            <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: 10 }}>
+              {LINKS.company.map(l => (
+                <li key={l.to}>
+                  <Link to={l.to} style={{
+                    color: 'var(--text-muted)', fontSize: 14, textDecoration: 'none',
+                    transition: 'color 0.15s',
+                  }}
+                    onMouseEnter={e => e.target.style.color = 'var(--text-primary)'}
+                    onMouseLeave={e => e.target.style.color = 'var(--text-muted)'}
+                  >
+                    {l.label}
+                  </Link>
+                </li>
+              ))}
+              <li>
+                <a href="mailto:support@aurafit.com" style={{
+                  display: 'flex', alignItems: 'center', gap: 6,
+                  color: 'var(--text-muted)', fontSize: 14, textDecoration: 'none',
+                  transition: 'color 0.15s',
+                }}
+                  onMouseEnter={e => e.currentTarget.style.color = 'var(--text-primary)'}
+                  onMouseLeave={e => e.currentTarget.style.color = 'var(--text-muted)'}
+                >
+                  <FaEnvelope style={{ fontSize: 12 }} /> support@aurafit.com
+                </a>
+              </li>
+            </ul>
           </div>
         </div>
 
-        <div className="col3">
-          <Logo size="large" color="gradient" />
-          <p className="footer-tagline">Transform Your Body, Transform Your Life</p>
-          <div className="footer-bottom">
-            <p>&copy; 2024 AURA FIT. All rights reserved.</p>
-            <p>Powered by AI • Built with ❤️</p>
-            <p style={{ fontSize: '0.7rem', marginTop: '10px', opacity: 0.3 }}>
-              <Link to="/admin/login" style={{ color: '#333' }}>•</Link>
+        {/* Bottom row */}
+        <div style={{
+          borderTop: '1px solid var(--border-subtle)',
+          paddingTop: 'clamp(16px,2.5vw,24px)',
+          display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+          flexWrap: 'wrap', gap: 12,
+        }}>
+          <p style={{ color: 'var(--text-muted)', fontSize: 13, margin: 0 }}>
+            © {new Date().getFullYear()} AuraFit. All rights reserved.
+          </p>
+          <div style={{ display: 'flex', gap: 20, alignItems: 'center' }}>
+            <p style={{ color: 'var(--text-muted)', fontSize: 12, margin: 0 }}>
+              Powered by Gemini AI
             </p>
+            <Link to="/admin/login" style={{ color: 'var(--text-muted)', fontSize: 11, opacity: 0.4 }}>
+              ·
+            </Link>
           </div>
         </div>
       </div>
-    </section>
-  )
-}
 
-export default Footer
+      <style>{`
+        @media (max-width: 640px) {
+          .footer-grid { grid-template-columns: 1fr 1fr !important; }
+          .footer-grid > :first-child { grid-column: 1 / -1; }
+        }
+        @media (max-width: 400px) {
+          .footer-grid { grid-template-columns: 1fr !important; }
+        }
+      `}</style>
+    </footer>
+  );
+}

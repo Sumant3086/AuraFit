@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import toast from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import './classes.css';
@@ -42,11 +43,11 @@ const Classes = () => {
       // Store the intended action for after login
       localStorage.setItem('redirectAfterLogin', '/classes');
       localStorage.setItem('pendingReservation', JSON.stringify(classItem));
-      alert('Please login to reserve a spot in this class');
+      toast.error('Sign in to reserve a spot.');
       navigate('/login');
     } else {
       // User is logged in, proceed with reservation
-      alert(`Spot reserved for ${classItem.name} class with ${classItem.trainer}!`);
+      toast.success(`Spot reserved in ${classItem.name}!`);
       // Here you would typically make an API call to reserve the spot
     }
   };
