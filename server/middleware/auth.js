@@ -1,8 +1,13 @@
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 
-const JWT_SECRET = process.env.JWT_SECRET || 'aura_fit_secret_key_2024';
-const JWT_REFRESH_SECRET = process.env.JWT_REFRESH_SECRET || 'aura_fit_refresh_secret';
+// These MUST be set in environment — no hardcoded fallbacks (security risk)
+const JWT_SECRET = process.env.JWT_SECRET;
+const JWT_REFRESH_SECRET = process.env.JWT_REFRESH_SECRET;
+
+if (!JWT_SECRET || !JWT_REFRESH_SECRET) {
+  throw new Error('JWT_SECRET and JWT_REFRESH_SECRET must be set in environment variables. See server/.env.example');
+}
 const ACCESS_TOKEN_EXPIRY = '15m';
 const REFRESH_TOKEN_EXPIRY = '7d';
 
