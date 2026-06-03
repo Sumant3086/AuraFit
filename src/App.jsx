@@ -3,8 +3,7 @@ import { Routes, Route, Navigate, useLocation } from "react-router-dom";
 import { AnimatePresence, motion } from "framer-motion";
 import logoSvg from "./assets/logos/aurafit-logo.svg";
 import { Toaster } from 'react-hot-toast';
-import AOS from 'aos';
-import 'aos/dist/aos.css';
+// AOS removed — replaced with Framer Motion Reveal component for better perf
 import { CartProvider } from "./context/CartContext";
 import { SocketProvider } from "./context/SocketContext";
 import { AuthProvider, useAuth } from "./context/AuthContext";
@@ -109,15 +108,11 @@ const OnboardingGuard = ({ children }) => {
   return children;
 };
 
-const AOS_CONFIG = { duration: 800, once: true, offset: 100, easing: 'ease-out' };
-
 // Inner app that can access AuthContext
 const AppInner = () => {
   const [isOpen, setIsOpen] = useState(false);
   const toggle = () => setIsOpen(o => !o);
   const location = useLocation();
-
-  useEffect(() => { AOS.init(AOS_CONFIG); }, []);
 
   return (
     <SocketProvider>
@@ -152,10 +147,9 @@ const AppInner = () => {
         <AnimatePresence mode="wait" initial={false}>
         <motion.div
           key={location.pathname}
-          initial={{ opacity: 0, y: 6 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 0.18, ease: [0.16, 1, 0.3, 1] }}
+          initial={{ opacity: 0, y: 4 }}
+          animate={{ opacity: 1, y: 0, transition: { duration: 0.22, ease: [0.16, 1, 0.3, 1] } }}
+          exit={{ opacity: 0, transition: { duration: 0.12, ease: [0.4, 0, 1, 1] } }}
           style={{ minHeight: '100vh' }}
         >
         <Suspense fallback={<PageLoader />}>

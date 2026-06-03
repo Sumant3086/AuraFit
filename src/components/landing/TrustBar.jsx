@@ -1,5 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
+import Reveal from '../common/Reveal';
+import { fadeUpSm, staggerContainer } from '../../lib/motion';
 import { LuShieldCheck, LuZap, LuRefreshCw, LuSmartphone, LuBrain, LuTarget } from 'react-icons/lu';
 
 const ITEMS = [

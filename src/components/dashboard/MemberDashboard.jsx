@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import { motion } from 'framer-motion';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
+import { motion, useInView } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import {
   LuQrCode, LuDumbbell, LuSalad, LuCalendar, LuUsers,
@@ -8,7 +8,26 @@ import {
 import { useAuth } from '../../context/AuthContext';
 import AnnouncementBanner from '../announcements/AnnouncementBanner';
 import ActivityFeed from './ActivityFeed';
+import Reveal, { RevealItem } from '../common/Reveal';
+import { ease, dur, staggerContainer, fadeUpSm } from '../../lib/motion';
 import toast from 'react-hot-toast';
+
+/** Smooth count-up animation using rAF */
+function useCountUp(target, duration = 900, trigger = false) {
+  const [val, setVal] = useState(0);
+  useEffect(() => {
+    if (!trigger || !target) return;
+    const start = performance.now();
+    const tick = (now) => {
+      const p = Math.min((now - start) / duration, 1);
+      const eased = 1 - Math.pow(1 - p, 3); // ease-out cubic
+      setVal(Math.round(eased * target));
+      if (p < 1) requestAnimationFrame(tick);
+    };
+    requestAnimationFrame(tick);
+  }, [target, trigger, duration]);
+  return val;
+}
 
 const ACTIONS = [
   { label: 'Check-In',     icon: LuQrCode,    path: '/checkin' },
@@ -163,23 +182,8 @@ export default function MemberDashboard() {
       {/* Content */}
       <div style={{ maxWidth: 'var(--max-content)', margin: '0 auto', padding: 'var(--sp-6) clamp(16px,4vw,32px)' }}>
 
-        {/* Stats */}
-        {stats && (
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 1, background: 'var(--border-1)', ...card, overflow: 'hidden', marginBottom: 'var(--sp-4)' }}>
-            {[
-              { label: 'This month', value: stats.thisMonth ?? 0 },
-              { label: 'This week',  value: stats.thisWeek  ?? 0 },
-              { label: 'All time',   value: stats.total     ?? 0 },
-            ].map(s => (
-              <div key={s.label} style={{ background: 'var(--surface-2)', padding: 'var(--sp-4)', textAlign: 'center' }}>
-                <p style={{ color: 'var(--text-1)', fontSize: 'var(--text-xl)', fontWeight: 'var(--weight-bold)', letterSpacing: 'var(--tracking-snug)', margin: 0 }}>
-                  {s.value}
-                </p>
-                <p style={{ color: 'var(--text-3)', fontSize: 'var(--text-xs)', margin: '3px 0 0' }}>{s.label}</p>
-              </div>
-            ))}
-          </div>
-        )}
+        {/* Stats — animated count-up on first view */}
+        <AnimatedStats stats={stats} loading={loading} card={card} />
 
         {/* Check-in button */}
         <motion.button
@@ -356,11 +360,60 @@ export default function MemberDashboard() {
         )}
 
         {/* Activity */}
-        <div style={{ ...card, padding: 'var(--sp-5)' }}>
-          <ActivityFeed />
-        </div>
+        <Reveal delay={0.1}>
+          <div style={{ ...card, padding: 'var(--sp-5)' }}>
+            <ActivityFeed />
+          </div>
+        </Reveal>
       </div>
     </div>
+  );
+}
+
+/* ── Animated stats with count-up ─────────────────────────────── */
+function AnimatedStats({ stats, loading, card }) {
+  const ref = useRef(null);
+  const inView = useInView(ref, { once: true, margin: '-40px' });
+
+  const m = useCountUp(stats?.thisMonth ?? 0, 800, inView && !!stats);
+  const w = useCountUp(stats?.thisWeek  ?? 0, 600, inView && !!stats);
+  const t = useCountUp(stats?.total     ?? 0, 1000, inView && !!stats);
+
+  const rows = [
+    { label: 'This month', val: m },
+    { label: 'This week',  val: w },
+    { label: 'All time',   val: t },
+  ];
+
+  return (
+    <motion.div
+      ref={ref}
+      initial={{ opacity: 0, y: 8 }}
+      animate={inView ? { opacity: 1, y: 0 } : {}}
+      transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+      style={{
+        display: 'grid', gridTemplateColumns: 'repeat(3,1fr)',
+        gap: 1, background: 'var(--border-1)',
+        ...card, overflow: 'hidden', marginBottom: 'var(--sp-4)',
+      }}
+    >
+      {loading
+        ? ['a','b','c'].map(k => (
+            <div key={k} style={{ background: 'var(--surface-2)', padding: 'var(--sp-4)', textAlign: 'center' }}>
+              <div style={{ height: 24, width: 32, background: 'var(--surface-3)', borderRadius: 4, margin: '0 auto 6px' }} className="skeleton-pulse" />
+              <div style={{ height: 10, width: 56, background: 'var(--surface-3)', borderRadius: 4, margin: '0 auto' }} className="skeleton-pulse" />
+            </div>
+          ))
+        : rows.map(r => (
+            <div key={r.label} style={{ background: 'var(--surface-2)', padding: 'var(--sp-4)', textAlign: 'center' }}>
+              <p style={{ color: 'var(--text-1)', fontSize: 'var(--text-xl)', fontWeight: 700, letterSpacing: '-0.025em', margin: 0, fontVariantNumeric: 'tabular-nums' }}>
+                {r.val}
+              </p>
+              <p style={{ color: 'var(--text-3)', fontSize: 'var(--text-xs)', margin: '3px 0 0' }}>{r.label}</p>
+            </div>
+          ))
+      }
+    </motion.div>
   );
 }
 
