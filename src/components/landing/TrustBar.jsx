@@ -1,62 +1,66 @@
 import React from 'react';
 import { motion } from 'framer-motion';
+import { LuShieldCheck, LuZap, LuRefreshCw, LuSmartphone, LuBrain, LuTarget } from 'react-icons/lu';
 
-const TRUST = [
-  { icon: '🔒', label: 'Secure payments', desc: 'Encrypted via Razorpay' },
-  { icon: '🤖', label: 'Google Gemini AI', desc: 'AI-powered workouts & nutrition' },
-  { icon: '⚡', label: 'Instant setup', desc: 'Start training in under 2 minutes' },
-  { icon: '🔄', label: 'Cancel anytime', desc: 'No lock-in, no hidden fees' },
-  { icon: '📱', label: 'Works offline', desc: 'Installable PWA' },
-  { icon: '🎯', label: 'Personalized to you', desc: 'Plans built around your goals' },
+const ITEMS = [
+  { icon: LuShieldCheck, label: 'Secure payments',    desc: 'Razorpay encrypted' },
+  { icon: LuBrain,       label: 'Gemini AI',          desc: 'Adaptive planning' },
+  { icon: LuZap,         label: 'Instant setup',      desc: 'Start in 2 minutes' },
+  { icon: LuRefreshCw,   label: 'Cancel anytime',     desc: 'No lock-in' },
+  { icon: LuSmartphone,  label: 'Works offline',      desc: 'Installable PWA' },
+  { icon: LuTarget,      label: 'Personalized',       desc: 'Built for your goals' },
 ];
 
 export default function TrustBar() {
   return (
     <section style={{
-      borderTop: '1px solid var(--border-subtle)',
-      borderBottom: '1px solid var(--border-subtle)',
-      background: 'var(--surface-raised)',
-      padding: 'clamp(32px,4vw,48px) clamp(20px,4vw,60px)',
-      overflow: 'hidden',
+      background: 'var(--surface-1)',
+      borderBottom: '1px solid var(--border-1)',
+      padding: 'var(--sp-10) clamp(20px,5vw,60px)',
     }}>
-      <div style={{ maxWidth: 1280, margin: '0 auto' }}>
-        <motion.p
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true }}
-          style={{
-            textAlign: 'center', color: 'var(--text-muted)',
-            fontSize: 12, fontWeight: 700, letterSpacing: '0.1em',
-            textTransform: 'uppercase', marginBottom: 'clamp(20px,3vw,32px)',
-          }}
-        >
-          Built with these in mind
-        </motion.p>
+      <div style={{ maxWidth: 'var(--max-wide)', margin: '0 auto' }}>
+        <p style={{
+          color: 'var(--text-3)',
+          fontSize: 'var(--text-xs)',
+          fontWeight: 'var(--weight-medium)',
+          letterSpacing: 'var(--tracking-wider)',
+          textTransform: 'uppercase',
+          textAlign: 'center',
+          marginBottom: 'var(--sp-8)',
+        }}>
+          What's included
+        </p>
 
         <div style={{
           display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))',
-          gap: 'clamp(12px,2vw,24px)',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))',
+          gap: 'var(--sp-6)',
         }}>
-          {TRUST.map((item, i) => (
+          {ITEMS.map(({ icon: Icon, label, desc }, i) => (
             <motion.div
-              key={item.label}
-              initial={{ opacity: 0, y: 16 }}
+              key={label}
+              initial={{ opacity: 0, y: 12 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ delay: i * 0.06, ease: [0.16, 1, 0.3, 1] }}
-              style={{
-                display: 'flex', gap: 12, alignItems: 'flex-start',
-                padding: 'clamp(12px,1.5vw,16px)',
-                background: 'var(--surface-overlay)',
-                border: '1px solid var(--border-subtle)',
-                borderRadius: 'var(--radius-lg)',
-              }}
+              transition={{ delay: i * 0.05, duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+              style={{ display: 'flex', alignItems: 'flex-start', gap: 'var(--sp-3)' }}
             >
-              <span style={{ fontSize: 22, flexShrink: 0, lineHeight: 1 }}>{item.icon}</span>
+              <div style={{
+                width: 32, height: 32, borderRadius: 'var(--r-md)',
+                background: 'var(--surface-2)',
+                border: '1px solid var(--border-1)',
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                flexShrink: 0,
+              }}>
+                <Icon size={14} color="var(--text-2)" strokeWidth={1.5} />
+              </div>
               <div>
-                <p style={{ color: 'var(--text-primary)', fontSize: 13, fontWeight: 700, margin: '0 0 2px' }}>{item.label}</p>
-                <p style={{ color: 'var(--text-muted)', fontSize: 11, margin: 0, lineHeight: 1.4 }}>{item.desc}</p>
+                <p style={{ color: 'var(--text-1)', fontSize: 'var(--text-sm)', fontWeight: 'var(--weight-medium)', margin: '0 0 2px' }}>
+                  {label}
+                </p>
+                <p style={{ color: 'var(--text-3)', fontSize: 'var(--text-xs)', margin: 0 }}>
+                  {desc}
+                </p>
               </div>
             </motion.div>
           ))}

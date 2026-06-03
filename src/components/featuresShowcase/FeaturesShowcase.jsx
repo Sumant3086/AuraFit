@@ -1,92 +1,153 @@
 import React from 'react';
-import './featuresShowcase.css';
-import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
+import { Link } from 'react-router-dom';
+import { LuBrain, LuSalad, LuBarChart2, LuArrowRight } from 'react-icons/lu';
 
 const FEATURES = [
   {
-    icon: '🤖',
-    title: 'Workouts that adapt to you',
-    desc: 'Gemini AI analyses your history, goals, and recovery to generate a progressive plan that evolves every week — never the same routine twice.',
+    Icon: LuBrain,
+    title: 'Workouts built for you',
+    desc: 'AI generates a structured weekly plan around your goals, schedule, and available equipment. Updates as you improve.',
     cta: 'Generate your plan',
-    stat: '10,000+ plans generated',
+    stat: 'Adapts weekly',
   },
   {
-    icon: '🥗',
-    title: 'Nutrition, down to the macro',
-    desc: 'Precision meal planning built around your body composition and dietary preferences. Indian and international options, calculated to the gram.',
-    cta: 'Calculate your macros',
-    stat: 'Supports 40+ dietary needs',
+    Icon: LuSalad,
+    title: 'Nutrition to the macro',
+    desc: 'Precision meal planning calibrated to your body composition and dietary preferences. Indian and international options.',
+    cta: 'Calculate macros',
+    stat: '40+ dietary profiles',
   },
   {
-    icon: '📊',
-    title: 'Progress you can see and feel',
-    desc: 'Track weight, body fat, measurements, and strength gains with visual charts. Milestones trigger badge rewards to keep the momentum going.',
-    cta: 'See your data',
-    stat: 'Used by 5,000+ members',
+    Icon: LuBarChart2,
+    title: 'Progress you can see',
+    desc: 'Track weight, body fat, and strength milestones. Visual charts show what is actually changing week over week.',
+    cta: 'Start tracking',
+    stat: 'Week-over-week trends',
   },
 ];
 
 export default function FeaturesShowcase() {
   return (
-    <section className="features-showcase">
-      <div className="showcase-header">
+    <section style={{
+      background: 'var(--bg)',
+      borderBottom: '1px solid var(--border-1)',
+      padding: 'clamp(64px,10vw,100px) clamp(20px,5vw,60px)',
+    }}>
+      <div style={{ maxWidth: 'var(--max-wide)', margin: '0 auto' }}>
+
+        {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: 16 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
+          style={{ marginBottom: 'clamp(40px,7vw,64px)' }}
         >
-          <div style={{
-            display: 'inline-flex', background: 'var(--brand-purple-dim)',
-            border: '1px solid var(--border-accent)', borderRadius: '999px',
-            padding: '5px 14px', marginBottom: 16,
+          <p style={{
+            color: 'var(--text-3)', fontSize: 'var(--text-xs)',
+            fontWeight: 'var(--weight-medium)', letterSpacing: 'var(--tracking-wider)',
+            textTransform: 'uppercase', marginBottom: 'var(--sp-4)',
           }}>
-            <span style={{ color: 'var(--brand-purple)', fontSize: 12, fontWeight: 700, letterSpacing: '0.06em', textTransform: 'uppercase' }}>
-              Platform features
-            </span>
-          </div>
-          <h2>Built for real results,<br /><span className="gradient-text">backed by science</span></h2>
-          <p>Every feature is designed around one question: will this actually help members train better and stay consistent?</p>
+            Platform features
+          </p>
+          <h2 style={{
+            fontSize: 'clamp(26px,3.5vw,40px)',
+            fontWeight: 'var(--weight-bold)',
+            letterSpacing: 'var(--tracking-snug)',
+            color: 'var(--text-1)',
+            lineHeight: 'var(--leading-tight)',
+            maxWidth: 440,
+          }}>
+            Built to actually help you improve
+          </h2>
         </motion.div>
-      </div>
 
-      <div className="showcase-grid">
-        {FEATURES.map((f, i) => (
-          <motion.div
-            key={f.title}
-            className="showcase-card"
-            initial={{ opacity: 0, y: 24 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: '-40px' }}
-            transition={{ delay: i * 0.1, duration: 0.55, ease: [0.16, 1, 0.3, 1] }}
-          >
-            <div className="card-icon" style={{ fontSize: 36 }}>{f.icon}</div>
-            <h3>{f.title}</h3>
-            <p>{f.desc}</p>
-            <div style={{ marginTop: 'auto', paddingTop: 16 }}>
-              <Link to="/features" className="card-link">
-                {f.cta} →
-              </Link>
-              <p style={{ color: 'var(--text-muted)', fontSize: 11, margin: '10px 0 0', fontWeight: 600 }}>
-                {f.stat}
+        {/* Cards */}
+        <div style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))',
+          gap: 1,
+          background: 'var(--border-1)',
+          border: '1px solid var(--border-1)',
+          borderRadius: 'var(--r-xl)',
+          overflow: 'hidden',
+          marginBottom: 'var(--sp-8)',
+        }}>
+          {FEATURES.map(({ Icon, title, desc, cta, stat }, i) => (
+            <motion.div
+              key={title}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: '-40px' }}
+              transition={{ delay: i * 0.08, duration: 0.55, ease: [0.16, 1, 0.3, 1] }}
+              style={{
+                background: 'var(--surface-1)',
+                padding: 'var(--sp-8) var(--sp-6)',
+                display: 'flex', flexDirection: 'column',
+              }}
+            >
+              <div style={{
+                width: 36, height: 36, borderRadius: 'var(--r-md)',
+                background: 'var(--surface-3)',
+                border: '1px solid var(--border-1)',
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                marginBottom: 'var(--sp-5)',
+              }}>
+                <Icon size={16} color="var(--text-2)" strokeWidth={1.5} />
+              </div>
+
+              <h3 style={{
+                color: 'var(--text-1)', fontSize: 'var(--text-md)',
+                fontWeight: 'var(--weight-semibold)',
+                letterSpacing: 'var(--tracking-normal)',
+                margin: '0 0 var(--sp-3)',
+              }}>
+                {title}
+              </h3>
+
+              <p style={{
+                color: 'var(--text-2)', fontSize: 'var(--text-sm)',
+                lineHeight: 'var(--leading-normal)', margin: '0 0 var(--sp-6)',
+                flex: 1,
+              }}>
+                {desc}
               </p>
-            </div>
-          </motion.div>
-        ))}
-      </div>
 
-      <div className="showcase-cta">
-        <motion.div
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true }}
-          transition={{ delay: 0.3 }}
-        >
-          <Link to="/features" className="cta-button">
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <Link to="/features" style={{
+                  display: 'flex', alignItems: 'center', gap: 5,
+                  color: 'var(--text-2)', fontSize: 'var(--text-xs)',
+                  fontWeight: 'var(--weight-medium)',
+                }}>
+                  {cta}
+                  <LuArrowRight size={12} strokeWidth={1.5} />
+                </Link>
+                <span style={{ color: 'var(--text-3)', fontSize: 'var(--text-xs)' }}>
+                  {stat}
+                </span>
+              </div>
+            </motion.div>
+          ))}
+        </div>
+
+        {/* CTA */}
+        <Link to="/features">
+          <motion.button
+            whileHover={{ background: 'var(--surface-3)' }}
+            whileTap={{ scale: 0.98 }}
+            style={{
+              background: 'var(--surface-2)', color: 'var(--text-1)',
+              border: '1px solid var(--border-2)',
+              padding: '11px 22px', borderRadius: 'var(--r-md)',
+              fontSize: 'var(--text-sm)', fontWeight: 'var(--weight-medium)',
+              cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: 6,
+            }}
+          >
             Explore all features
-          </Link>
-        </motion.div>
+            <LuArrowRight size={13} strokeWidth={1.5} />
+          </motion.button>
+        </Link>
       </div>
     </section>
   );

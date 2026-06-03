@@ -133,29 +133,25 @@ const AppInner = () => {
         <Toaster
           position="top-right"
           reverseOrder={false}
-          gutter={8}
+          gutter={6}
           toastOptions={{
             duration: 3500,
             style: {
-              background: 'var(--surface-overlay, #17171f)',
-              color: 'var(--text-primary, #f0f0f6)',
-              border: '1px solid var(--border-default, rgba(255,255,255,0.09))',
-              borderRadius: '12px',
-              fontSize: '14px',
+              background: '#1A1A1A',
+              color: '#F5F5F5',
+              border: '1px solid rgba(255,255,255,0.10)',
+              borderRadius: '10px',
+              fontSize: '13px',
               fontWeight: 500,
-              boxShadow: '0 8px 32px rgba(0,0,0,0.5)',
-              padding: '12px 16px',
-              maxWidth: '380px',
+              boxShadow: '0 8px 32px rgba(0,0,0,0.6)',
+              padding: '11px 15px',
+              maxWidth: '360px',
+              fontFamily: 'var(--font-sans, Sora, sans-serif)',
+              letterSpacing: '-0.01em',
             },
-            success: {
-              iconTheme: { primary: '#10b981', secondary: 'var(--surface-overlay, #17171f)' },
-            },
-            error: {
-              iconTheme: { primary: '#ef4444', secondary: 'var(--surface-overlay, #17171f)' },
-            },
-            loading: {
-              iconTheme: { primary: '#9d00ff', secondary: 'var(--surface-overlay, #17171f)' },
-            },
+            success: { iconTheme: { primary: '#22C55E', secondary: '#1A1A1A' } },
+            error:   { iconTheme: { primary: '#EF4444', secondary: '#1A1A1A' } },
+            loading: { iconTheme: { primary: '#8B5CF6', secondary: '#1A1A1A' } },
           }}
         />
         <FitnessAssistant />

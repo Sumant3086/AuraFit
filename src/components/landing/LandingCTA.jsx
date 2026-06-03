@@ -1,82 +1,83 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
+import { LuArrowRight } from 'react-icons/lu';
 
 export default function LandingCTA() {
   return (
     <section style={{
-      padding: 'clamp(64px,8vw,96px) clamp(20px,4vw,60px)',
-      background: 'var(--surface-raised)',
-      borderTop: '1px solid var(--border-subtle)',
+      background: 'var(--surface-1)',
+      borderTop: '1px solid var(--border-1)',
+      padding: 'clamp(64px,10vw,96px) clamp(20px,5vw,60px)',
     }}>
-      <div style={{ maxWidth: 640, margin: '0 auto', textAlign: 'center' }}>
+      <div style={{ maxWidth: 600, margin: '0 auto', textAlign: 'center' }}>
         <motion.div
           initial={{ opacity: 0, y: 16 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+          transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
         >
           <h2 style={{
-            color: 'var(--text-primary)',
-            fontSize: 'clamp(26px,4vw,44px)',
-            fontWeight: 800,
-            lineHeight: 1.15,
-            letterSpacing: '-0.02em',
-            margin: '0 0 clamp(12px,2vw,16px)',
+            fontSize: 'clamp(28px,4vw,44px)',
+            fontWeight: 'var(--weight-bold)',
+            letterSpacing: 'var(--tracking-snug)',
+            color: 'var(--text-1)',
+            lineHeight: 'var(--leading-tight)',
+            marginBottom: 'var(--sp-5)',
           }}>
-            Most people know what to do.<br />
-            <span style={{
-              background: 'linear-gradient(135deg, #9d00ff, #00d4ff)',
-              WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent',
-              backgroundClip: 'text',
-            }}>
-              AuraFit gives you a system.
-            </span>
+            Most people know what to do.
+            <br />
+            AuraFit helps you do it.
           </h2>
 
           <p style={{
-            color: 'var(--text-secondary)',
-            fontSize: 'clamp(15px,1.6vw,18px)',
-            lineHeight: 1.65,
-            maxWidth: 480, margin: '0 auto clamp(28px,4vw,36px)',
+            color: 'var(--text-2)',
+            fontSize: 'clamp(15px,1.6vw,17px)',
+            lineHeight: 'var(--leading-normal)',
+            marginBottom: 'var(--sp-8)',
           }}>
-            AI-generated plans, consistent tracking, and a community to keep you accountable — free to start, no commitment required.
+            Free to start. No commitment required.
           </p>
 
-          <div style={{ display: 'flex', gap: 12, justifyContent: 'center', flexWrap: 'wrap' }}>
-            <Link to="/signup" style={{ textDecoration: 'none' }}>
-              <motion.div
-                whileHover={{ scale: 1.02 }}
+          <div style={{ display: 'flex', gap: 'var(--sp-3)', justifyContent: 'center', flexWrap: 'wrap' }}>
+            <Link to="/signup">
+              <motion.button
+                whileHover={{ opacity: 0.88 }}
                 whileTap={{ scale: 0.97 }}
                 style={{
                   display: 'inline-flex', alignItems: 'center', gap: 8,
-                  background: 'linear-gradient(135deg, #9d00ff, #00d4ff)',
-                  padding: 'clamp(13px,2vw,15px) clamp(22px,3vw,32px)',
-                  borderRadius: 12, color: '#fff', fontWeight: 700,
-                  fontSize: 'clamp(14px,1.5vw,16px)',
-                  boxShadow: '0 4px 20px rgba(157,0,255,0.2)',
+                  background: 'var(--text-1)',
+                  color: 'var(--bg)',
+                  border: 'none',
+                  padding: '13px 26px',
+                  borderRadius: 'var(--r-md)',
+                  fontSize: 'var(--text-base)',
+                  fontWeight: 'var(--weight-semibold)',
                   cursor: 'pointer',
                 }}
               >
                 Create free account
-              </motion.div>
+                <LuArrowRight size={15} />
+              </motion.button>
             </Link>
-            <Link to="/pricing" style={{ textDecoration: 'none' }}>
-              <motion.div
-                whileHover={{ scale: 1.01 }}
-                whileTap={{ scale: 0.98 }}
+
+            <Link to="/pricing">
+              <motion.button
+                whileHover={{ background: 'var(--surface-3)' }}
+                whileTap={{ scale: 0.97 }}
                 style={{
-                  display: 'inline-flex', alignItems: 'center',
-                  border: '1px solid var(--border-default)',
-                  padding: 'clamp(13px,2vw,15px) clamp(22px,3vw,32px)',
-                  borderRadius: 12,
-                  color: 'var(--text-secondary)', fontWeight: 600,
-                  fontSize: 'clamp(14px,1.5vw,16px)',
+                  background: 'transparent',
+                  color: 'var(--text-2)',
+                  border: '1px solid var(--border-2)',
+                  padding: '13px 26px',
+                  borderRadius: 'var(--r-md)',
+                  fontSize: 'var(--text-base)',
+                  fontWeight: 'var(--weight-medium)',
                   cursor: 'pointer',
                 }}
               >
                 View pricing
-              </motion.div>
+              </motion.button>
             </Link>
           </div>
         </motion.div>
