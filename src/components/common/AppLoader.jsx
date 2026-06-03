@@ -1,75 +1,61 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import logoImg from '../../assets/logos/aurafit-logo.png';
+import logoSvg from '../../assets/logos/aurafit-logo.svg';
 
 /**
- * AppLoader — Premium first-load splash screen.
- * Shown briefly on initial app load to prevent flash of unstyled content
- * and establish the brand identity immediately.
+ * AppLoader — Minimal splash screen shown during initial JS parse.
+ * Matches the new design system: #080808 bg, SVG logo, restrained animation.
  */
 export default function AppLoader({ children }) {
-  const [loaded, setLoaded] = useState(false);
-  const [splash, setSplash] = useState(true);
+  const [ready, setReady]   = useState(false);
+  const [visible, setVisible] = useState(true);
 
   useEffect(() => {
-    // Mark as ready after fonts + critical resources load
-    const timer = setTimeout(() => {
-      setLoaded(true);
-      // Keep splash visible briefly for brand imprint
-      setTimeout(() => setSplash(false), 600);
-    }, 400);
-    return () => clearTimeout(timer);
+    // Give fonts + critical assets ~350ms to load before fading in
+    const t1 = setTimeout(() => setReady(true), 350);
+    const t2 = setTimeout(() => setVisible(false), 950);
+    return () => { clearTimeout(t1); clearTimeout(t2); };
   }, []);
 
   return (
     <>
       <AnimatePresence>
-        {splash && (
+        {visible && (
           <motion.div
             key="splash"
             initial={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+            transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
             style={{
               position: 'fixed', inset: 0, zIndex: 9999,
-              background: '#050507',
+              background: '#080808',
               display: 'flex', flexDirection: 'column',
               alignItems: 'center', justifyContent: 'center',
-              gap: 20,
+              gap: 24,
             }}
           >
-            {/* Real brand logo */}
-            <motion.div
-              initial={{ scale: 0.85, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              transition={{ duration: 0.5, ease: [0.34, 1.56, 0.64, 1] }}
-              style={{
-                background: '#fff',
-                borderRadius: 14,
-                padding: '8px 14px',
-                boxShadow: '0 4px 24px rgba(0,0,0,0.25)',
-              }}
-            >
-              <img
-                src={logoImg}
-                alt="AuraFit"
-                style={{ height: 52, width: 'auto', display: 'block' }}
-              />
-            </motion.div>
+            <motion.img
+              src={logoSvg}
+              alt="AuraFit"
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
+              style={{ width: 72, height: 72, borderRadius: 16 }}
+            />
 
-            {/* Loading indicator */}
+            {/* Minimal loader — three dots */}
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              transition={{ delay: 0.3 }}
-              style={{ display: 'flex', gap: 5 }}
+              transition={{ delay: 0.25 }}
+              style={{ display: 'flex', gap: 5, alignItems: 'center' }}
             >
               {[0, 1, 2].map(i => (
                 <motion.div
                   key={i}
-                  animate={{ opacity: [0.2, 1, 0.2] }}
-                  transition={{ duration: 1, delay: i * 0.2, repeat: Infinity, ease: 'easeInOut' }}
-                  style={{ width: 4, height: 4, borderRadius: '50%', background: '#9d00ff' }}
+                  animate={{ opacity: [0.2, 0.8, 0.2] }}
+                  transition={{ duration: 1.1, delay: i * 0.18, repeat: Infinity, ease: 'easeInOut' }}
+                  style={{ width: 3, height: 3, borderRadius: '50%', background: '#5C5C5C' }}
                 />
               ))}
             </motion.div>
@@ -79,8 +65,8 @@ export default function AppLoader({ children }) {
 
       <motion.div
         initial={{ opacity: 0 }}
-        animate={{ opacity: loaded ? 1 : 0 }}
-        transition={{ duration: 0.3 }}
+        animate={{ opacity: ready ? 1 : 0 }}
+        transition={{ duration: 0.25 }}
       >
         {children}
       </motion.div>

@@ -1,88 +1,38 @@
 import React from 'react';
-import logoImg from '../../assets/logos/aurafit-logo.png';
+import logoSvg from '../../assets/logos/aurafit-logo.svg';
 
 /**
- * AuraFit Logo — uses the official brand PNG asset.
+ * AuraFit Logo — uses the official SVG brand asset (1024×1024 square).
+ *
+ * The SVG has a dark #080808 rounded-rect background with the gradient
+ * icon mark and "AURAFIT" wordmark — works as an app-icon style logo
+ * on any dark surface without needing a container.
  *
  * Props:
- *   size    — 'xs'|'sm'|'medium'|'large'|'xl'  (default: 'medium')
- *   variant — 'full'|'mark'                     (default: 'full')
- *   theme   — 'dark'|'light'|'gradient'         (default: 'gradient')
- *   style   — extra inline styles
- *
- * Note: The logo PNG has a white background. On dark surfaces it is displayed
- * inside a small rounded container with a white fill so it reads cleanly.
+ *   size  — 'xs'|'sm'|'medium'|'large'|'xl'  (default: 'medium')
+ *   style — extra inline styles
  */
 
-const HEIGHT = { xs: 24, sm: 32, medium: 40, large: 52, xl: 68 };
+const SIZES = { xs: 28, sm: 36, medium: 44, large: 56, xl: 72 };
 
-export default function Logo({
-  size = 'medium',
-  variant = 'full',
-  theme = 'gradient',
-  style = {},
-}) {
-  const h = HEIGHT[size] || HEIGHT.medium;
-  const isDark = theme !== 'light';
+export default function Logo({ size = 'medium', style = {} }) {
+  const h = SIZES[size] || SIZES.medium;
+  const r = Math.round(h * 0.22); // match the SVG rx="240" proportionally
 
-  if (variant === 'mark') {
-    // Show just the icon portion at square crop (approx 70% of width is the icon)
-    return (
-      <div
-        role="img"
-        aria-label="AuraFit"
-        style={{
-          width: h, height: h,
-          borderRadius: Math.round(h * 0.22),
-          background: '#fff',
-          display: 'flex', alignItems: 'center', justifyContent: 'center',
-          overflow: 'hidden', flexShrink: 0,
-          boxShadow: isDark ? '0 0 0 1px rgba(255,255,255,0.06)' : 'none',
-          ...style,
-        }}
-      >
-        <img
-          src={logoImg}
-          alt="AuraFit"
-          style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center top' }}
-          draggable={false}
-        />
-      </div>
-    );
-  }
-
-  // Full logo — white pill container so the logo reads on any background
   return (
     <div
       role="img"
       aria-label="AuraFit"
-      style={{
-        display: 'inline-flex',
-        alignItems: 'center',
-        cursor: 'pointer',
-        ...style,
-      }}
+      style={{ display: 'inline-flex', alignItems: 'center', cursor: 'pointer', flexShrink: 0, ...style }}
     >
-      <div style={{
-        background: isDark ? 'rgba(255,255,255,0.92)' : 'transparent',
-        borderRadius: Math.round(h * 0.18),
-        padding: isDark ? `${Math.round(h * 0.08)}px ${Math.round(h * 0.14)}px` : 0,
-        display: 'flex', alignItems: 'center',
-        boxShadow: isDark ? '0 1px 4px rgba(0,0,0,0.15)' : 'none',
-      }}>
-        <img
-          src={logoImg}
-          alt="AuraFit — Train Smart. Live Strong."
-          height={h}
-          style={{
-            height: h,
-            width: 'auto',
-            display: 'block',
-            objectFit: 'contain',
-          }}
-          draggable={false}
-        />
-      </div>
+      <img
+        src={logoSvg}
+        alt="AuraFit"
+        height={h}
+        width={h}
+        style={{ height: h, width: h, borderRadius: r, display: 'block' }}
+        draggable={false}
+      />
     </div>
   );
 }

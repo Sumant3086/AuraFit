@@ -1,7 +1,7 @@
 import React, { useState, useEffect, lazy, Suspense } from "react";
 import { Routes, Route, Navigate, useLocation } from "react-router-dom";
 import { AnimatePresence, motion } from "framer-motion";
-import logoImg from "./assets/logos/aurafit-logo.png";
+import logoSvg from "./assets/logos/aurafit-logo.svg";
 import { Toaster } from 'react-hot-toast';
 import AOS from 'aos';
 import 'aos/dist/aos.css';
@@ -70,14 +70,7 @@ const PageLoader = () => (
     display: 'flex', alignItems: 'center', justifyContent: 'center',
   }}>
     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 16 }}>
-      {/* Real brand logo */}
-      <div style={{
-        background: '#fff', borderRadius: 12,
-        padding: '6px 12px',
-        boxShadow: '0 2px 16px rgba(0,0,0,0.2)',
-      }}>
-        <img src={logoImg} alt="AuraFit" style={{ height: 36, width: 'auto', display: 'block' }} />
-      </div>
+      <img src={logoSvg} alt="AuraFit" style={{ height: 40, width: 40, borderRadius: 10, display: 'block' }} />
       {/* Pulse dots */}
       <div style={{ display: 'flex', gap: 5 }}>
         {[0, 1, 2].map(i => (

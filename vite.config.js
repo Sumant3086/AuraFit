@@ -80,7 +80,9 @@ export default defineConfig({
         ],
         globPatterns: ['**/*.{js,css,html,ico,png,svg,webp}'],
       },
-      devOptions: { enabled: true },
+      // IMPORTANT: Keep disabled in dev — enabled SW in dev causes blank first-load
+      // (service worker intercepts requests before it finishes installing)
+      devOptions: { enabled: false },
     }),
   ],
   server: {
