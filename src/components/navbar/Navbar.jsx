@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import "./navbar.css";
 import Logo from "../logo/Logo";
 import { Link, useNavigate } from "react-router-dom";
+import { AnimatePresence, motion } from "framer-motion";
 import {
   LuMenu, LuSun, LuMoon, LuLayoutDashboard, LuUser, LuQrCode,
   LuAward, LuTrophy, LuUsers, LuCalendar, LuPackage, LuSettings,
@@ -108,20 +109,27 @@ const Navbar = ({ toggle }) => {
               </span>
             </button>
 
-            {/* Dropdown */}
+            {/* Dropdown — Framer Motion */}
+            <AnimatePresence>
             {open && (
               <>
                 <div style={{ position: 'fixed', inset: 0, zIndex: 998 }} onClick={() => setOpen(false)} />
-                <div style={{
-                  position: 'absolute', top: 'calc(100% + 8px)', right: 0,
-                  background: 'var(--surface-2)',
-                  border: '1px solid var(--border-2)',
-                  borderRadius: 'var(--r-lg)',
-                  minWidth: 210, zIndex: 999,
-                  boxShadow: 'var(--shadow-xl)',
-                  padding: '6px',
-                  animation: 'fadeIn 0.12s ease',
-                }}>
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.96, y: -6 }}
+                  animate={{ opacity: 1, scale: 1, y: 0 }}
+                  exit={{ opacity: 0, scale: 0.97, y: -4, transition: { duration: 0.12 } }}
+                  transition={{ duration: 0.17, ease: [0.16, 1, 0.3, 1] }}
+                  style={{
+                    position: 'absolute', top: 'calc(100% + 8px)', right: 0,
+                    background: 'var(--surface-2)',
+                    border: '1px solid var(--border-2)',
+                    borderRadius: 'var(--r-lg)',
+                    minWidth: 210, zIndex: 999,
+                    boxShadow: 'var(--shadow-xl)',
+                    padding: '6px',
+                    transformOrigin: 'top right',
+                  }}
+                >
                   {/* User info */}
                   <div style={{ padding: '10px 12px 8px', marginBottom: 2 }}>
                     <p style={{ color: 'var(--text-1)', fontWeight: 600, margin: 0, fontSize: 13 }}>{user.name}</p>
@@ -159,9 +167,10 @@ const Navbar = ({ toggle }) => {
                   >
                     <LuLogOut size={14} strokeWidth={1.5} /> Sign out
                   </button>
-                </div>
+                </motion.div>
               </>
             )}
+            </AnimatePresence>
           </div>
         ) : (
           <Link to="/login" className="login-btn">Sign in</Link>

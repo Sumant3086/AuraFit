@@ -2,6 +2,8 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { LuArrowRight } from 'react-icons/lu';
+import Reveal, { RevealItem } from '../common/Reveal';
+import { ease, dur } from '../../lib/motion';
 
 const STEPS = [
   {
@@ -62,29 +64,28 @@ export default function HowItWorks() {
           </h2>
         </motion.div>
 
-        {/* Steps */}
-        <div style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))',
-          gap: 1,
-          background: 'var(--border-1)',
-          border: '1px solid var(--border-1)',
-          borderRadius: 'var(--r-xl)',
-          overflow: 'hidden',
-          marginBottom: 'var(--sp-12)',
-        }}>
+        {/* Steps — staggered reveal */}
+        <Reveal stagger staggerDelay={0.07}
+          style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))',
+            gap: 1,
+            background: 'var(--border-1)',
+            border: '1px solid var(--border-1)',
+            borderRadius: 'var(--r-xl)',
+            overflow: 'hidden',
+            marginBottom: 'var(--sp-12)',
+          }}
+        >
           {STEPS.map((step, i) => (
-            <motion.div
-              key={step.n}
-              initial={{ opacity: 0, y: 16 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: '-40px' }}
-              transition={{ delay: i * 0.08, duration: 0.55, ease: [0.16, 1, 0.3, 1] }}
-              style={{
-                background: 'var(--surface-1)',
-                padding: 'var(--sp-8) var(--sp-6)',
-              }}
-            >
+            <RevealItem key={step.n}>
+              <div
+                style={{
+                  background: 'var(--surface-1)',
+                  padding: 'var(--sp-8) var(--sp-6)',
+                  height: '100%',
+                }}
+              >
               <p style={{
                 color: 'var(--text-3)',
                 fontSize: 'var(--text-xs)',
@@ -111,9 +112,10 @@ export default function HowItWorks() {
               }}>
                 {step.body}
               </p>
-            </motion.div>
+              </div>
+            </RevealItem>
           ))}
-        </div>
+        </Reveal>
 
         {/* CTA */}
         <motion.div
