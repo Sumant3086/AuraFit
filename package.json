@@ -37,9 +37,11 @@
     "workbox-window": "^7.4.1"
   },
   "scripts": {
+    "predev": "node scripts/killPort.cjs",
     "dev": "concurrently \"vite\" \"cd server && npm run dev\" --names \"CLIENT,SERVER\" --prefix-colors \"cyan,green\"",
     "dev:client": "vite",
     "dev:server": "cd server && npm run dev",
+    "kill": "node scripts/killPort.cjs",
     "build": "vite build",
     "preview": "vite preview",
     "render-build": "npm ci && npm run build && cd server && npm ci",
@@ -48,16 +50,7 @@
   "devDependencies": {
     "concurrently": "^8.2.2"
   },
-  "keywords": [
-    "fitness",
-    "gym",
-    "ai",
-    "workout",
-    "nutrition",
-    "react",
-    "nodejs",
-    "mongodb"
-  ],
+  "keywords": ["fitness", "gym", "ai", "workout", "nutrition", "react", "nodejs", "mongodb"],
   "author": "Sumant Yadav",
   "license": "MIT",
   "repository": {
