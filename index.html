@@ -4,12 +4,22 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
 
-    <!-- Critical: prevent FOUC -->
+    <!-- Critical: prevent FOUC + kill stale service workers in dev -->
     <script>
       try {
         const t = localStorage.getItem('aurafit_theme');
         if (t === 'light' || t === 'dark') document.documentElement.setAttribute('data-theme', t);
       } catch(e) {}
+
+      // Unregister stale service workers on localhost.
+      // This inline script runs before any module JS, so it fires even when
+      // an old SW is serving a cached version of this HTML file.
+      if ('serviceWorker' in navigator && location.hostname === 'localhost') {
+        navigator.serviceWorker.getRegistrations().then(function(regs) {
+          regs.forEach(function(r) { r.unregister(); });
+          if (regs.length) location.reload();
+        });
+      }
     </script>
 
     <!-- Primary SEO -->
