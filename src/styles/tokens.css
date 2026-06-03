@@ -1,159 +1,138 @@
 /*
-  AuraFit Design Tokens — Single source of truth for visual constants.
-  Import this before index.css so variables are available everywhere.
-
-  Surface scale (dark mode): bg → surface → card → elevated → overlay
-  Typography scale: 11/12/13/14/15/16/18/20/24/28/32/40/48px
-  Spacing scale: 4/8/12/16/20/24/32/40/48/64/80/96px
+  AuraFit Design Tokens — v3.0
+  Philosophy: restraint, clarity, premium depth
+  Reference: Linear, Apple dark, Arc, Notion
 */
 
 :root,
 [data-theme="dark"] {
-  /* ── Surfaces ──────────────────────────────────────────────── */
-  --surface-bg:        #050507;       /* deepest background */
-  --surface-base:      #0a0a0f;       /* page background */
-  --surface-raised:    #111118;       /* card background */
-  --surface-overlay:   #17171f;       /* elevated card, dropdown */
-  --surface-high:      #1c1c26;       /* hovered card, active item */
-  --surface-glass:     rgba(17,17,24,0.8);  /* glassmorphism */
+  /* ── Surfaces ─────────────────────────────────────────── */
+  --bg:          #080808;   /* page background */
+  --surface-1:   #0F0F0F;   /* primary surface */
+  --surface-2:   #141414;   /* elevated card */
+  --surface-3:   #1A1A1A;   /* overlay / dropdown */
+  --surface-4:   #202020;   /* hover states */
 
-  /* ── Borders ───────────────────────────────────────────────── */
-  --border-subtle:     rgba(255,255,255,0.05);
-  --border-default:    rgba(255,255,255,0.09);
-  --border-strong:     rgba(255,255,255,0.15);
-  --border-accent:     rgba(157,0,255,0.35);
+  /* ── Borders ──────────────────────────────────────────── */
+  --border-1:    rgba(255,255,255,0.06);  /* hairline */
+  --border-2:    rgba(255,255,255,0.10);  /* default */
+  --border-3:    rgba(255,255,255,0.16);  /* strong */
+  --border-focus: rgba(139,92,246,0.5);   /* focus ring */
 
-  /* ── Text ──────────────────────────────────────────────────── */
-  --text-primary:      #f0f0f6;
-  --text-secondary:    #8e8ea8;
-  --text-muted:        #55556a;
-  --text-disabled:     #3a3a4a;
+  /* ── Text ─────────────────────────────────────────────── */
+  --text-1:  #F5F5F5;   /* primary */
+  --text-2:  #9F9F9F;   /* secondary */
+  --text-3:  #5C5C5C;   /* muted */
+  --text-4:  #383838;   /* disabled */
 
-  /* ── Brand colors ──────────────────────────────────────────── */
-  --brand-purple:      #9d00ff;
-  --brand-cyan:        #00d4ff;
-  --brand-purple-dim:  rgba(157,0,255,0.12);
-  --brand-cyan-dim:    rgba(0,212,255,0.10);
-  --brand-gradient:    linear-gradient(135deg, #9d00ff 0%, #00d4ff 100%);
-  --brand-gradient-soft: linear-gradient(135deg, rgba(157,0,255,0.2) 0%, rgba(0,212,255,0.15) 100%);
+  /* ── Accent (single, restrained) ─────────────────────── */
+  --accent:      #8B5CF6;  /* violet-500 */
+  --accent-dim:  rgba(139,92,246,0.12);
+  --accent-border: rgba(139,92,246,0.3);
 
-  /* ── Semantic colors ───────────────────────────────────────── */
-  --color-success:     #10b981;
-  --color-warning:     #f59e0b;
-  --color-error:       #ef4444;
-  --color-info:        #3b82f6;
-  --color-success-dim: rgba(16,185,129,0.12);
-  --color-warning-dim: rgba(245,158,11,0.12);
-  --color-error-dim:   rgba(239,68,68,0.12);
+  /* ── Semantic ─────────────────────────────────────────── */
+  --green:   #22C55E;
+  --green-dim: rgba(34,197,94,0.10);
+  --amber:   #F59E0B;
+  --amber-dim: rgba(245,158,11,0.10);
+  --red:     #EF4444;
+  --red-dim: rgba(239,68,68,0.10);
 
-  /* ── Gold / gamification ───────────────────────────────────── */
-  --color-gold:        #f59e0b;
-  --color-silver:      #94a3b8;
-  --color-bronze:      #cd7c54;
-  --color-platinum:    #a5f3fc;
+  /* ── Shadows ──────────────────────────────────────────── */
+  --shadow-sm:  0 1px 3px rgba(0,0,0,0.4);
+  --shadow-md:  0 4px 16px rgba(0,0,0,0.45);
+  --shadow-lg:  0 8px 32px rgba(0,0,0,0.55);
+  --shadow-xl:  0 20px 60px rgba(0,0,0,0.65);
+  --shadow-card: 0 1px 0 rgba(255,255,255,0.04) inset, 0 2px 12px rgba(0,0,0,0.35);
 
-  /* ── Shadows ───────────────────────────────────────────────── */
-  --shadow-xs:         0 1px 3px rgba(0,0,0,0.4);
-  --shadow-sm:         0 2px 8px rgba(0,0,0,0.5);
-  --shadow-md:         0 4px 16px rgba(0,0,0,0.5), 0 1px 4px rgba(0,0,0,0.3);
-  --shadow-lg:         0 8px 32px rgba(0,0,0,0.6), 0 2px 8px rgba(0,0,0,0.4);
-  --shadow-xl:         0 20px 60px rgba(0,0,0,0.7), 0 4px 16px rgba(0,0,0,0.5);
-  --shadow-glow-purple: 0 0 32px rgba(157,0,255,0.25), 0 0 8px rgba(157,0,255,0.15);
-  --shadow-glow-cyan:   0 0 32px rgba(0,212,255,0.2), 0 0 8px rgba(0,212,255,0.1);
-  --shadow-card:       0 1px 0 rgba(255,255,255,0.05) inset, 0 4px 20px rgba(0,0,0,0.4);
+  /* ── Radius ───────────────────────────────────────────── */
+  --r-sm:   6px;
+  --r-md:   10px;
+  --r-lg:   14px;
+  --r-xl:   18px;
+  --r-pill: 999px;
 
-  /* ── Border radius ─────────────────────────────────────────── */
-  --radius-xs:         4px;
-  --radius-sm:         8px;
-  --radius-md:         12px;
-  --radius-lg:         16px;
-  --radius-xl:         20px;
-  --radius-2xl:        24px;
-  --radius-pill:       9999px;
+  /* ── Typography ───────────────────────────────────────── */
+  --font-sans: 'Sora', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-mono: 'SF Mono', 'Fira Code', monospace;
 
-  /* ── Typography ────────────────────────────────────────────── */
-  --font-sans:         'Sora', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-  --font-mono:         'SF Mono', 'Fira Code', 'Consolas', monospace;
+  --text-xs:   11px;
+  --text-sm:   13px;
+  --text-base: 15px;
+  --text-md:   17px;
+  --text-lg:   20px;
+  --text-xl:   24px;
+  --text-2xl:  30px;
+  --text-3xl:  38px;
+  --text-4xl:  50px;
+  --text-hero: clamp(48px, 7vw, 88px);
 
-  --text-xs:           11px;
-  --text-sm:           13px;
-  --text-base:         15px;
-  --text-md:           16px;
-  --text-lg:           18px;
-  --text-xl:           20px;
-  --text-2xl:          24px;
-  --text-3xl:          28px;
-  --text-4xl:          36px;
-  --text-5xl:          48px;
+  --weight-regular:  400;
+  --weight-medium:   500;
+  --weight-semibold: 600;
+  --weight-bold:     700;
+  --weight-black:    800;
 
-  --leading-tight:     1.2;
-  --leading-snug:      1.4;
-  --leading-normal:    1.6;
-  --leading-relaxed:   1.75;
+  --leading-tight:  1.1;
+  --leading-snug:   1.35;
+  --leading-normal: 1.6;
+  --leading-loose:  1.75;
 
-  --weight-regular:    400;
-  --weight-medium:     500;
-  --weight-semibold:   600;
-  --weight-bold:       700;
-  --weight-black:      800;
+  --tracking-tight:  -0.04em;
+  --tracking-snug:   -0.025em;
+  --tracking-normal: -0.01em;
+  --tracking-wide:   0.05em;
+  --tracking-wider:  0.10em;
 
-  /* ── Spacing ───────────────────────────────────────────────── */
-  --space-1:   4px;
-  --space-2:   8px;
-  --space-3:   12px;
-  --space-4:   16px;
-  --space-5:   20px;
-  --space-6:   24px;
-  --space-8:   32px;
-  --space-10:  40px;
-  --space-12:  48px;
-  --space-16:  64px;
-  --space-20:  80px;
-  --space-24:  96px;
+  /* ── Spacing ──────────────────────────────────────────── */
+  --sp-1:  4px;
+  --sp-2:  8px;
+  --sp-3:  12px;
+  --sp-4:  16px;
+  --sp-5:  20px;
+  --sp-6:  24px;
+  --sp-8:  32px;
+  --sp-10: 40px;
+  --sp-12: 48px;
+  --sp-16: 64px;
+  --sp-20: 80px;
+  --sp-24: 96px;
 
-  /* ── Motion ────────────────────────────────────────────────── */
-  --duration-fast:    150ms;
-  --duration-base:    250ms;
-  --duration-slow:    400ms;
-  --ease-out:         cubic-bezier(0.16, 1, 0.3, 1);
-  --ease-in-out:      cubic-bezier(0.45, 0, 0.55, 1);
-  --ease-spring:      cubic-bezier(0.34, 1.56, 0.64, 1);
+  /* ── Motion ───────────────────────────────────────────── */
+  --ease-out:    cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out: cubic-bezier(0.45, 0, 0.55, 1);
+  --ease-spring: cubic-bezier(0.34, 1.4, 0.64, 1);
+  --duration-fast:   120ms;
+  --duration-base:   220ms;
+  --duration-slow:   380ms;
 
-  /* ── Layout ────────────────────────────────────────────────── */
-  --container-sm:  480px;
-  --container-md:  720px;
-  --container-lg:  960px;
-  --container-xl:  1200px;
-  --container-max: 1400px;
+  /* ── Layout ───────────────────────────────────────────── */
+  --max-content: 720px;
+  --max-wide:    1080px;
+  --max-full:    1280px;
 }
 
 [data-theme="light"] {
-  --surface-bg:        #f5f5f7;
-  --surface-base:      #ffffff;
-  --surface-raised:    #ffffff;
-  --surface-overlay:   #f0f0f5;
-  --surface-high:      #e8e8f0;
-  --surface-glass:     rgba(255,255,255,0.85);
+  --bg:        #FAFAFA;
+  --surface-1: #FFFFFF;
+  --surface-2: #F4F4F5;
+  --surface-3: #EBEBEC;
+  --surface-4: #E2E2E4;
 
-  --border-subtle:     rgba(0,0,0,0.05);
-  --border-default:    rgba(0,0,0,0.09);
-  --border-strong:     rgba(0,0,0,0.15);
-  --border-accent:     rgba(124,0,204,0.35);
+  --border-1:  rgba(0,0,0,0.05);
+  --border-2:  rgba(0,0,0,0.09);
+  --border-3:  rgba(0,0,0,0.14);
 
-  --text-primary:      #0a0a10;
-  --text-secondary:    #5a5a7a;
-  --text-muted:        #9090a8;
-  --text-disabled:     #c0c0d0;
+  --text-1:  #111111;
+  --text-2:  #606060;
+  --text-3:  #9A9A9A;
+  --text-4:  #C8C8C8;
 
-  --brand-purple:      #7c00cc;
-  --brand-cyan:        #0099bb;
-  --brand-purple-dim:  rgba(124,0,204,0.10);
-  --brand-cyan-dim:    rgba(0,153,187,0.08);
-  --brand-gradient:    linear-gradient(135deg, #7c00cc 0%, #0099bb 100%);
+  --accent:    #7C3AED;
+  --accent-dim: rgba(124,58,237,0.08);
 
-  --shadow-xs:         0 1px 3px rgba(0,0,0,0.08);
-  --shadow-sm:         0 2px 8px rgba(0,0,0,0.10);
-  --shadow-md:         0 4px 16px rgba(0,0,0,0.10), 0 1px 4px rgba(0,0,0,0.06);
-  --shadow-lg:         0 8px 32px rgba(0,0,0,0.12), 0 2px 8px rgba(0,0,0,0.08);
-  --shadow-card:       0 1px 0 rgba(255,255,255,0.8) inset, 0 2px 8px rgba(0,0,0,0.08);
+  --shadow-sm:  0 1px 3px rgba(0,0,0,0.08);
+  --shadow-md:  0 4px 16px rgba(0,0,0,0.08);
+  --shadow-lg:  0 8px 32px rgba(0,0,0,0.10);
+  --shadow-card: 0 1px 0 rgba(255,255,255,0.8) inset, 0 2px 8px rgba(0,0,0,0.06);
 }

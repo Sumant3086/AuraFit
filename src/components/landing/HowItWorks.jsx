@@ -1,194 +1,146 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
+import { LuArrowRight } from 'react-icons/lu';
 
 const STEPS = [
   {
-    number: '01',
-    icon: '✏️',
-    title: 'Create your profile',
-    desc: 'Tell us your goals, fitness level, and schedule. Takes under 2 minutes. Our onboarding earns you 100 bonus points immediately.',
-    detail: 'Goal selection · Experience level · Schedule preferences',
-    color: '#9d00ff',
+    n: '01',
+    title: 'Set your profile',
+    body: 'Tell us your goal, experience level, and available days. Takes under two minutes.',
   },
   {
-    number: '02',
-    icon: '🤖',
-    title: 'AI builds your plan',
-    desc: 'Gemini AI generates a personalized workout and nutrition plan calibrated to your body, goals, and available equipment.',
-    detail: 'Workout schedule · Macro targets · Meal suggestions',
-    color: '#00d4ff',
+    n: '02',
+    title: 'Get your plan',
+    body: 'AI generates a weekly workout and nutrition plan calibrated to your body and schedule.',
   },
   {
-    number: '03',
-    icon: '📍',
+    n: '03',
     title: 'Check in and train',
-    desc: 'QR check-ins, real trainer bookings, group classes, and a community of fellow members all keep you accountable.',
-    detail: 'QR check-in · Trainer sessions · Group classes',
-    color: '#10b981',
+    body: 'QR check-ins, trainer bookings, and group classes keep you accountable on hard days.',
   },
   {
-    number: '04',
-    icon: '📈',
-    title: 'Track and transform',
-    desc: 'Body composition tracking, streak rewards, achievement badges, and leaderboard rankings make progress addictive.',
-    detail: 'Progress charts · Achievements · Leaderboard',
-    color: '#f59e0b',
+    n: '04',
+    title: 'Watch the progress',
+    body: 'Body measurements, attendance, and strength gains tracked week over week.',
   },
 ];
 
 export default function HowItWorks() {
   return (
     <section style={{
-      padding: 'clamp(80px,10vw,120px) clamp(20px,4vw,60px)',
-      background: 'linear-gradient(180deg, var(--surface-bg) 0%, var(--surface-raised) 50%, var(--surface-bg) 100%)',
+      background: 'var(--bg)',
+      borderBottom: '1px solid var(--border-1)',
+      padding: 'clamp(64px,10vw,100px) clamp(20px,5vw,60px)',
     }}>
-      <div style={{ maxWidth: 1200, margin: '0 auto' }}>
-        <motion.div
-          initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }} transition={{ duration: 0.6 }}
-          style={{ textAlign: 'center', marginBottom: 'clamp(48px,7vw,80px)' }}
-        >
-          <div style={{
-            display: 'inline-flex', background: 'var(--brand-purple-dim)',
-            border: '1px solid var(--border-accent)', borderRadius: 999,
-            padding: '5px 14px', marginBottom: 'clamp(12px,2vw,20px)',
-          }}>
-            <span style={{ color: 'var(--brand-purple)', fontSize: 12, fontWeight: 700, letterSpacing: '0.06em', textTransform: 'uppercase' }}>
-              Simple process
-            </span>
-          </div>
+      <div style={{ maxWidth: 'var(--max-wide)', margin: '0 auto' }}>
 
-          <h2 style={{
-            color: 'var(--text-primary)', fontSize: 'clamp(28px,4vw,48px)',
-            fontWeight: 800, letterSpacing: '-0.02em', lineHeight: 1.1,
-            margin: '0 0 clamp(10px,1.5vw,16px)',
-          }}>
-            From signup to transformation<br />
-            <span style={{ background: 'var(--brand-gradient)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>
-              in four steps
-            </span>
-          </h2>
-          <p style={{
-            color: 'var(--text-secondary)', fontSize: 'clamp(15px,1.6vw,18px)',
-            maxWidth: 480, margin: '0 auto', lineHeight: 1.65,
-          }}>
-            Built to get you from zero to consistent — with the least friction possible.
-          </p>
-        </motion.div>
-
-        {/* Steps grid */}
-        <div style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))',
-          gap: 'clamp(12px,2vw,20px)',
-          position: 'relative',
-        }}>
-          {STEPS.map((step, i) => (
-            <motion.div
-              key={step.number}
-              initial={{ opacity: 0, y: 28 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: '-40px' }}
-              transition={{ delay: i * 0.1, duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-              style={{
-                background: 'var(--surface-raised)',
-                border: '1px solid var(--border-default)',
-                borderRadius: 'var(--radius-2xl)',
-                padding: 'clamp(24px,3vw,32px)',
-                position: 'relative', overflow: 'hidden',
-              }}
-            >
-              {/* Decorative number background */}
-              <div style={{
-                position: 'absolute', top: -16, right: 12,
-                fontSize: 88, fontWeight: 900, lineHeight: 1,
-                color: `${step.color}08`,
-                userSelect: 'none', pointerEvents: 'none',
-                letterSpacing: '-0.04em',
-              }}>
-                {step.number}
-              </div>
-
-              {/* Step indicator */}
-              <div style={{
-                display: 'flex', alignItems: 'center', gap: 10, marginBottom: 20,
-              }}>
-                <div style={{
-                  width: 44, height: 44, borderRadius: 12, flexShrink: 0,
-                  background: `${step.color}18`, border: `1px solid ${step.color}44`,
-                  display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  fontSize: 22,
-                }}>
-                  {step.icon}
-                </div>
-                <span style={{
-                  color: step.color, fontSize: 11, fontWeight: 800,
-                  letterSpacing: '0.06em', textTransform: 'uppercase',
-                }}>
-                  Step {step.number}
-                </span>
-              </div>
-
-              <h3 style={{
-                color: 'var(--text-primary)', fontSize: 'clamp(17px,1.8vw,20px)',
-                fontWeight: 700, margin: '0 0 10px', letterSpacing: '-0.01em',
-                lineHeight: 1.2,
-              }}>
-                {step.title}
-              </h3>
-
-              <p style={{
-                color: 'var(--text-secondary)', fontSize: 14,
-                lineHeight: 1.65, margin: '0 0 16px',
-              }}>
-                {step.desc}
-              </p>
-
-              <div style={{
-                borderTop: '1px solid var(--border-subtle)',
-                paddingTop: 12,
-                color: 'var(--text-muted)', fontSize: 12,
-                fontWeight: 600, lineHeight: 1.6,
-              }}>
-                {step.detail}
-              </div>
-
-              {/* Top accent line */}
-              <div style={{
-                position: 'absolute', top: 0, left: 0, right: 0, height: 2,
-                background: `linear-gradient(90deg, ${step.color}00, ${step.color}, ${step.color}00)`,
-              }} />
-            </motion.div>
-          ))}
-        </div>
-
-        {/* Bottom CTA */}
+        {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: 16 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ delay: 0.4 }}
-          style={{ textAlign: 'center', marginTop: 'clamp(40px,5vw,60px)' }}
+          transition={{ duration: 0.6 }}
+          style={{ marginBottom: 'clamp(48px,7vw,72px)' }}
         >
-          <p style={{ color: 'var(--text-muted)', fontSize: 14, margin: '0 0 16px' }}>
-            Ready to build a real fitness routine?
+          <p style={{
+            color: 'var(--text-3)', fontSize: 'var(--text-xs)',
+            fontWeight: 'var(--weight-medium)', letterSpacing: 'var(--tracking-wider)',
+            textTransform: 'uppercase', marginBottom: 'var(--sp-4)',
+          }}>
+            How it works
           </p>
-          <Link to="/signup" style={{ textDecoration: 'none' }}>
+          <h2 style={{
+            fontSize: 'clamp(28px,4vw,44px)',
+            fontWeight: 'var(--weight-bold)',
+            letterSpacing: 'var(--tracking-snug)',
+            color: 'var(--text-1)',
+            maxWidth: 480,
+            lineHeight: 'var(--leading-tight)',
+          }}>
+            Four steps to a real routine
+          </h2>
+        </motion.div>
+
+        {/* Steps */}
+        <div style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))',
+          gap: 1,
+          background: 'var(--border-1)',
+          border: '1px solid var(--border-1)',
+          borderRadius: 'var(--r-xl)',
+          overflow: 'hidden',
+          marginBottom: 'var(--sp-12)',
+        }}>
+          {STEPS.map((step, i) => (
             <motion.div
-              whileHover={{ scale: 1.04, boxShadow: '0 12px 40px rgba(157,0,255,0.4)' }}
-              whileTap={{ scale: 0.97 }}
+              key={step.n}
+              initial={{ opacity: 0, y: 16 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: '-40px' }}
+              transition={{ delay: i * 0.08, duration: 0.55, ease: [0.16, 1, 0.3, 1] }}
               style={{
-                display: 'inline-flex', alignItems: 'center', gap: 10,
-                background: 'var(--brand-gradient)',
-                padding: '14px 32px', borderRadius: 'var(--radius-pill)',
-                color: '#fff', fontWeight: 700, fontSize: 16,
-                boxShadow: '0 8px 32px rgba(157,0,255,0.3)',
+                background: 'var(--surface-1)',
+                padding: 'var(--sp-8) var(--sp-6)',
+              }}
+            >
+              <p style={{
+                color: 'var(--text-3)',
+                fontSize: 'var(--text-xs)',
+                fontWeight: 'var(--weight-medium)',
+                letterSpacing: 'var(--tracking-wider)',
+                margin: '0 0 var(--sp-5)',
+              }}>
+                {step.n}
+              </p>
+              <p style={{
+                color: 'var(--text-1)',
+                fontSize: 'var(--text-md)',
+                fontWeight: 'var(--weight-semibold)',
+                letterSpacing: 'var(--tracking-normal)',
+                margin: '0 0 var(--sp-3)',
+              }}>
+                {step.title}
+              </p>
+              <p style={{
+                color: 'var(--text-2)',
+                fontSize: 'var(--text-sm)',
+                lineHeight: 'var(--leading-normal)',
+                margin: 0,
+              }}>
+                {step.body}
+              </p>
+            </motion.div>
+          ))}
+        </div>
+
+        {/* CTA */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true }}
+          transition={{ delay: 0.3 }}
+        >
+          <Link to="/signup">
+            <motion.button
+              whileHover={{ opacity: 0.85 }}
+              whileTap={{ scale: 0.98 }}
+              style={{
+                display: 'inline-flex', alignItems: 'center', gap: 8,
+                background: 'var(--text-1)',
+                color: 'var(--bg)',
+                border: 'none',
+                padding: '13px 24px',
+                borderRadius: 'var(--r-md)',
+                fontSize: 'var(--text-base)',
+                fontWeight: 'var(--weight-semibold)',
                 cursor: 'pointer',
               }}
             >
-              Start your transformation — it's free →
-            </motion.div>
+              Ready to build a routine?
+              <LuArrowRight size={15} />
+            </motion.button>
           </Link>
         </motion.div>
       </div>
