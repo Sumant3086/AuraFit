@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+﻿import React, { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '../../context/AuthContext';
 import toast from 'react-hot-toast';
@@ -23,7 +23,7 @@ function Avatar({ name, size = 40, ring }) {
       width: size, height: size, borderRadius: '50%', flexShrink: 0,
       background: `linear-gradient(135deg, ${bg}, ${bg}88)`,
       display: 'flex', alignItems: 'center', justifyContent: 'center',
-      color: '#fff', fontWeight: 800, fontSize: Math.round(size * 0.38),
+      color: 'var(--text-1)', fontWeight: 800, fontSize: Math.round(size * 0.38),
       boxShadow: ring ? `0 0 0 3px ${ring}, 0 0 0 4px var(--surface-raised)` : 'none',
     }}>
       {name?.[0]?.toUpperCase() || '?'}
@@ -302,3 +302,4 @@ export default function Leaderboard() {
     </div>
   );
 }
+

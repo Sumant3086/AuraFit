@@ -1,13 +1,13 @@
-import { useState, useEffect } from 'react';
+﻿import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import toast from 'react-hot-toast';
-import { 
-  FiUsers, FiDollarSign, FiShoppingBag, FiTrendingUp, 
+import {
+  FiUsers, FiDollarSign, FiShoppingBag, FiTrendingUp,
   FiActivity, FiUserPlus, FiCheckCircle, FiXCircle,
-  FiLogOut, FiDatabase, FiRefreshCw, FiHeart, FiTarget, 
+  FiLogOut, FiDatabase, FiRefreshCw, FiHeart, FiTarget,
   FiCalendar, FiMenu, FiX, FiHome, FiPackage, FiCreditCard,
-  FiBarChart2
+  FiBarChart2, FiMessageCircle, FiLock, FiAlertCircle
 } from 'react-icons/fi';
 import { adminAPI, membershipAPI, productsAPI, classesAPI } from '../../services/api';
 import shopData from '../shop/shopData';
@@ -255,14 +255,17 @@ const AdminDashboard = () => {
   }
 
   const menuItems = [
-    { id: 'overview', label: 'Overview', icon: FiHome },
-    { id: 'users', label: 'Users', icon: FiUsers, count: users.length },
-    { id: 'memberships', label: 'Memberships', icon: FiCreditCard, count: memberships.filter(m => m.status === 'pending').length },
-    { id: 'orders', label: 'Orders', icon: FiShoppingBag, count: orders.length },
-    { id: 'products', label: 'Products', icon: FiPackage, count: products.length },
-    { id: 'classes', label: 'Classes', icon: FiActivity, count: classes.length },
-    { id: 'tracking', label: 'Analytics', icon: FiBarChart2 },
-    { id: 'kpis', label: 'Business KPIs', icon: FiTrendingUp },
+    { id: 'overview',     label: 'Overview',      icon: FiHome },
+    { id: 'users',        label: 'Users',          icon: FiUsers,      count: users.length },
+    { id: 'memberships',  label: 'Memberships',    icon: FiCreditCard, count: memberships.filter(m => m.status === 'pending').length },
+    { id: 'orders',       label: 'Payments',       icon: FiShoppingBag, count: orders.length },
+    { id: 'products',     label: 'Products',       icon: FiPackage,    count: products.length },
+    { id: 'classes',      label: 'Classes',        icon: FiActivity,   count: classes.length },
+    { id: 'trainers',     label: 'Trainers',       icon: FiUserPlus },
+    { id: 'community',    label: 'Community',      icon: FiMessageCircle },
+    { id: 'tracking',     label: 'Analytics',      icon: FiBarChart2 },
+    { id: 'kpis',         label: 'Business KPIs',  icon: FiTrendingUp },
+    { id: 'audit',        label: 'Audit Logs',     icon: FiCheckCircle },
   ];
 
   return (
@@ -683,10 +686,31 @@ const AdminDashboard = () => {
             {activeTab === 'kpis' && (
               <motion.div key="kpis" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="content-section">
                 <div style={{ marginBottom: 24 }}>
-                  <h2 style={{ color: '#fff', fontSize: 22, fontWeight: 800, margin: '0 0 6px' }}>Business KPI Dashboard 📈</h2>
-                  <p style={{ color: '#555', fontSize: 14, margin: 0 }}>MRR, churn, retention, conversion, and growth metrics</p>
+                  <h2 style={{ color: 'var(--text-1)', fontSize: 22, fontWeight: 800, margin: '0 0 6px' }}>Business KPIs</h2>
+                  <p style={{ color: 'var(--text-3)', fontSize: 14, margin: 0 }}>MRR, churn, retention, conversion, and growth metrics</p>
                 </div>
                 <AdminKPIBoard />
+              </motion.div>
+            )}
+
+            {/* ── Trainers tab ── */}
+            {activeTab === 'trainers' && (
+              <motion.div key="trainers" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="content-section">
+                <AdminTrainersTab apiClient={null} />
+              </motion.div>
+            )}
+
+            {/* ── Community moderation tab ── */}
+            {activeTab === 'community' && (
+              <motion.div key="community" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="content-section">
+                <AdminCommunityTab />
+              </motion.div>
+            )}
+
+            {/* ── Audit logs tab ── */}
+            {activeTab === 'audit' && (
+              <motion.div key="audit" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="content-section">
+                <AdminAuditTab />
               </motion.div>
             )}
           </AnimatePresence>
@@ -697,3 +721,231 @@ const AdminDashboard = () => {
 };
 
 export default AdminDashboard;
+
+/* ── Admin: Trainers Tab ──────────────────────────────────── */
+function AdminTrainersTab() {
+  const { apiClient } = require('../../context/AuthContext').useAuth ? { apiClient: null } : {};
+  const [trainers, setTrainers] = React.useState([]);
+  const [loading, setLoading] = React.useState(true);
+  const { apiClient: api } = require('../../context/AuthContext').useAuth?.() || {};
+
+  React.useEffect(() => {
+    (async () => {
+      try {
+        const res = await fetch('/api/trainers', {
+          headers: { Authorization: `Bearer ${localStorage.getItem('accessToken')}` },
+        });
+        const data = await res.json();
+        setTrainers(data.data || []);
+      } catch {}
+      setLoading(false);
+    })();
+  }, []);
+
+  return (
+    <div>
+      <div style={{ marginBottom: 24 }}>
+        <h2 style={{ color: 'var(--text-1)', fontSize: 22, fontWeight: 800, margin: '0 0 6px' }}>Trainers</h2>
+        <p style={{ color: 'var(--text-3)', fontSize: 14, margin: 0 }}>
+          {loading ? 'Loading…' : `${trainers.length} registered trainers`}
+        </p>
+      </div>
+
+      {loading ? (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+          {[1,2,3].map(i => <div key={i} style={{ height: 64, background: 'var(--surface-2)', borderRadius: 12, animation: 'pulse 1.5s infinite' }} />)}
+        </div>
+      ) : trainers.length === 0 ? (
+        <div style={{ textAlign: 'center', padding: '60px 20px', color: 'var(--text-3)' }}>
+          <FiUserPlus size={40} style={{ marginBottom: 12, opacity: 0.3 }} />
+          <p style={{ margin: 0 }}>No trainers registered yet.</p>
+          <p style={{ margin: '8px 0 0', fontSize: 13 }}>Trainers appear here after their account is created and assigned the trainer role.</p>
+        </div>
+      ) : (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+          {trainers.map(t => (
+            <div key={t._id} style={{
+              display: 'flex', alignItems: 'center', gap: 14,
+              background: 'var(--surface-2)', border: '1px solid var(--border-1)',
+              borderRadius: 12, padding: '14px 16px',
+            }}>
+              <div style={{
+                width: 36, height: 36, borderRadius: '50%', flexShrink: 0,
+                background: 'var(--accent-dim)', border: '1px solid var(--accent-border)',
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                color: 'var(--accent)', fontWeight: 700, fontSize: 15,
+              }}>
+                {t.name?.[0]?.toUpperCase()}
+              </div>
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <p style={{ color: 'var(--text-1)', fontWeight: 600, margin: 0, fontSize: 14 }}>{t.name}</p>
+                <p style={{ color: 'var(--text-3)', fontSize: 12, margin: '2px 0 0' }}>
+                  {t.specialization || 'General'} · {t.email}
+                </p>
+              </div>
+              <div style={{ textAlign: 'right', flexShrink: 0 }}>
+                <p style={{ color: 'var(--text-1)', fontWeight: 700, margin: 0, fontSize: 14 }}>
+                  {t.totalRatings ? `${t.rating?.toFixed(1)}★` : '—'}
+                </p>
+                <p style={{ color: 'var(--text-3)', fontSize: 11, margin: 0 }}>{t.totalRatings || 0} reviews</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
+/* ── Admin: Community Moderation Tab ─────────────────────── */
+function AdminCommunityTab() {
+  const [posts, setPosts] = React.useState([]);
+  const [loading, setLoading] = React.useState(true);
+
+  React.useEffect(() => {
+    (async () => {
+      try {
+        const res = await fetch('/api/social/feed?limit=30', {
+          headers: { Authorization: `Bearer ${localStorage.getItem('accessToken')}` },
+        });
+        const data = await res.json();
+        setPosts(data.data || []);
+      } catch {}
+      setLoading(false);
+    })();
+  }, []);
+
+  const deletePost = async (id) => {
+    try {
+      await fetch(`/api/social/${id}`, {
+        method: 'DELETE',
+        headers: { Authorization: `Bearer ${localStorage.getItem('accessToken')}` },
+      });
+      setPosts(p => p.filter(x => x._id !== id));
+    } catch {}
+  };
+
+  return (
+    <div>
+      <div style={{ marginBottom: 24 }}>
+        <h2 style={{ color: 'var(--text-1)', fontSize: 22, fontWeight: 800, margin: '0 0 6px' }}>Community</h2>
+        <p style={{ color: 'var(--text-3)', fontSize: 14, margin: 0 }}>
+          {loading ? 'Loading…' : `${posts.length} recent posts`}
+        </p>
+      </div>
+
+      {loading ? (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+          {[1,2,3].map(i => <div key={i} style={{ height: 80, background: 'var(--surface-2)', borderRadius: 12, animation: 'pulse 1.5s infinite' }} />)}
+        </div>
+      ) : posts.length === 0 ? (
+        <div style={{ textAlign: 'center', padding: '60px 20px', color: 'var(--text-3)' }}>
+          <FiMessageCircle size={40} style={{ marginBottom: 12, opacity: 0.3 }} />
+          <p>No community posts yet.</p>
+        </div>
+      ) : (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+          {posts.map(p => (
+            <div key={p._id} style={{
+              background: 'var(--surface-2)', border: '1px solid var(--border-1)',
+              borderRadius: 12, padding: '14px 16px',
+              display: 'flex', alignItems: 'flex-start', gap: 12,
+            }}>
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <div style={{ display: 'flex', gap: 8, marginBottom: 6 }}>
+                  <span style={{ color: 'var(--text-1)', fontWeight: 600, fontSize: 13 }}>{p.userName}</span>
+                  <span style={{ color: 'var(--text-3)', fontSize: 11, background: 'var(--surface-3)', borderRadius: 8, padding: '2px 8px' }}>{p.type}</span>
+                </div>
+                <p style={{ color: 'var(--text-2)', fontSize: 13, margin: 0, lineHeight: 1.5, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                  {p.content}
+                </p>
+                <p style={{ color: 'var(--text-3)', fontSize: 11, margin: '4px 0 0' }}>
+                  {new Date(p.createdAt).toLocaleDateString()} · {p.likes?.length || 0} likes
+                </p>
+              </div>
+              <button
+                onClick={() => deletePost(p._id)}
+                style={{
+                  background: 'var(--red-dim)', border: '1px solid rgba(239,68,68,0.2)',
+                  borderRadius: 8, padding: '6px 12px', color: 'var(--red)',
+                  cursor: 'pointer', fontSize: 12, flexShrink: 0,
+                }}
+              >
+                Remove
+              </button>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
+/* ── Admin: Audit Logs Tab ────────────────────────────────── */
+function AdminAuditTab() {
+  const [logs, setLogs] = React.useState([]);
+  const [loading, setLoading] = React.useState(true);
+
+  React.useEffect(() => {
+    (async () => {
+      try {
+        const res = await fetch('/api/metrics/audit-logs?limit=50', {
+          headers: { Authorization: `Bearer ${localStorage.getItem('accessToken')}` },
+        });
+        const data = await res.json();
+        setLogs(data.data || []);
+      } catch {}
+      setLoading(false);
+    })();
+  }, []);
+
+  return (
+    <div>
+      <div style={{ marginBottom: 24 }}>
+        <h2 style={{ color: 'var(--text-1)', fontSize: 22, fontWeight: 800, margin: '0 0 6px' }}>Audit Logs</h2>
+        <p style={{ color: 'var(--text-3)', fontSize: 14, margin: 0 }}>Admin actions, security events, and system changes</p>
+      </div>
+
+      {loading ? (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+          {[1,2,3,4,5].map(i => <div key={i} style={{ height: 52, background: 'var(--surface-2)', borderRadius: 10, animation: 'pulse 1.5s infinite' }} />)}
+        </div>
+      ) : logs.length === 0 ? (
+        <div style={{ textAlign: 'center', padding: '60px 20px', color: 'var(--text-3)' }}>
+          <FiLock size={40} style={{ marginBottom: 12, opacity: 0.3 }} />
+          <p style={{ margin: 0 }}>No audit logs yet.</p>
+          <p style={{ margin: '8px 0 0', fontSize: 13 }}>Admin actions are logged here with timestamps and details.</p>
+        </div>
+      ) : (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+          {logs.map((log, i) => (
+            <div key={log._id || i} style={{
+              display: 'flex', alignItems: 'center', gap: 12,
+              background: 'var(--surface-2)', border: '1px solid var(--border-1)',
+              borderRadius: 10, padding: '10px 14px',
+            }}>
+              <div style={{
+                width: 8, height: 8, borderRadius: '50%', flexShrink: 0,
+                background: log.status === 'failed' ? 'var(--red)' : 'var(--green)',
+              }} />
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <p style={{ color: 'var(--text-1)', fontSize: 13, fontWeight: 600, margin: 0 }}>
+                  {log.action} — {log.resource}
+                </p>
+                <p style={{ color: 'var(--text-3)', fontSize: 11, margin: '2px 0 0' }}>
+                  {log.adminEmail} · {new Date(log.createdAt).toLocaleString()}
+                </p>
+              </div>
+              {log.resourceId && (
+                <span style={{ color: 'var(--text-3)', fontSize: 10, fontFamily: 'monospace', flexShrink: 0 }}>
+                  {String(log.resourceId).slice(-8)}
+                </span>
+              )}
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+

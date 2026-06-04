@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+﻿import React, { useState, useEffect, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
@@ -49,15 +49,15 @@ export default function TrainerDirectory() {
   }, [fetchTrainers]);
 
   return (
-    <div style={{ minHeight: '100vh', background: '#0a0a0a', paddingBottom: 80 }}>
+    <div style={{ minHeight: '100vh', background: 'var(--bg)', paddingBottom: 80 }}>
       {/* Hero */}
       <div style={{ background: 'linear-gradient(135deg, #1a0a2e 0%, #0a1a2e 100%)', padding: '40px 20px 80px' }}>
         <div style={{ maxWidth: 900, margin: '0 auto', textAlign: 'center' }}>
-          <p style={{ color: '#9d00ff', fontSize: 13, fontWeight: 700, letterSpacing: 3, margin: '0 0 12px', textTransform: 'uppercase' }}>Expert Guidance</p>
-          <h1 style={{ color: '#fff', fontSize: 36, fontWeight: 900, margin: '0 0 12px', lineHeight: 1.2 }}>
+          <p style={{ color: 'var(--accent)', fontSize: 13, fontWeight: 700, letterSpacing: 3, margin: '0 0 12px', textTransform: 'uppercase' }}>Expert Guidance</p>
+          <h1 style={{ color: 'var(--text-1)', fontSize: 36, fontWeight: 900, margin: '0 0 12px', lineHeight: 1.2 }}>
             Meet Your <span style={{ background: 'linear-gradient(135deg, #9d00ff, #00d4ff)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>Trainers</span>
           </h1>
-          <p style={{ color: '#666', fontSize: 16, margin: '0 0 32px' }}>World-class coaches to guide your transformation</p>
+          <p style={{ color: 'var(--text-3)', fontSize: 16, margin: '0 0 32px' }}>World-class coaches to guide your transformation</p>
 
           {/* Search */}
           <div style={{ position: 'relative', maxWidth: 480, margin: '0 auto' }}>
@@ -67,11 +67,11 @@ export default function TrainerDirectory() {
               placeholder="Search trainers by name or specialty..."
               style={{
                 width: '100%', padding: '14px 48px 14px 18px', borderRadius: 14,
-                border: '1px solid #333', background: '#111', color: '#fff',
+                border: '1px solid var(--border-2)', background: 'var(--surface-2)', color: 'var(--text-1)',
                 fontSize: 15, fontFamily: 'inherit',
               }}
             />
-            <span style={{ position: 'absolute', right: 16, top: '50%', transform: 'translateY(-50%)', color: '#555', fontSize: 18 }}>🔍</span>
+            <span style={{ position: 'absolute', right: 16, top: '50%', transform: 'translateY(-50%)', color: 'var(--text-3)', fontSize: 18 }}>🔍</span>
           </div>
         </div>
       </div>
@@ -93,18 +93,18 @@ export default function TrainerDirectory() {
         {loading ? (
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))', gap: 16 }}>
             {[1,2,3,4,5,6].map(i => (
-              <div key={i} style={{ background: '#111', borderRadius: 20, height: 280, animation: 'pulse 1.5s infinite' }} />
+              <div key={i} style={{ background: 'var(--surface-2)', borderRadius: 20, height: 280, animation: 'pulse 1.5s infinite' }} />
             ))}
           </div>
         ) : trainers.length === 0 ? (
           <div style={{ textAlign: 'center', padding: '80px 20px' }}>
             <div style={{ fontSize: 64, marginBottom: 16 }}>🏋️</div>
-            <h3 style={{ color: '#fff', margin: '0 0 8px' }}>No trainers found</h3>
-            <p style={{ color: '#555', fontSize: 14 }}>Try a different search or specialization.</p>
+            <h3 style={{ color: 'var(--text-1)', margin: '0 0 8px' }}>No trainers found</h3>
+            <p style={{ color: 'var(--text-3)', fontSize: 14 }}>Try a different search or specialization.</p>
           </div>
         ) : (
           <>
-            <p style={{ color: '#555', fontSize: 13, marginBottom: 16 }}>{trainers.length} trainer{trainers.length !== 1 ? 's' : ''} available</p>
+            <p style={{ color: 'var(--text-3)', fontSize: 13, marginBottom: 16 }}>{trainers.length} trainer{trainers.length !== 1 ? 's' : ''} available</p>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))', gap: 16 }}>
               {trainers.map((trainer, i) => (
                 <TrainerCard key={trainer._id} trainer={trainer} index={i} />
@@ -124,7 +124,7 @@ function TrainerCard({ trainer, index }) {
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: index * 0.05 }}
       style={{
-        background: '#111', border: '1px solid #1a1a1a', borderRadius: 20,
+        background: 'var(--surface-2)', border: '1px solid var(--border-1)', borderRadius: 20,
         overflow: 'hidden', transition: 'border 0.2s, transform 0.2s',
       }}
       whileHover={{ y: -4, borderColor: '#9d00ff44' }}
@@ -141,7 +141,7 @@ function TrainerCard({ trainer, index }) {
         }}>
           {trainer.profilePicture
             ? <img src={trainer.profilePicture} alt={trainer.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-            : <span style={{ color: '#fff', fontSize: 24, fontWeight: 700 }}>{trainer.name?.[0]?.toUpperCase()}</span>
+            : <span style={{ color: 'var(--text-1)', fontSize: 24, fontWeight: 700 }}>{trainer.name?.[0]?.toUpperCase()}</span>
           }
         </div>
         {trainer.rating > 0 && (
@@ -150,21 +150,21 @@ function TrainerCard({ trainer, index }) {
             background: '#ffd70022', border: '1px solid #ffd70044',
             borderRadius: 12, padding: '4px 10px', display: 'flex', alignItems: 'center', gap: 4,
           }}>
-            <span style={{ color: '#ffd700', fontSize: 13, fontWeight: 700 }}>★ {trainer.rating?.toFixed(1)}</span>
-            <span style={{ color: '#666', fontSize: 11 }}>({trainer.totalRatings})</span>
+            <span style={{ color: 'var(--amber)', fontSize: 13, fontWeight: 700 }}>★ {trainer.rating?.toFixed(1)}</span>
+            <span style={{ color: 'var(--text-3)', fontSize: 11 }}>({trainer.totalRatings})</span>
           </div>
         )}
       </div>
 
       <div style={{ padding: '42px 20px 20px' }}>
-        <h3 style={{ color: '#fff', fontSize: 18, fontWeight: 800, margin: '0 0 2px' }}>{trainer.name}</h3>
+        <h3 style={{ color: 'var(--text-1)', fontSize: 18, fontWeight: 800, margin: '0 0 2px' }}>{trainer.name}</h3>
         {trainer.specialization && (
-          <p style={{ color: '#9d00ff', fontSize: 12, fontWeight: 700, margin: '0 0 8px', textTransform: 'uppercase', letterSpacing: 1 }}>
+          <p style={{ color: 'var(--accent)', fontSize: 12, fontWeight: 700, margin: '0 0 8px', textTransform: 'uppercase', letterSpacing: 1 }}>
             {trainer.specialization}
           </p>
         )}
         {trainer.bio && (
-          <p style={{ color: '#666', fontSize: 13, lineHeight: 1.5, margin: '0 0 12px',
+          <p style={{ color: 'var(--text-3)', fontSize: 13, lineHeight: 1.5, margin: '0 0 12px',
             display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
             {trainer.bio}
           </p>
@@ -172,20 +172,20 @@ function TrainerCard({ trainer, index }) {
 
         <div style={{ display: 'flex', gap: 12, marginBottom: 16 }}>
           <div style={{ textAlign: 'center' }}>
-            <p style={{ color: '#fff', fontWeight: 800, margin: 0, fontSize: 15 }}>{trainer.sessionCount || 0}</p>
-            <p style={{ color: '#555', fontSize: 10, margin: 0 }}>Sessions</p>
+            <p style={{ color: 'var(--text-1)', fontWeight: 800, margin: 0, fontSize: 15 }}>{trainer.sessionCount || 0}</p>
+            <p style={{ color: 'var(--text-3)', fontSize: 10, margin: 0 }}>Sessions</p>
           </div>
-          <div style={{ width: 1, background: '#1a1a1a' }} />
+          <div style={{ width: 1, background: 'var(--surface-3)' }} />
           <div style={{ textAlign: 'center' }}>
-            <p style={{ color: '#fff', fontWeight: 800, margin: 0, fontSize: 15 }}>{trainer.totalRatings || 0}</p>
-            <p style={{ color: '#555', fontSize: 10, margin: 0 }}>Reviews</p>
+            <p style={{ color: 'var(--text-1)', fontWeight: 800, margin: 0, fontSize: 15 }}>{trainer.totalRatings || 0}</p>
+            <p style={{ color: 'var(--text-3)', fontSize: 10, margin: 0 }}>Reviews</p>
           </div>
           {trainer.certifications?.length > 0 && (
             <>
-              <div style={{ width: 1, background: '#1a1a1a' }} />
+              <div style={{ width: 1, background: 'var(--surface-3)' }} />
               <div style={{ textAlign: 'center' }}>
-                <p style={{ color: '#fff', fontWeight: 800, margin: 0, fontSize: 15 }}>{trainer.certifications.length}</p>
-                <p style={{ color: '#555', fontSize: 10, margin: 0 }}>Certs</p>
+                <p style={{ color: 'var(--text-1)', fontWeight: 800, margin: 0, fontSize: 15 }}>{trainer.certifications.length}</p>
+                <p style={{ color: 'var(--text-3)', fontSize: 10, margin: 0 }}>Certs</p>
               </div>
             </>
           )}
@@ -196,7 +196,7 @@ function TrainerCard({ trainer, index }) {
             whileTap={{ scale: 0.97 }}
             style={{
               width: '100%', padding: '11px', background: 'linear-gradient(135deg, #9d00ff, #00d4ff)',
-              border: 'none', borderRadius: 12, color: '#fff', cursor: 'pointer', fontSize: 14, fontWeight: 700,
+              border: 'none', borderRadius: 12, color: 'var(--text-1)', cursor: 'pointer', fontSize: 14, fontWeight: 700,
             }}
           >
             View Profile & Book
@@ -206,3 +206,4 @@ function TrainerCard({ trainer, index }) {
     </motion.div>
   );
 }
+

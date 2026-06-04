@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useMemo } from 'react';
+﻿import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '../../context/AuthContext';
 import toast from 'react-hot-toast';
@@ -183,7 +183,7 @@ export default function QRCheckIn() {
                   position: 'absolute', bottom: -8, right: -8,
                   width: 36, height: 36, borderRadius: '50%', border: '2px solid var(--surface-raised)',
                   background: timeLeft <= 10 ? 'var(--color-error)' : 'var(--brand-purple)',
-                  color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  color: 'var(--text-1)', display: 'flex', alignItems: 'center', justifyContent: 'center',
                   fontSize: 12, fontWeight: 800, boxShadow: '0 2px 8px rgba(0,0,0,0.3)',
                 }}>
                   {timeLeft}
@@ -199,7 +199,7 @@ export default function QRCheckIn() {
               <p>QR code unavailable. Please try again.</p>
               <button onClick={fetchQR} style={{
                 padding: '10px 20px', background: 'var(--brand-gradient)',
-                border: 'none', borderRadius: 10, color: '#fff',
+                border: 'none', borderRadius: 10, color: 'var(--text-1)',
                 cursor: 'pointer', fontWeight: 700, marginTop: 8,
               }}>
                 Retry
@@ -309,3 +309,4 @@ export default function QRCheckIn() {
     </div>
   );
 }
+
