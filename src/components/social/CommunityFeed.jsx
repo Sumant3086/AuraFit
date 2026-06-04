@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useCallback } from 'react';
+﻿import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '../../context/AuthContext';
 import { useSocket } from '../../context/SocketContext';
@@ -146,7 +146,7 @@ export default function CommunityFeed() {
           width: size, height: size, borderRadius: '50%',
           background: 'linear-gradient(135deg, #9d00ff, #00d4ff)',
           display: 'flex', alignItems: 'center', justifyContent: 'center',
-          color: '#fff', fontWeight: 700, fontSize: size * 0.36, flexShrink: 0,
+          color: 'var(--text-1)', fontWeight: 700, fontSize: size * 0.36, flexShrink: 0,
         }}>
           {name?.[0]?.toUpperCase()}
         </div>
@@ -161,20 +161,20 @@ export default function CommunityFeed() {
   };
 
   return (
-    <div style={{ minHeight: '100vh', background: '#0a0a0a', paddingBottom: 80 }}>
+    <div style={{ minHeight: '100vh', background: 'var(--bg)', paddingBottom: 80 }}>
       {/* Hero header */}
       <div style={{ background: 'linear-gradient(135deg, #1a0a2e 0%, #0a1a2e 100%)', padding: '28px 20px 24px' }}>
         <div style={{ maxWidth: 700, margin: '0 auto' }}>
-          <h1 style={{ color: '#fff', fontSize: 26, fontWeight: 800, margin: '0 0 4px' }}>Community 🏋️</h1>
-          <p style={{ color: '#555', fontSize: 14, margin: '0 0 20px' }}>Share your wins, ask questions, motivate others.</p>
+          <h1 style={{ color: 'var(--text-1)', fontSize: 26, fontWeight: 800, margin: '0 0 4px' }}>Community 🏋️</h1>
+          <p style={{ color: 'var(--text-3)', fontSize: 14, margin: '0 0 20px' }}>Share your wins, ask questions, motivate others.</p>
 
           {/* Compose button */}
           <motion.button
             whileTap={{ scale: 0.97 }}
             onClick={() => setShowCompose(true)}
             style={{
-              width: '100%', padding: '14px 20px', borderRadius: 14, border: '1px solid #333',
-              background: '#111', color: '#666', fontSize: 15, textAlign: 'left', cursor: 'pointer',
+              width: '100%', padding: '14px 20px', borderRadius: 14, border: '1px solid var(--border-2)',
+              background: 'var(--surface-2)', color: 'var(--text-3)', fontSize: 15, textAlign: 'left', cursor: 'pointer',
               display: 'flex', alignItems: 'center', gap: 10,
             }}
           >
@@ -192,7 +192,7 @@ export default function CommunityFeed() {
               key={f.key}
               onClick={() => setFilter(f.key)}
               style={{
-                padding: '7px 14px', borderRadius: 20, border: '1px solid #222',
+                padding: '7px 14px', borderRadius: 20, border: '1px solid var(--border-2)',
                 background: filter === f.key ? 'linear-gradient(135deg, #9d00ff, #00d4ff)' : '#111',
                 color: filter === f.key ? '#fff' : '#666', fontSize: 13, cursor: 'pointer',
                 whiteSpace: 'nowrap', transition: 'all 0.2s',
@@ -207,18 +207,18 @@ export default function CommunityFeed() {
         {loading ? (
           <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
             {[1,2,3].map(i => (
-              <div key={i} style={{ background: '#111', borderRadius: 16, padding: 20, animation: 'pulse 1.5s infinite' }}>
-                <div style={{ width: '40%', height: 12, background: '#1a1a1a', borderRadius: 6, marginBottom: 10 }} />
-                <div style={{ width: '90%', height: 10, background: '#1a1a1a', borderRadius: 6, marginBottom: 6 }} />
-                <div style={{ width: '70%', height: 10, background: '#1a1a1a', borderRadius: 6 }} />
+              <div key={i} style={{ background: 'var(--surface-2)', borderRadius: 16, padding: 20, animation: 'pulse 1.5s infinite' }}>
+                <div style={{ width: '40%', height: 12, background: 'var(--surface-3)', borderRadius: 6, marginBottom: 10 }} />
+                <div style={{ width: '90%', height: 10, background: 'var(--surface-3)', borderRadius: 6, marginBottom: 6 }} />
+                <div style={{ width: '70%', height: 10, background: 'var(--surface-3)', borderRadius: 6 }} />
               </div>
             ))}
           </div>
         ) : posts.length === 0 ? (
           <div style={{ textAlign: 'center', padding: '60px 20px' }}>
             <div style={{ fontSize: 56, marginBottom: 16 }}>🤝</div>
-            <h3 style={{ color: '#fff', margin: '0 0 8px' }}>Be the first to post!</h3>
-            <p style={{ color: '#555', fontSize: 14 }}>Share a win, a tip, or say hello to the community.</p>
+            <h3 style={{ color: 'var(--text-1)', margin: '0 0 8px' }}>Be the first to post!</h3>
+            <p style={{ color: 'var(--text-3)', fontSize: 14 }}>Share a win, a tip, or say hello to the community.</p>
           </div>
         ) : (
           <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
@@ -245,8 +245,8 @@ export default function CommunityFeed() {
               <button
                 onClick={() => fetchPosts(false)}
                 style={{
-                  padding: '12px', background: '#111', border: '1px solid #222',
-                  borderRadius: 12, color: '#9d00ff', cursor: 'pointer', fontSize: 14, marginBottom: 16,
+                  padding: '12px', background: 'var(--surface-2)', border: '1px solid var(--border-2)',
+                  borderRadius: 12, color: 'var(--accent)', cursor: 'pointer', fontSize: 14, marginBottom: 16,
                 }}
               >
                 Load more...
@@ -264,7 +264,7 @@ export default function CommunityFeed() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             style={{
-              position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.85)', zIndex: 1000,
+              position: 'fixed', inset: 0, background: 'rgba(8,8,8,0.88)', zIndex: 1000,
               display: 'flex', alignItems: 'flex-end', justifyContent: 'center',
             }}
             onClick={() => setShowCompose(false)}
@@ -275,15 +275,15 @@ export default function CommunityFeed() {
               exit={{ y: 300 }}
               onClick={e => e.stopPropagation()}
               style={{
-                background: '#111', borderRadius: '20px 20px 0 0', padding: 24,
+                background: 'var(--surface-2)', borderRadius: '20px 20px 0 0', padding: 24,
                 width: '100%', maxWidth: 700,
               }}
             >
               <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 16 }}>
                 <Avatar name={user?.name} avatar={user?.profilePicture} />
                 <div>
-                  <p style={{ color: '#fff', fontWeight: 700, margin: 0, fontSize: 15 }}>{user?.name}</p>
-                  <p style={{ color: '#555', fontSize: 12, margin: 0 }}>Posting to community</p>
+                  <p style={{ color: 'var(--text-1)', fontWeight: 700, margin: 0, fontSize: 15 }}>{user?.name}</p>
+                  <p style={{ color: 'var(--text-3)', fontSize: 12, margin: 0 }}>Posting to community</p>
                 </div>
               </div>
 
@@ -294,8 +294,8 @@ export default function CommunityFeed() {
                 onChange={e => setNewPost(e.target.value)}
                 placeholder="What's on your mind? Share a win, tip, or question..."
                 style={{
-                  width: '100%', minHeight: 120, background: '#0a0a0a', border: '1px solid #222',
-                  borderRadius: 12, padding: 14, color: '#fff', fontSize: 15, resize: 'none',
+                  width: '100%', minHeight: 120, background: 'var(--bg)', border: '1px solid var(--border-2)',
+                  borderRadius: 12, padding: 14, color: 'var(--text-1)', fontSize: 15, resize: 'none',
                   fontFamily: 'inherit',
                 }}
               />
@@ -320,8 +320,8 @@ export default function CommunityFeed() {
 
               <div style={{ display: 'flex', gap: 10 }}>
                 <button onClick={() => setShowCompose(false)} style={{
-                  flex: 1, padding: '12px', background: '#1a1a1a', border: '1px solid #222',
-                  borderRadius: 12, color: '#666', cursor: 'pointer', fontSize: 15,
+                  flex: 1, padding: '12px', background: 'var(--surface-3)', border: '1px solid var(--border-2)',
+                  borderRadius: 12, color: 'var(--text-3)', cursor: 'pointer', fontSize: 15,
                 }}>
                   Cancel
                 </button>
@@ -355,7 +355,7 @@ function PostCard({ post, currentUser, onLike, onDelete, onComment, commentText,
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, scale: 0.95 }}
       style={{
-        background: '#111', border: '1px solid #1a1a1a', borderRadius: 16, overflow: 'hidden',
+        background: 'var(--surface-2)', border: '1px solid var(--border-1)', borderRadius: 16, overflow: 'hidden',
       }}
     >
       {/* Post header */}
@@ -364,7 +364,7 @@ function PostCard({ post, currentUser, onLike, onDelete, onComment, commentText,
           <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
             <Avatar name={post.userName} avatar={post.userAvatar} size={38} />
             <div>
-              <p style={{ color: '#fff', fontWeight: 700, margin: 0, fontSize: 14 }}>{post.userName}</p>
+              <p style={{ color: 'var(--text-1)', fontWeight: 700, margin: 0, fontSize: 14 }}>{post.userName}</p>
               <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
                 <span style={{ color: typeColor, fontSize: 11, fontWeight: 700, textTransform: 'uppercase' }}>
                   {post.type}
@@ -381,7 +381,7 @@ function PostCard({ post, currentUser, onLike, onDelete, onComment, commentText,
         </div>
 
         {/* Content */}
-        <p style={{ color: '#ccc', fontSize: 15, lineHeight: 1.6, margin: '12px 0 0', wordBreak: 'break-word' }}>
+        <p style={{ color: 'var(--text-2)', fontSize: 15, lineHeight: 1.6, margin: '12px 0 0', wordBreak: 'break-word' }}>
           {post.content}
         </p>
 
@@ -389,14 +389,14 @@ function PostCard({ post, currentUser, onLike, onDelete, onComment, commentText,
         {post.tags?.length > 0 && (
           <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', marginTop: 10 }}>
             {post.tags.map(tag => (
-              <span key={tag} style={{ color: '#9d00ff', fontSize: 12 }}>#{tag}</span>
+              <span key={tag} style={{ color: 'var(--accent)', fontSize: 12 }}>#{tag}</span>
             ))}
           </div>
         )}
       </div>
 
       {/* Actions */}
-      <div style={{ padding: '8px 16px 12px', display: 'flex', gap: 16, borderTop: '1px solid #1a1a1a' }}>
+      <div style={{ padding: '8px 16px 12px', display: 'flex', gap: 16, borderTop: '1px solid var(--border-1)' }}>
         <button
           onClick={() => onLike(post._id)}
           style={{
@@ -409,7 +409,7 @@ function PostCard({ post, currentUser, onLike, onDelete, onComment, commentText,
         </button>
         <button
           onClick={toggleComments}
-          style={{ display: 'flex', alignItems: 'center', gap: 5, background: 'none', border: 'none', cursor: 'pointer', color: '#555', fontSize: 14 }}
+          style={{ display: 'flex', alignItems: 'center', gap: 5, background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-3)', fontSize: 14 }}
         >
           💬 {post.commentCount || 0}
         </button>
@@ -417,7 +417,7 @@ function PostCard({ post, currentUser, onLike, onDelete, onComment, commentText,
           onClick={() => {
             navigator.share?.({ title: 'AuraFit Community', text: post.content });
           }}
-          style={{ display: 'flex', alignItems: 'center', gap: 5, background: 'none', border: 'none', cursor: 'pointer', color: '#555', fontSize: 14, marginLeft: 'auto' }}
+          style={{ display: 'flex', alignItems: 'center', gap: 5, background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-3)', fontSize: 14, marginLeft: 'auto' }}
         >
           ↗
         </button>
@@ -425,14 +425,14 @@ function PostCard({ post, currentUser, onLike, onDelete, onComment, commentText,
 
       {/* Comments section */}
       {expanded && (
-        <div style={{ padding: '0 16px 16px', borderTop: '1px solid #1a1a1a' }}>
+        <div style={{ padding: '0 16px 16px', borderTop: '1px solid var(--border-1)' }}>
           {/* Existing comments */}
           {post.comments?.slice(-5).map((c, i) => (
             <div key={i} style={{ display: 'flex', gap: 8, marginTop: 12, alignItems: 'flex-start' }}>
               <Avatar name={c.userName} avatar={c.userAvatar} size={28} />
-              <div style={{ flex: 1, background: '#0a0a0a', borderRadius: 10, padding: '8px 12px' }}>
-                <p style={{ color: '#9d00ff', fontSize: 12, fontWeight: 700, margin: '0 0 3px' }}>{c.userName}</p>
-                <p style={{ color: '#ccc', fontSize: 13, margin: 0 }}>{c.text}</p>
+              <div style={{ flex: 1, background: 'var(--bg)', borderRadius: 10, padding: '8px 12px' }}>
+                <p style={{ color: 'var(--accent)', fontSize: 12, fontWeight: 700, margin: '0 0 3px' }}>{c.userName}</p>
+                <p style={{ color: 'var(--text-2)', fontSize: 13, margin: 0 }}>{c.text}</p>
               </div>
             </div>
           ))}
@@ -447,8 +447,8 @@ function PostCard({ post, currentUser, onLike, onDelete, onComment, commentText,
                 onKeyDown={e => e.key === 'Enter' && onComment(post._id)}
                 placeholder="Write a comment..."
                 style={{
-                  flex: 1, background: '#0a0a0a', border: '1px solid #222', borderRadius: 20,
-                  padding: '7px 14px', color: '#fff', fontSize: 13, fontFamily: 'inherit',
+                  flex: 1, background: 'var(--bg)', border: '1px solid var(--border-2)', borderRadius: 20,
+                  padding: '7px 14px', color: 'var(--text-1)', fontSize: 13, fontFamily: 'inherit',
                 }}
               />
               <button
@@ -456,7 +456,7 @@ function PostCard({ post, currentUser, onLike, onDelete, onComment, commentText,
                 disabled={!commentText?.trim()}
                 style={{
                   padding: '7px 14px', background: commentText?.trim() ? '#9d00ff' : '#1a1a1a',
-                  border: 'none', borderRadius: 20, color: '#fff', cursor: 'pointer', fontSize: 13,
+                  border: 'none', borderRadius: 20, color: 'var(--text-1)', cursor: 'pointer', fontSize: 13,
                 }}
               >
                 Send
@@ -468,3 +468,4 @@ function PostCard({ post, currentUser, onLike, onDelete, onComment, commentText,
     </motion.div>
   );
 }
+

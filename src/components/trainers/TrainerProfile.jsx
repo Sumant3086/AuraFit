@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
@@ -80,7 +80,7 @@ export default function TrainerProfile() {
 
   if (loading) {
     return (
-      <div style={{ minHeight: '100vh', background: '#0a0a0a', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+      <div style={{ minHeight: '100vh', background: 'var(--bg)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
         <div style={{ width: 40, height: 40, border: '3px solid #1a1a1a', borderTop: '3px solid #9d00ff', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} />
         <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
       </div>
@@ -93,11 +93,11 @@ export default function TrainerProfile() {
   const joinedYear = new Date(trainer.createdAt).getFullYear();
 
   return (
-    <div style={{ minHeight: '100vh', background: '#0a0a0a', paddingBottom: 80 }}>
+    <div style={{ minHeight: '100vh', background: 'var(--bg)', paddingBottom: 80 }}>
       {/* Hero */}
       <div style={{ background: 'linear-gradient(135deg, #1a0a2e 0%, #0a1a2e 100%)', padding: '60px 20px 80px' }}>
         <div style={{ maxWidth: 800, margin: '0 auto' }}>
-          <Link to="/trainers" style={{ color: '#9d00ff', fontSize: 14, textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: 4, marginBottom: 24 }}>
+          <Link to="/trainers" style={{ color: 'var(--accent)', fontSize: 14, textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: 4, marginBottom: 24 }}>
             ← All Trainers
           </Link>
           <div style={{ display: 'flex', gap: 24, alignItems: 'flex-start', flexWrap: 'wrap' }}>
@@ -109,24 +109,24 @@ export default function TrainerProfile() {
             }}>
               {trainer.profilePicture
                 ? <img src={trainer.profilePicture} alt={trainer.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                : <span style={{ color: '#fff', fontSize: 40, fontWeight: 700 }}>{trainer.name?.[0]?.toUpperCase()}</span>
+                : <span style={{ color: 'var(--text-1)', fontSize: 40, fontWeight: 700 }}>{trainer.name?.[0]?.toUpperCase()}</span>
               }
             </div>
             <div style={{ flex: 1 }}>
-              <p style={{ color: '#9d00ff', fontSize: 12, fontWeight: 700, letterSpacing: 2, margin: '0 0 6px', textTransform: 'uppercase' }}>
+              <p style={{ color: 'var(--accent)', fontSize: 12, fontWeight: 700, letterSpacing: 2, margin: '0 0 6px', textTransform: 'uppercase' }}>
                 {trainer.specialization || 'Certified Trainer'}
               </p>
-              <h1 style={{ color: '#fff', fontSize: 32, fontWeight: 900, margin: '0 0 8px' }}>{trainer.name}</h1>
+              <h1 style={{ color: 'var(--text-1)', fontSize: 32, fontWeight: 900, margin: '0 0 8px' }}>{trainer.name}</h1>
               <div style={{ display: 'flex', alignItems: 'center', gap: 12, flexWrap: 'wrap' }}>
                 {trainer.rating > 0 && (
                   <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
                     <StarRating rating={Math.round(trainer.rating || 0)} />
-                    <span style={{ color: '#ffd700', fontWeight: 700, fontSize: 15 }}>{trainer.rating?.toFixed(1)}</span>
-                    <span style={{ color: '#555', fontSize: 13 }}>({trainer.totalRatings} reviews)</span>
+                    <span style={{ color: 'var(--amber)', fontWeight: 700, fontSize: 15 }}>{trainer.rating?.toFixed(1)}</span>
+                    <span style={{ color: 'var(--text-3)', fontSize: 13 }}>({trainer.totalRatings} reviews)</span>
                   </div>
                 )}
                 <span style={{ color: '#444', fontSize: 12 }}>•</span>
-                <span style={{ color: '#555', fontSize: 13 }}>Member since {joinedYear}</span>
+                <span style={{ color: 'var(--text-3)', fontSize: 13 }}>Member since {joinedYear}</span>
               </div>
             </div>
 
@@ -137,7 +137,7 @@ export default function TrainerProfile() {
                   whileTap={{ scale: 0.97 }}
                   style={{
                     padding: '14px 28px', background: 'linear-gradient(135deg, #9d00ff, #00d4ff)',
-                    border: 'none', borderRadius: 14, color: '#fff', cursor: 'pointer',
+                    border: 'none', borderRadius: 14, color: 'var(--text-1)', cursor: 'pointer',
                     fontSize: 15, fontWeight: 700, whiteSpace: 'nowrap',
                   }}
                 >
@@ -148,7 +148,7 @@ export default function TrainerProfile() {
               <Link to="/login" style={{ textDecoration: 'none' }}>
                 <button style={{
                   padding: '14px 28px', background: 'linear-gradient(135deg, #9d00ff, #00d4ff)',
-                  border: 'none', borderRadius: 14, color: '#fff', cursor: 'pointer', fontSize: 15, fontWeight: 700,
+                  border: 'none', borderRadius: 14, color: 'var(--text-1)', cursor: 'pointer', fontSize: 15, fontWeight: 700,
                 }}>
                   Login to Book
                 </button>
@@ -167,10 +167,10 @@ export default function TrainerProfile() {
             { label: 'Reviews', value: trainer.totalRatings || 0, icon: '📝' },
             { label: 'Certs', value: trainer.certifications?.length || 0, icon: '🏅' },
           ].map(s => (
-            <div key={s.label} style={{ background: '#111', border: '1px solid #1a1a1a', borderRadius: 14, padding: '16px 12px', textAlign: 'center' }}>
+            <div key={s.label} style={{ background: 'var(--surface-2)', border: '1px solid var(--border-1)', borderRadius: 14, padding: '16px 12px', textAlign: 'center' }}>
               <div style={{ fontSize: 22, marginBottom: 6 }}>{s.icon}</div>
-              <div style={{ color: '#9d00ff', fontSize: 20, fontWeight: 800 }}>{s.value}</div>
-              <div style={{ color: '#555', fontSize: 11 }}>{s.label}</div>
+              <div style={{ color: 'var(--accent)', fontSize: 20, fontWeight: 800 }}>{s.value}</div>
+              <div style={{ color: 'var(--text-3)', fontSize: 11 }}>{s.label}</div>
             </div>
           ))}
         </div>
@@ -179,21 +179,21 @@ export default function TrainerProfile() {
           <div>
             {/* Bio */}
             {trainer.bio && (
-              <div style={{ background: '#111', border: '1px solid #1a1a1a', borderRadius: 16, padding: 20, marginBottom: 16 }}>
-                <h3 style={{ color: '#fff', fontSize: 16, fontWeight: 700, margin: '0 0 12px' }}>About</h3>
-                <p style={{ color: '#aaa', fontSize: 15, lineHeight: 1.7, margin: 0 }}>{trainer.bio}</p>
+              <div style={{ background: 'var(--surface-2)', border: '1px solid var(--border-1)', borderRadius: 16, padding: 20, marginBottom: 16 }}>
+                <h3 style={{ color: 'var(--text-1)', fontSize: 16, fontWeight: 700, margin: '0 0 12px' }}>About</h3>
+                <p style={{ color: 'var(--text-2)', fontSize: 15, lineHeight: 1.7, margin: 0 }}>{trainer.bio}</p>
               </div>
             )}
 
             {/* Certifications */}
             {trainer.certifications?.length > 0 && (
-              <div style={{ background: '#111', border: '1px solid #1a1a1a', borderRadius: 16, padding: 20, marginBottom: 16 }}>
-                <h3 style={{ color: '#fff', fontSize: 16, fontWeight: 700, margin: '0 0 12px' }}>Certifications 🏅</h3>
+              <div style={{ background: 'var(--surface-2)', border: '1px solid var(--border-1)', borderRadius: 16, padding: 20, marginBottom: 16 }}>
+                <h3 style={{ color: 'var(--text-1)', fontSize: 16, fontWeight: 700, margin: '0 0 12px' }}>Certifications 🏅</h3>
                 <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
                   {trainer.certifications.map((cert, i) => (
                     <span key={i} style={{
                       background: '#9d00ff22', border: '1px solid #9d00ff44',
-                      borderRadius: 20, padding: '6px 14px', color: '#9d00ff', fontSize: 13,
+                      borderRadius: 20, padding: '6px 14px', color: 'var(--accent)', fontSize: 13,
                     }}>
                       {cert}
                     </span>
@@ -203,44 +203,44 @@ export default function TrainerProfile() {
             )}
 
             {/* Reviews */}
-            <div style={{ background: '#111', border: '1px solid #1a1a1a', borderRadius: 16, padding: 20, marginBottom: 16 }}>
+            <div style={{ background: 'var(--surface-2)', border: '1px solid var(--border-1)', borderRadius: 16, padding: 20, marginBottom: 16 }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
-                <h3 style={{ color: '#fff', fontSize: 16, fontWeight: 700, margin: 0 }}>Member Reviews</h3>
+                <h3 style={{ color: 'var(--text-1)', fontSize: 16, fontWeight: 700, margin: 0 }}>Member Reviews</h3>
                 {myBookings.length > 0 && (
                   <button onClick={() => { setReviewForm(f => ({ ...f, bookingId: myBookings[0]._id })); setReviewModal(true); }}
-                    style={{ padding: '7px 14px', background: '#9d00ff22', border: '1px solid #9d00ff44', borderRadius: 10, color: '#9d00ff', cursor: 'pointer', fontSize: 13, fontWeight: 700 }}>
+                    style={{ padding: '7px 14px', background: '#9d00ff22', border: '1px solid #9d00ff44', borderRadius: 10, color: 'var(--accent)', cursor: 'pointer', fontSize: 13, fontWeight: 700 }}>
                     Write Review
                   </button>
                 )}
               </div>
 
               {trainer.reviews?.length === 0 ? (
-                <p style={{ color: '#555', fontSize: 14, textAlign: 'center', padding: '20px 0' }}>
+                <p style={{ color: 'var(--text-3)', fontSize: 14, textAlign: 'center', padding: '20px 0' }}>
                   No reviews yet. Be the first to review!
                 </p>
               ) : (
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
                   {trainer.reviews?.map((r, i) => (
-                    <div key={i} style={{ paddingBottom: 14, borderBottom: i < trainer.reviews.length - 1 ? '1px solid #1a1a1a' : 'none' }}>
+                    <div key={i} style={{ paddingBottom: 14, borderBottom: i < trainer.reviews.length - 1 ? '1px solid var(--border-1)' : 'none' }}>
                       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 6 }}>
                         <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
                           <div style={{
                             width: 32, height: 32, borderRadius: '50%',
                             background: 'linear-gradient(135deg, #9d00ff, #00d4ff)',
                             display: 'flex', alignItems: 'center', justifyContent: 'center',
-                            color: '#fff', fontWeight: 700, fontSize: 14,
+                            color: 'var(--text-1)', fontWeight: 700, fontSize: 14,
                           }}>
                             {r.memberId?.name?.[0]?.toUpperCase() || '?'}
                           </div>
                           <div>
-                            <p style={{ color: '#fff', fontWeight: 600, margin: 0, fontSize: 14 }}>{r.memberId?.name || 'Member'}</p>
+                            <p style={{ color: 'var(--text-1)', fontWeight: 600, margin: 0, fontSize: 14 }}>{r.memberId?.name || 'Member'}</p>
                             <StarRating rating={r.memberRating} />
                           </div>
                         </div>
                         <span style={{ color: '#444', fontSize: 11 }}>{new Date(r.createdAt).toLocaleDateString()}</span>
                       </div>
                       {r.memberReview && (
-                        <p style={{ color: '#aaa', fontSize: 14, lineHeight: 1.6, margin: '8px 0 0', fontStyle: 'italic' }}>
+                        <p style={{ color: 'var(--text-2)', fontSize: 14, lineHeight: 1.6, margin: '8px 0 0', fontStyle: 'italic' }}>
                           "{r.memberReview}"
                         </p>
                       )}
@@ -255,8 +255,8 @@ export default function TrainerProfile() {
           <div>
             {/* Booking CTA */}
             <div style={{ background: 'linear-gradient(135deg, #1a0a2e, #0a1a2e)', border: '1px solid #9d00ff33', borderRadius: 16, padding: 20, marginBottom: 16 }}>
-              <h3 style={{ color: '#fff', fontSize: 16, fontWeight: 700, margin: '0 0 8px' }}>📅 Book a Session</h3>
-              <p style={{ color: '#666', fontSize: 13, lineHeight: 1.5, margin: '0 0 16px' }}>
+              <h3 style={{ color: 'var(--text-1)', fontSize: 16, fontWeight: 700, margin: '0 0 8px' }}>📅 Book a Session</h3>
+              <p style={{ color: 'var(--text-3)', fontSize: 13, lineHeight: 1.5, margin: '0 0 16px' }}>
                 Personal training, group sessions, nutrition consultations, and assessments available.
               </p>
               <Link to="/book-trainer" style={{ textDecoration: 'none', display: 'block' }}>
@@ -264,7 +264,7 @@ export default function TrainerProfile() {
                   whileTap={{ scale: 0.97 }}
                   style={{
                     width: '100%', padding: '12px', background: 'linear-gradient(135deg, #9d00ff, #00d4ff)',
-                    border: 'none', borderRadius: 12, color: '#fff', cursor: 'pointer', fontSize: 15, fontWeight: 700,
+                    border: 'none', borderRadius: 12, color: 'var(--text-1)', cursor: 'pointer', fontSize: 15, fontWeight: 700,
                   }}
                 >
                   Book Now
@@ -274,12 +274,12 @@ export default function TrainerProfile() {
 
             {/* Availability */}
             {trainer.availability?.length > 0 && (
-              <div style={{ background: '#111', border: '1px solid #1a1a1a', borderRadius: 16, padding: 20 }}>
-                <h3 style={{ color: '#fff', fontSize: 15, fontWeight: 700, margin: '0 0 12px' }}>Availability</h3>
+              <div style={{ background: 'var(--surface-2)', border: '1px solid var(--border-1)', borderRadius: 16, padding: 20 }}>
+                <h3 style={{ color: 'var(--text-1)', fontSize: 15, fontWeight: 700, margin: '0 0 12px' }}>Availability</h3>
                 {trainer.availability.map((slot, i) => (
                   <div key={i} style={{ display: 'flex', justifyContent: 'space-between', padding: '6px 0', borderBottom: '1px solid #111' }}>
-                    <span style={{ color: '#ccc', fontSize: 13 }}>{slot.day}</span>
-                    <span style={{ color: '#9d00ff', fontSize: 13 }}>{slot.startTime} – {slot.endTime}</span>
+                    <span style={{ color: 'var(--text-2)', fontSize: 13 }}>{slot.day}</span>
+                    <span style={{ color: 'var(--accent)', fontSize: 13 }}>{slot.startTime} – {slot.endTime}</span>
                   </div>
                 ))}
               </div>
@@ -296,12 +296,12 @@ export default function TrainerProfile() {
             initial={{ y: 300 }}
             animate={{ y: 0 }}
             onClick={e => e.stopPropagation()}
-            style={{ background: '#111', borderRadius: '20px 20px 0 0', padding: 28, width: '100%', maxWidth: 600 }}
+            style={{ background: 'var(--surface-2)', borderRadius: '20px 20px 0 0', padding: 28, width: '100%', maxWidth: 600 }}
           >
-            <h3 style={{ color: '#fff', fontSize: 18, fontWeight: 700, margin: '0 0 20px' }}>Rate your session with {trainer.name}</h3>
+            <h3 style={{ color: 'var(--text-1)', fontSize: 18, fontWeight: 700, margin: '0 0 20px' }}>Rate your session with {trainer.name}</h3>
             <div style={{ marginBottom: 20 }}>
               <StarRating rating={reviewForm.rating} interactive onRate={r => setReviewForm(f => ({ ...f, rating: r }))} />
-              <p style={{ color: '#555', fontSize: 13, marginTop: 8 }}>
+              <p style={{ color: 'var(--text-3)', fontSize: 13, marginTop: 8 }}>
                 {reviewForm.rating === 1 ? 'Poor' : reviewForm.rating === 2 ? 'Fair' : reviewForm.rating === 3 ? 'Good' : reviewForm.rating === 4 ? 'Very Good' : reviewForm.rating === 5 ? 'Excellent!' : 'Tap a star'}
               </p>
             </div>
@@ -310,10 +310,10 @@ export default function TrainerProfile() {
               onChange={e => setReviewForm(f => ({ ...f, review: e.target.value }))}
               placeholder="Share your experience (optional)..."
               rows={3}
-              style={{ width: '100%', background: '#0a0a0a', border: '1px solid #222', borderRadius: 12, padding: 14, color: '#fff', fontSize: 14, fontFamily: 'inherit', resize: 'none', marginBottom: 16 }}
+              style={{ width: '100%', background: 'var(--bg)', border: '1px solid var(--border-2)', borderRadius: 12, padding: 14, color: 'var(--text-1)', fontSize: 14, fontFamily: 'inherit', resize: 'none', marginBottom: 16 }}
             />
             <div style={{ display: 'flex', gap: 10 }}>
-              <button onClick={() => setReviewModal(false)} style={{ flex: 1, padding: 12, background: '#1a1a1a', border: '1px solid #222', borderRadius: 12, color: '#666', cursor: 'pointer', fontSize: 15 }}>
+              <button onClick={() => setReviewModal(false)} style={{ flex: 1, padding: 12, background: 'var(--surface-3)', border: '1px solid var(--border-2)', borderRadius: 12, color: 'var(--text-3)', cursor: 'pointer', fontSize: 15 }}>
                 Cancel
               </button>
               <button onClick={submitReview} disabled={submitting || !reviewForm.rating} style={{
@@ -330,3 +330,4 @@ export default function TrainerProfile() {
     </div>
   );
 }
+

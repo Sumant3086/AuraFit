@@ -1,14 +1,18 @@
-import React, { useState, useEffect } from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useAuth } from '../../context/AuthContext';
 import { Link } from 'react-router-dom';
+import { LuCalendar, LuCheck, LuClock, LuX, LuDumbbell } from 'react-icons/lu';
+import Reveal from '../common/Reveal';
+import StatCard from '../common/StatCard';
+import { ease, dur } from '../../lib/motion';
 import toast from 'react-hot-toast';
 
 const STATUS_COLORS = {
-  confirmed: '#00c853',
-  pending: '#ffd700',
-  cancelled: '#ff4444',
-  completed: '#00d4ff',
+  confirmed: 'var(--green)',
+  pending:   'var(--amber)',
+  cancelled: 'var(--red)',
+  completed: 'var(--accent)',
 };
 
 export default function TrainerDashboard() {
@@ -81,23 +85,23 @@ export default function TrainerDashboard() {
   };
 
   return (
-    <div style={{ minHeight: '100vh', background: '#0a0a0a', paddingBottom: 60 }}>
+    <div style={{ minHeight: '100vh', background: 'var(--bg)', paddingBottom: 60 }}>
       {/* Header */}
       <div style={{ background: 'linear-gradient(135deg, #1a0a2e, #0a1a2e)', padding: '32px 20px 60px' }}>
         <div style={{ maxWidth: 760, margin: '0 auto' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: 16 }}>
             <div>
-              <p style={{ color: '#555', fontSize: 14, margin: '0 0 4px' }}>{greet()},</p>
-              <h1 style={{ color: '#fff', fontSize: 26, fontWeight: 800, margin: '0 0 4px' }}>
+              <p style={{ color: 'var(--text-3)', fontSize: 14, margin: '0 0 4px' }}>{greet()},</p>
+              <h1 style={{ color: 'var(--text-1)', fontSize: 26, fontWeight: 800, margin: '0 0 4px' }}>
                 {user?.name?.split(' ')[0]} 🏋️
               </h1>
-              <p style={{ color: '#9d00ff', margin: 0, fontSize: 14 }}>Trainer Dashboard • AuraFit Pro</p>
+              <p style={{ color: 'var(--accent)', margin: 0, fontSize: 14 }}>Trainer Dashboard • AuraFit Pro</p>
             </div>
             <div style={{ background: '#0a0a0a22', border: '1px solid #ffffff22', borderRadius: 14, padding: '12px 20px', textAlign: 'right' }}>
-              <p style={{ color: '#ffd700', fontSize: 22, fontWeight: 800, margin: '0 0 2px' }}>
+              <p style={{ color: 'var(--amber)', fontSize: 22, fontWeight: 800, margin: '0 0 2px' }}>
                 ₹{(stats?.thisMonthRevenue || 0).toLocaleString()}
               </p>
-              <p style={{ color: '#555', fontSize: 12, margin: 0 }}>This month revenue</p>
+              <p style={{ color: 'var(--text-3)', fontSize: 12, margin: 0 }}>This month revenue</p>
             </div>
           </div>
         </div>
@@ -107,15 +111,15 @@ export default function TrainerDashboard() {
         {/* Stats grid */}
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 10, marginBottom: 28 }}>
           {[
-            { label: 'Total Sessions', value: stats?.totalSessions || 0, icon: '📅', color: '#00d4ff' },
+            { label: 'Total Sessions', value: stats?.totalSessions || 0, icon: '📅', color: 'var(--accent)' },
             { label: 'Completed', value: stats?.completedSessions || 0, icon: '✅', color: '#00c853' },
-            { label: 'Pending', value: stats?.pendingSessions || 0, icon: '⏳', color: '#ffd700' },
-            { label: 'Rating', value: `${stats?.avgRating || '—'}★`, icon: '⭐', color: '#ff6b35' },
+            { label: 'Pending', value: stats?.pendingSessions || 0, icon: '⏳', color: 'var(--amber)' },
+            { label: 'Rating', value: `${stats?.avgRating || '—'}★`, icon: '⭐', color: 'var(--amber)' },
           ].map(s => (
-            <div key={s.label} style={{ background: '#111', border: '1px solid #1a1a1a', borderRadius: 12, padding: '14px 12px', textAlign: 'center' }}>
+            <div key={s.label} style={{ background: 'var(--surface-2)', border: '1px solid var(--border-1)', borderRadius: 12, padding: '14px 12px', textAlign: 'center' }}>
               <div style={{ fontSize: 22, marginBottom: 4 }}>{s.icon}</div>
               <div style={{ color: s.color, fontSize: 20, fontWeight: 800 }}>{s.value}</div>
-              <div style={{ color: '#555', fontSize: 11 }}>{s.label}</div>
+              <div style={{ color: 'var(--text-3)', fontSize: 11 }}>{s.label}</div>
             </div>
           ))}
         </div>
@@ -127,34 +131,34 @@ export default function TrainerDashboard() {
           display: 'flex', gap: 20, flexWrap: 'wrap',
         }}>
           <div style={{ flex: 1 }}>
-            <p style={{ color: '#888', fontSize: 13, margin: '0 0 4px' }}>Total Revenue</p>
-            <p style={{ color: '#ffd700', fontSize: 28, fontWeight: 800, margin: 0 }}>
+            <p style={{ color: 'var(--text-3)', fontSize: 13, margin: '0 0 4px' }}>Total Revenue</p>
+            <p style={{ color: 'var(--amber)', fontSize: 28, fontWeight: 800, margin: 0 }}>
               ₹{(stats?.totalRevenue || 0).toLocaleString()}
             </p>
-            <p style={{ color: '#555', fontSize: 12, margin: '4px 0 0' }}>All time earnings</p>
+            <p style={{ color: 'var(--text-3)', fontSize: 12, margin: '4px 0 0' }}>All time earnings</p>
           </div>
-          <div style={{ width: 1, background: '#1a1a1a', flexShrink: 0 }} />
+          <div style={{ width: 1, background: 'var(--surface-3)', flexShrink: 0 }} />
           <div style={{ flex: 1 }}>
-            <p style={{ color: '#888', fontSize: 13, margin: '0 0 4px' }}>This Month</p>
+            <p style={{ color: 'var(--text-3)', fontSize: 13, margin: '0 0 4px' }}>This Month</p>
             <p style={{ color: '#00c853', fontSize: 28, fontWeight: 800, margin: 0 }}>
               ₹{(stats?.thisMonthRevenue || 0).toLocaleString()}
             </p>
-            <p style={{ color: '#555', fontSize: 12, margin: '4px 0 0' }}>{stats?.thisMonthSessions || 0} sessions this month</p>
+            <p style={{ color: 'var(--text-3)', fontSize: 12, margin: '4px 0 0' }}>{stats?.thisMonthSessions || 0} sessions this month</p>
           </div>
-          <div style={{ width: 1, background: '#1a1a1a', flexShrink: 0 }} />
+          <div style={{ width: 1, background: 'var(--surface-3)', flexShrink: 0 }} />
           <div style={{ flex: 1 }}>
-            <p style={{ color: '#888', fontSize: 13, margin: '0 0 4px' }}>Avg per Session</p>
-            <p style={{ color: '#00d4ff', fontSize: 28, fontWeight: 800, margin: 0 }}>
+            <p style={{ color: 'var(--text-3)', fontSize: 13, margin: '0 0 4px' }}>Avg per Session</p>
+            <p style={{ color: 'var(--accent)', fontSize: 28, fontWeight: 800, margin: 0 }}>
               ₹{stats?.completedSessions ? Math.round(stats.totalRevenue / stats.completedSessions).toLocaleString() : '0'}
             </p>
-            <p style={{ color: '#555', fontSize: 12, margin: '4px 0 0' }}>Per completed session</p>
+            <p style={{ color: 'var(--text-3)', fontSize: 12, margin: '4px 0 0' }}>Per completed session</p>
           </div>
         </div>
 
         {/* Bookings */}
         <div>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
-            <h2 style={{ color: '#fff', fontSize: 18, fontWeight: 700, margin: 0 }}>Sessions</h2>
+            <h2 style={{ color: 'var(--text-1)', fontSize: 18, fontWeight: 700, margin: 0 }}>Sessions</h2>
             <div style={{ display: 'flex', gap: 6 }}>
               {['upcoming', 'history'].map(t => (
                 <button key={t} onClick={() => setTab(t)} style={{
@@ -171,13 +175,13 @@ export default function TrainerDashboard() {
           {loading ? (
             <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
               {[1,2,3].map(i => (
-                <div key={i} style={{ background: '#111', borderRadius: 14, height: 90, animation: 'pulse 1.5s infinite' }} />
+                <div key={i} style={{ background: 'var(--surface-2)', borderRadius: 14, height: 90, animation: 'pulse 1.5s infinite' }} />
               ))}
             </div>
           ) : displayBookings.length === 0 ? (
             <div style={{ textAlign: 'center', padding: '50px 20px' }}>
               <div style={{ fontSize: 48, marginBottom: 12 }}>{tab === 'upcoming' ? '📅' : '📋'}</div>
-              <p style={{ color: '#666', fontSize: 15 }}>
+              <p style={{ color: 'var(--text-3)', fontSize: 15 }}>
                 {tab === 'upcoming' ? 'No upcoming sessions. Members can book you via the Trainer Booking page.' : 'No session history yet.'}
               </p>
             </div>
@@ -192,7 +196,7 @@ export default function TrainerDashboard() {
 
         {/* Quick links */}
         <div style={{ marginTop: 28 }}>
-          <h3 style={{ color: '#fff', fontSize: 16, fontWeight: 700, margin: '0 0 14px' }}>Quick Access</h3>
+          <h3 style={{ color: 'var(--text-1)', fontSize: 16, fontWeight: 700, margin: '0 0 14px' }}>Quick Access</h3>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 10 }}>
             {[
               { label: 'Book Management', icon: '📅', path: '/book-trainer' },
@@ -201,11 +205,11 @@ export default function TrainerDashboard() {
             ].map(l => (
               <Link key={l.label} to={l.path} style={{ textDecoration: 'none' }}>
                 <div style={{
-                  background: '#111', border: '1px solid #1a1a1a', borderRadius: 14,
+                  background: 'var(--surface-2)', border: '1px solid var(--border-1)', borderRadius: 14,
                   padding: '16px 12px', textAlign: 'center', cursor: 'pointer',
                 }}>
                   <div style={{ fontSize: 26, marginBottom: 6 }}>{l.icon}</div>
-                  <p style={{ color: '#ccc', fontSize: 13, margin: 0 }}>{l.label}</p>
+                  <p style={{ color: 'var(--text-2)', fontSize: 13, margin: 0 }}>{l.label}</p>
                 </div>
               </Link>
             ))}
@@ -226,7 +230,7 @@ function BookingCard({ booking, onUpdateStatus }) {
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       style={{
-        background: '#111', border: '1px solid #1a1a1a', borderRadius: 14,
+        background: 'var(--surface-2)', border: '1px solid var(--border-1)', borderRadius: 14,
         padding: '16px 18px',
       }}
     >
@@ -240,13 +244,13 @@ function BookingCard({ booking, onUpdateStatus }) {
               {booking.status}
             </span>
             {booking.amount > 0 && (
-              <span style={{ color: '#ffd700', fontSize: 13, fontWeight: 700 }}>₹{booking.amount}</span>
+              <span style={{ color: 'var(--amber)', fontSize: 13, fontWeight: 700 }}>₹{booking.amount}</span>
             )}
           </div>
-          <p style={{ color: '#fff', fontWeight: 700, margin: '0 0 2px', fontSize: 15 }}>
+          <p style={{ color: 'var(--text-1)', fontWeight: 700, margin: '0 0 2px', fontSize: 15 }}>
             {memberName}
           </p>
-          <p style={{ color: '#555', fontSize: 13, margin: 0 }}>
+          <p style={{ color: 'var(--text-3)', fontSize: 13, margin: 0 }}>
             {booking.date} • {booking.startTime} – {booking.endTime}
             {sessionType && ` • ${sessionType}`}
           </p>
@@ -274,7 +278,7 @@ function BookingCard({ booking, onUpdateStatus }) {
         {booking.status === 'confirmed' && (
           <button onClick={() => onUpdateStatus(booking._id, 'completed')} style={{
             padding: '8px 14px', background: '#00d4ff22', border: '1px solid #00d4ff44',
-            borderRadius: 10, color: '#00d4ff', cursor: 'pointer', fontSize: 13, fontWeight: 700,
+            borderRadius: 10, color: 'var(--accent)', cursor: 'pointer', fontSize: 13, fontWeight: 700,
           }}>
             Mark Done
           </button>
@@ -283,3 +287,4 @@ function BookingCard({ booking, onUpdateStatus }) {
     </motion.div>
   );
 }
+

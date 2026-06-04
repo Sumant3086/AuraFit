@@ -1,4 +1,4 @@
-import React from "react"
+﻿import React from "react"
 import "./contact.css"
 import Footer from "../footer/Footer"
 import { FaEnvelope, FaClock, FaChevronUp } from 'react-icons/fa'
@@ -68,7 +68,7 @@ const Contact = () => {
             <ul>
               <li>
                 <FaEnvelope className="contact-icon" />
-                <a href="mailto:sumantyadav3086@gmail.com" style={{color: '#fff'}}>
+                <a href="mailto:sumantyadav3086@gmail.com" style={{color: 'var(--text-1)'}}>
                   sumantyadav3086@gmail.com
                 </a>
               </li>
@@ -157,3 +157,4 @@ const Contact = () => {
 };
 
 export default Contact;
+

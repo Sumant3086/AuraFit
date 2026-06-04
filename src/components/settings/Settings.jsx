@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useAuth } from '../../context/AuthContext';
 import { useTheme } from '../../context/ThemeContext';
@@ -128,15 +128,15 @@ export default function Settings() {
   };
 
   const inputStyle = {
-    width: '100%', background: '#0a0a0a', border: '1px solid #222',
-    borderRadius: 10, padding: '11px 14px', color: '#fff', fontSize: 15, fontFamily: 'inherit',
+    width: '100%', background: 'var(--bg)', border: '1px solid var(--border-2)',
+    borderRadius: 10, padding: '11px 14px', color: 'var(--text-1)', fontSize: 15, fontFamily: 'inherit',
   };
 
-  const labelStyle = { color: '#888', fontSize: 13, marginBottom: 6, display: 'block' };
+  const labelStyle = { color: 'var(--text-3)', fontSize: 13, marginBottom: 6, display: 'block' };
 
   const Section = ({ title, children }) => (
     <div style={{ marginBottom: 28 }}>
-      <h3 style={{ color: '#fff', fontSize: 16, fontWeight: 700, margin: '0 0 16px', paddingBottom: 8, borderBottom: '1px solid #1a1a1a' }}>{title}</h3>
+      <h3 style={{ color: 'var(--text-1)', fontSize: 16, fontWeight: 700, margin: '0 0 16px', paddingBottom: 8, borderBottom: '1px solid var(--border-1)' }}>{title}</h3>
       {children}
     </div>
   );
@@ -144,8 +144,8 @@ export default function Settings() {
   const Toggle = ({ label, desc, value, onChange }) => (
     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '12px 0', borderBottom: '1px solid #111' }}>
       <div>
-        <p style={{ color: '#ccc', fontSize: 15, margin: 0 }}>{label}</p>
-        {desc && <p style={{ color: '#555', fontSize: 12, margin: '2px 0 0' }}>{desc}</p>}
+        <p style={{ color: 'var(--text-2)', fontSize: 15, margin: 0 }}>{label}</p>
+        {desc && <p style={{ color: 'var(--text-3)', fontSize: 12, margin: '2px 0 0' }}>{desc}</p>}
       </div>
       <button
         onClick={onChange}
@@ -164,12 +164,12 @@ export default function Settings() {
   );
 
   return (
-    <div style={{ minHeight: '100vh', background: '#0a0a0a' }}>
+    <div style={{ minHeight: '100vh', background: 'var(--bg)' }}>
       {/* Header */}
       <div style={{ background: 'linear-gradient(135deg, #1a0a2e, #0a1a2e)', padding: '28px 20px 24px' }}>
         <div style={{ maxWidth: 800, margin: '0 auto' }}>
-          <h1 style={{ color: '#fff', fontSize: 26, fontWeight: 800, margin: '0 0 4px' }}>Settings ⚙️</h1>
-          <p style={{ color: '#555', fontSize: 14, margin: 0 }}>Manage your account, preferences, and privacy.</p>
+          <h1 style={{ color: 'var(--text-1)', fontSize: 26, fontWeight: 800, margin: '0 0 4px' }}>Settings ⚙️</h1>
+          <p style={{ color: 'var(--text-3)', fontSize: 14, margin: 0 }}>Manage your account, preferences, and privacy.</p>
         </div>
       </div>
 
@@ -214,8 +214,8 @@ export default function Settings() {
                   }}
                 />
                 <div>
-                  <p style={{ color: '#fff', fontWeight: 700, margin: '0 0 4px' }}>{user?.name}</p>
-                  <p style={{ color: '#555', fontSize: 13, margin: '0 0 8px' }}>Click the photo to upload a new one</p>
+                  <p style={{ color: 'var(--text-1)', fontWeight: 700, margin: '0 0 4px' }}>{user?.name}</p>
+                  <p style={{ color: 'var(--text-3)', fontSize: 13, margin: '0 0 8px' }}>Click the photo to upload a new one</p>
                   <p style={{ color: '#444', fontSize: 12, margin: 0 }}>Supports JPEG, PNG, WebP (max 5MB)</p>
                 </div>
               </div>
@@ -272,7 +272,7 @@ export default function Settings() {
               </div>
               <button onClick={saveProfile} disabled={saving} style={{
                 marginTop: 20, padding: '12px 28px', background: 'linear-gradient(135deg, #9d00ff, #00d4ff)',
-                border: 'none', borderRadius: 10, color: '#fff', fontSize: 15, fontWeight: 700, cursor: 'pointer',
+                border: 'none', borderRadius: 10, color: 'var(--text-1)', fontSize: 15, fontWeight: 700, cursor: 'pointer',
                 opacity: saving ? 0.7 : 1,
               }}>
                 {saving ? 'Saving...' : 'Save Profile'}
@@ -322,7 +322,7 @@ export default function Settings() {
               </Section>
               <button onClick={savePrefs} disabled={saving} style={{
                 padding: '12px 28px', background: 'linear-gradient(135deg, #9d00ff, #00d4ff)',
-                border: 'none', borderRadius: 10, color: '#fff', fontSize: 15, fontWeight: 700, cursor: 'pointer',
+                border: 'none', borderRadius: 10, color: 'var(--text-1)', fontSize: 15, fontWeight: 700, cursor: 'pointer',
               }}>
                 {saving ? 'Saving...' : 'Save Preferences'}
               </button>
@@ -339,15 +339,15 @@ export default function Settings() {
                   borderRadius: 12, marginBottom: 16, display: 'flex', justifyContent: 'space-between', alignItems: 'center',
                 }}>
                   <div>
-                    <p style={{ color: '#fff', fontWeight: 700, margin: 0 }}>{notifs.pushEnabled ? '🔔 Notifications Enabled' : '🔕 Notifications Disabled'}</p>
-                    <p style={{ color: '#555', fontSize: 13, margin: '4px 0 0' }}>
+                    <p style={{ color: 'var(--text-1)', fontWeight: 700, margin: 0 }}>{notifs.pushEnabled ? '🔔 Notifications Enabled' : '🔕 Notifications Disabled'}</p>
+                    <p style={{ color: 'var(--text-3)', fontSize: 13, margin: '4px 0 0' }}>
                       {notifs.pushEnabled ? "You'll receive workout reminders and achievements." : "Enable to get fitness reminders and progress alerts."}
                     </p>
                   </div>
                   {!notifs.pushEnabled && (
                     <button onClick={enablePushNotifications} style={{
                       padding: '9px 16px', background: 'linear-gradient(135deg, #9d00ff, #00d4ff)',
-                      border: 'none', borderRadius: 10, color: '#fff', cursor: 'pointer', fontSize: 13, fontWeight: 700,
+                      border: 'none', borderRadius: 10, color: 'var(--text-1)', cursor: 'pointer', fontSize: 13, fontWeight: 700,
                     }}>
                       Enable
                     </button>
@@ -365,16 +365,16 @@ export default function Settings() {
           {/* PRIVACY */}
           {tab === 'privacy' && (
             <Section title="Privacy Settings">
-              <div style={{ background: '#111', border: '1px solid #1a1a1a', borderRadius: 14, padding: 20, marginBottom: 16 }}>
-                <p style={{ color: '#fff', fontWeight: 700, margin: '0 0 8px' }}>🔒 Your Data is Protected</p>
-                <p style={{ color: '#555', fontSize: 14, lineHeight: 1.6, margin: 0 }}>
+              <div style={{ background: 'var(--surface-2)', border: '1px solid var(--border-1)', borderRadius: 14, padding: 20, marginBottom: 16 }}>
+                <p style={{ color: 'var(--text-1)', fontWeight: 700, margin: '0 0 8px' }}>🔒 Your Data is Protected</p>
+                <p style={{ color: 'var(--text-3)', fontSize: 14, lineHeight: 1.6, margin: 0 }}>
                   AuraFit stores your fitness data securely. We never sell your personal information to third parties.
                   Your progress, workout history, and payment data are encrypted and stored on secure servers.
                 </p>
               </div>
-              <div style={{ background: '#111', border: '1px solid #1a1a1a', borderRadius: 14, padding: 20 }}>
-                <p style={{ color: '#fff', fontWeight: 700, margin: '0 0 8px' }}>👁️ Profile Visibility</p>
-                <p style={{ color: '#555', fontSize: 13, margin: '0 0 14px' }}>Control who can see your community posts</p>
+              <div style={{ background: 'var(--surface-2)', border: '1px solid var(--border-1)', borderRadius: 14, padding: 20 }}>
+                <p style={{ color: 'var(--text-1)', fontWeight: 700, margin: '0 0 8px' }}>👁️ Profile Visibility</p>
+                <p style={{ color: 'var(--text-3)', fontSize: 13, margin: '0 0 14px' }}>Control who can see your community posts</p>
                 <select defaultValue="members-only" style={{ ...inputStyle, maxWidth: 240 }}>
                   <option value="public">🌍 Public</option>
                   <option value="members-only">👥 Members Only</option>
@@ -409,7 +409,7 @@ export default function Settings() {
                 {pwErr && <p style={{ color: '#ff4444', fontSize: 13, margin: '0 0 12px' }}>{pwErr}</p>}
                 <button onClick={changePassword} disabled={saving} style={{
                   padding: '12px 28px', background: 'linear-gradient(135deg, #9d00ff, #00d4ff)',
-                  border: 'none', borderRadius: 10, color: '#fff', fontSize: 15, fontWeight: 700, cursor: 'pointer',
+                  border: 'none', borderRadius: 10, color: 'var(--text-1)', fontSize: 15, fontWeight: 700, cursor: 'pointer',
                 }}>
                   {saving ? 'Changing...' : 'Change Password'}
                 </button>
@@ -418,7 +418,7 @@ export default function Settings() {
               <Section title="Account Actions">
                 <div style={{ background: '#1a0505', border: '1px solid #ff444433', borderRadius: 12, padding: 18 }}>
                   <p style={{ color: '#ff4444', fontWeight: 700, margin: '0 0 6px' }}>⚠️ Danger Zone</p>
-                  <p style={{ color: '#888', fontSize: 13, margin: '0 0 14px' }}>
+                  <p style={{ color: 'var(--text-3)', fontSize: 13, margin: '0 0 14px' }}>
                     Deleting your account is permanent. All your data, progress, and membership will be lost.
                   </p>
                   <button onClick={deleteAccount} style={{
@@ -465,8 +465,8 @@ export default function Settings() {
               </Section>
 
               <Section title="Data Retention">
-                <div style={{ background: '#111', border: '1px solid #1a1a1a', borderRadius: 12, padding: 16 }}>
-                  <p style={{ color: '#ccc', fontSize: 14, lineHeight: 1.7, margin: 0 }}>
+                <div style={{ background: 'var(--surface-2)', border: '1px solid var(--border-1)', borderRadius: 12, padding: 16 }}>
+                  <p style={{ color: 'var(--text-2)', fontSize: 14, lineHeight: 1.7, margin: 0 }}>
                     Your data is retained for the duration of your active membership plus 90 days.
                     After account deletion, data is permanently removed within 30 days.
                     We comply with applicable data protection regulations.
@@ -484,13 +484,13 @@ export default function Settings() {
 
 const ExportCard = ({ icon, title, desc, action, onClick, accent }) => (
   <div style={{
-    background: '#111', border: '1px solid #1a1a1a', borderRadius: 14,
+    background: 'var(--surface-2)', border: '1px solid var(--border-1)', borderRadius: 14,
     padding: '16px 18px', display: 'flex', alignItems: 'center', gap: 16,
   }}>
     <div style={{ fontSize: 32, flexShrink: 0 }}>{icon}</div>
     <div style={{ flex: 1 }}>
-      <p style={{ color: '#fff', fontWeight: 700, margin: '0 0 4px', fontSize: 15 }}>{title}</p>
-      <p style={{ color: '#555', fontSize: 13, margin: 0 }}>{desc}</p>
+      <p style={{ color: 'var(--text-1)', fontWeight: 700, margin: '0 0 4px', fontSize: 15 }}>{title}</p>
+      <p style={{ color: 'var(--text-3)', fontSize: 13, margin: 0 }}>{desc}</p>
     </div>
     <button onClick={onClick} style={{
       padding: '9px 16px', background: `${accent}22`, border: `1px solid ${accent}44`,
@@ -500,3 +500,4 @@ const ExportCard = ({ icon, title, desc, action, onClick, accent }) => (
     </button>
   </div>
 );
+

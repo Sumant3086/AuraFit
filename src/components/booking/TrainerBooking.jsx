@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useAuth } from '../../context/AuthContext';
 import toast from 'react-hot-toast';
@@ -82,15 +82,15 @@ export default function TrainerBooking() {
   const maxDate = new Date(Date.now() + 14 * 86400000).toISOString().split('T')[0];
 
   return (
-    <div style={{ minHeight: '100vh', background: '#0a0a0a', padding: '20px 16px', fontFamily: 'Arial, sans-serif' }}>
+    <div style={{ minHeight: '100vh', background: 'var(--bg)', padding: '20px 16px', fontFamily: 'var(--font-sans)' }}>
       <div style={{ maxWidth: 700, margin: '0 auto' }}>
         <div style={{ textAlign: 'center', marginBottom: 24 }}>
-          <h1 style={{ color: '#fff', fontSize: 28, fontWeight: 800, margin: 0 }}>👨‍💼 Book a Trainer</h1>
-          <p style={{ color: '#666', marginTop: 8 }}>Schedule 1-on-1 sessions with certified trainers</p>
+          <h1 style={{ color: 'var(--text-1)', fontSize: 28, fontWeight: 800, margin: 0 }}>👨‍💼 Book a Trainer</h1>
+          <p style={{ color: 'var(--text-3)', marginTop: 8 }}>Schedule 1-on-1 sessions with certified trainers</p>
         </div>
 
         {/* Tabs */}
-        <div style={{ display: 'flex', background: '#111', borderRadius: 12, padding: 4, marginBottom: 24 }}>
+        <div style={{ display: 'flex', background: 'var(--surface-2)', borderRadius: 12, padding: 4, marginBottom: 24 }}>
           {['book', 'my'].map(t => (
             <button key={t} onClick={() => setTab(t)} style={{
               flex: 1, padding: '10px', borderRadius: 9, border: 'none', cursor: 'pointer', fontWeight: 600, fontSize: 14,
@@ -106,7 +106,7 @@ export default function TrainerBooking() {
           <div>
             {step === 'trainers' && (
               <>
-                <h2 style={{ color: '#fff', fontSize: 18, marginBottom: 16 }}>Choose a Trainer</h2>
+                <h2 style={{ color: 'var(--text-1)', fontSize: 18, marginBottom: 16 }}>Choose a Trainer</h2>
                 {trainers.length === 0 ? (
                   <EmptyState icon="👨‍💼" text="No trainers available right now" />
                 ) : (
@@ -114,20 +114,20 @@ export default function TrainerBooking() {
                     {trainers.map(t => (
                       <motion.div key={t._id} whileTap={{ scale: 0.98 }} onClick={() => { setSelected(s => ({ ...s, trainer: t })); setStep('schedule'); }}
                         style={{
-                          background: '#111', border: `1px solid ${selected.trainer?._id === t._id ? '#9d00ff' : '#222'}`,
+                          background: 'var(--surface-2)', border: `1px solid ${selected.trainer?._id === t._id ? '#9d00ff' : '#222'}`,
                           borderRadius: 14, padding: '16px 20px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 16,
                         }}>
                         <Avatar name={t.name} url={t.profilePicture} size={52} />
                         <div style={{ flex: 1 }}>
-                          <p style={{ color: '#fff', fontWeight: 700, margin: '0 0 4px' }}>{t.name}</p>
-                          <p style={{ color: '#9d00ff', fontSize: 13, margin: '0 0 4px' }}>{t.specialization || 'General Trainer'}</p>
+                          <p style={{ color: 'var(--text-1)', fontWeight: 700, margin: '0 0 4px' }}>{t.name}</p>
+                          <p style={{ color: 'var(--accent)', fontSize: 13, margin: '0 0 4px' }}>{t.specialization || 'General Trainer'}</p>
                           {t.certifications?.length > 0 && (
-                            <p style={{ color: '#555', fontSize: 12, margin: 0 }}>{t.certifications.slice(0, 2).join(' · ')}</p>
+                            <p style={{ color: 'var(--text-3)', fontSize: 12, margin: 0 }}>{t.certifications.slice(0, 2).join(' · ')}</p>
                           )}
                         </div>
                         <div style={{ textAlign: 'right' }}>
-                          {t.rating > 0 && <p style={{ color: '#ffd700', fontWeight: 700, margin: 0 }}>⭐ {t.rating.toFixed(1)}</p>}
-                          <p style={{ color: '#555', fontSize: 12, margin: '4px 0 0' }}>{t.totalRatings || 0} reviews</p>
+                          {t.rating > 0 && <p style={{ color: 'var(--amber)', fontWeight: 700, margin: 0 }}>⭐ {t.rating.toFixed(1)}</p>}
+                          <p style={{ color: 'var(--text-3)', fontSize: 12, margin: '4px 0 0' }}>{t.totalRatings || 0} reviews</p>
                         </div>
                       </motion.div>
                     ))}
@@ -139,8 +139,8 @@ export default function TrainerBooking() {
             {step === 'schedule' && (
               <>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 20 }}>
-                  <button onClick={() => setStep('trainers')} style={{ background: '#1a1a1a', border: '1px solid #333', color: '#888', padding: '8px 14px', borderRadius: 8, cursor: 'pointer' }}>← Back</button>
-                  <p style={{ color: '#9d00ff', fontWeight: 600, margin: 0 }}>Booking with {selected.trainer?.name}</p>
+                  <button onClick={() => setStep('trainers')} style={{ background: 'var(--surface-3)', border: '1px solid var(--border-2)', color: 'var(--text-3)', padding: '8px 14px', borderRadius: 8, cursor: 'pointer' }}>← Back</button>
+                  <p style={{ color: 'var(--accent)', fontWeight: 600, margin: 0 }}>Booking with {selected.trainer?.name}</p>
                 </div>
 
                 <FormGroup label="Session Type">
@@ -152,8 +152,8 @@ export default function TrainerBooking() {
                         borderRadius: 10, cursor: 'pointer', textAlign: 'center',
                       }}>
                         <div style={{ fontSize: 24 }}>{s.icon}</div>
-                        <div style={{ color: '#fff', fontSize: 13, fontWeight: 600, marginTop: 4 }}>{s.label}</div>
-                        <div style={{ color: '#555', fontSize: 11 }}>{s.duration}</div>
+                        <div style={{ color: 'var(--text-1)', fontSize: 13, fontWeight: 600, marginTop: 4 }}>{s.label}</div>
+                        <div style={{ color: 'var(--text-3)', fontSize: 11 }}>{s.duration}</div>
                       </div>
                     ))}
                   </div>
@@ -161,7 +161,7 @@ export default function TrainerBooking() {
 
                 <FormGroup label="Select Date">
                   <input type="date" min={tomorrow} max={maxDate} value={selected.date} onChange={e => handleDateSelect(e.target.value)}
-                    style={{ width: '100%', padding: '12px', background: '#1a1a1a', border: '1px solid #333', borderRadius: 10, color: '#fff', fontSize: 15, boxSizing: 'border-box', outline: 'none' }} />
+                    style={{ width: '100%', padding: '12px', background: 'var(--surface-3)', border: '1px solid var(--border-2)', borderRadius: 10, color: 'var(--text-1)', fontSize: 15, boxSizing: 'border-box', outline: 'none' }} />
                 </FormGroup>
 
                 {selected.date && (
@@ -187,13 +187,13 @@ export default function TrainerBooking() {
 
                 <FormGroup label="Notes (optional)">
                   <textarea value={selected.notes} onChange={e => setSelected(s => ({ ...s, notes: e.target.value }))} placeholder="Any specific focus areas or health concerns..."
-                    rows={3} style={{ width: '100%', padding: '12px', background: '#1a1a1a', border: '1px solid #333', borderRadius: 10, color: '#fff', fontSize: 14, resize: 'vertical', boxSizing: 'border-box', outline: 'none' }} />
+                    rows={3} style={{ width: '100%', padding: '12px', background: 'var(--surface-3)', border: '1px solid var(--border-2)', borderRadius: 10, color: 'var(--text-1)', fontSize: 14, resize: 'vertical', boxSizing: 'border-box', outline: 'none' }} />
                 </FormGroup>
 
                 <motion.button whileTap={{ scale: 0.97 }} onClick={handleBook} disabled={loading || !selected.date || !selected.slot}
                   style={{
                     width: '100%', padding: 16, borderRadius: 12, border: 'none', cursor: loading ? 'wait' : 'pointer',
-                    background: 'linear-gradient(135deg, #9d00ff, #00d4ff)', color: '#fff', fontSize: 17, fontWeight: 700,
+                    background: 'linear-gradient(135deg, #9d00ff, #00d4ff)', color: 'var(--text-1)', fontSize: 17, fontWeight: 700,
                     opacity: (!selected.date || !selected.slot) ? 0.5 : 1,
                   }}>
                   {loading ? 'Booking...' : 'Confirm Booking ✓'}
@@ -210,16 +210,16 @@ export default function TrainerBooking() {
             ) : (
               <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
                 {myBookings.map(b => (
-                  <div key={b._id} style={{ background: '#111', border: '1px solid #222', borderRadius: 14, padding: 16 }}>
+                  <div key={b._id} style={{ background: 'var(--surface-2)', border: '1px solid var(--border-2)', borderRadius: 14, padding: 16 }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 12 }}>
                       <Avatar name={b.trainerId?.name} url={b.trainerId?.profilePicture} size={44} />
                       <div>
-                        <p style={{ color: '#fff', fontWeight: 700, margin: 0 }}>{b.trainerId?.name}</p>
-                        <p style={{ color: '#666', fontSize: 13, margin: 0 }}>{SESSION_TYPES.find(s => s.key === b.sessionType)?.label}</p>
+                        <p style={{ color: 'var(--text-1)', fontWeight: 700, margin: 0 }}>{b.trainerId?.name}</p>
+                        <p style={{ color: 'var(--text-3)', fontSize: 13, margin: 0 }}>{SESSION_TYPES.find(s => s.key === b.sessionType)?.label}</p>
                       </div>
                       <StatusBadge status={b.status} />
                     </div>
-                    <div style={{ display: 'flex', gap: 16, color: '#888', fontSize: 13 }}>
+                    <div style={{ display: 'flex', gap: 16, color: 'var(--text-3)', fontSize: 13 }}>
                       <span>📅 {b.date}</span>
                       <span>⏰ {b.startTime} - {b.endTime}</span>
                     </div>
@@ -245,7 +245,7 @@ const Avatar = ({ name, url, size = 40 }) => {
   return url ? (
     <img src={url} alt={name} style={{ width: size, height: size, borderRadius: '50%', objectFit: 'cover', flexShrink: 0 }} />
   ) : (
-    <div style={{ width: size, height: size, borderRadius: '50%', background: `linear-gradient(135deg, ${color}, ${color}88)`, display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontWeight: 700, fontSize: size * 0.4, flexShrink: 0 }}>
+    <div style={{ width: size, height: size, borderRadius: '50%', background: `linear-gradient(135deg, ${color}, ${color}88)`, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--text-1)', fontWeight: 700, fontSize: size * 0.4, flexShrink: 0 }}>
       {name?.[0]?.toUpperCase()}
     </div>
   );
@@ -263,7 +263,7 @@ const StatusBadge = ({ status }) => {
 
 const FormGroup = ({ label, children }) => (
   <div style={{ marginBottom: 20 }}>
-    <label style={{ display: 'block', color: '#888', fontSize: 13, fontWeight: 700, marginBottom: 10, textTransform: 'uppercase', letterSpacing: '0.5px' }}>{label}</label>
+    <label style={{ display: 'block', color: 'var(--text-3)', fontSize: 13, fontWeight: 700, marginBottom: 10, textTransform: 'uppercase', letterSpacing: '0.5px' }}>{label}</label>
     {children}
   </div>
 );
@@ -273,9 +273,10 @@ const EmptyState = ({ icon, text, onAction, actionLabel }) => (
     <p style={{ fontSize: 48, marginBottom: 12 }}>{icon}</p>
     <p style={{ fontSize: 16, marginBottom: onAction ? 20 : 0 }}>{text}</p>
     {onAction && (
-      <button onClick={onAction} style={{ padding: '10px 24px', background: 'linear-gradient(135deg, #9d00ff, #00d4ff)', color: '#fff', border: 'none', borderRadius: 10, cursor: 'pointer', fontWeight: 700 }}>
+      <button onClick={onAction} style={{ padding: '10px 24px', background: 'linear-gradient(135deg, #9d00ff, #00d4ff)', color: 'var(--text-1)', border: 'none', borderRadius: 10, cursor: 'pointer', fontWeight: 700 }}>
         {actionLabel}
       </button>
     )}
   </div>
 );
+
