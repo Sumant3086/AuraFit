@@ -33,7 +33,7 @@ export default function AppLoader({ children }) {
               position: "fixed",
               inset: 0,
               zIndex: 9999,
-              background: "#080808",
+              background: "var(--bg, #080808)",
               display: "flex",
               flexDirection: "column",
               alignItems: "center",

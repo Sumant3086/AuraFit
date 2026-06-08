@@ -1,69 +1,100 @@
-import React, { useState } from 'react';
+﻿import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import toast from 'react-hot-toast';
 import logoImg from '../../assets/logos/aurafit-logo.svg';
+import { LuArrowLeft, LuArrowRight, LuCheck, LuCalendar, LuDumbbell } from 'react-icons/lu';
 
+/* ── Step definitions ─────────────────────────────────────── */
+// Referral step is intentionally removed from primary flow — it belongs
+// on the profile page after the member has seen value in the platform.
+// Schedule + body data added because the workout generator and nutrition
+// calculator need them to produce personalised output on first use.
 const STEPS = [
-  { id: 'welcome', title: 'Welcome', subtitle: "Let's personalize your journey" },
-  { id: 'basics', title: 'About you', subtitle: 'A little bit about yourself' },
-  { id: 'goals', title: 'Your goal', subtitle: 'What are you training for?' },
-  { id: 'experience', title: 'Your level', subtitle: 'How fit are you right now?' },
-  { id: 'referral', title: 'Referral', subtitle: 'Know someone at AuraFit?' },
-  { id: 'complete', title: "You're in!", subtitle: 'Welcome to the AuraFit family' },
+  { id: 'welcome',    title: "Let's get you started",     sub: 'Two minutes. Then your plan is ready.' },
+  { id: 'basics',     title: 'About you',                  sub: 'Used to calibrate your plan' },
+  { id: 'goals',      title: 'What are you training for?', sub: 'This shapes your entire programme' },
+  { id: 'level',      title: 'Where are you right now?',   sub: 'Honest answer builds a better plan' },
+  { id: 'schedule',   title: 'How many days a week?',      sub: 'Your availability determines the programme structure' },
+  { id: 'numbers',    title: 'Current stats',              sub: 'Used for your nutrition targets — you can skip this' },
+  { id: 'ready',      title: "Your plan is ready",         sub: "Here's what to do first" },
 ];
 
 const GOALS = [
-  { key: 'weight_loss', label: 'Lose Weight', icon: '🔥', desc: 'Burn fat, feel lighter and more energetic' },
-  { key: 'muscle_gain', label: 'Build Muscle', icon: '💪', desc: 'Get stronger, bigger, more powerful' },
-  { key: 'endurance', label: 'Boost Endurance', icon: '🏃', desc: 'Run farther, last longer, breathe easier' },
-  { key: 'flexibility', label: 'Flexibility', icon: '🧘', desc: 'Move better, reduce pain, find calm' },
-  { key: 'general_fitness', label: 'General Fitness', icon: '⚡', desc: 'Overall health, energy, and vitality' },
+  { key: 'weight_loss',    label: 'Lose body fat',     desc: 'Reduce body fat while maintaining muscle mass' },
+  { key: 'muscle_gain',    label: 'Build muscle',      desc: 'Progressive strength training to add size and strength' },
+  { key: 'endurance',      label: 'Improve fitness',   desc: 'Cardiovascular capacity, stamina, and general conditioning' },
+  { key: 'flexibility',    label: 'Mobility & recovery', desc: 'Movement quality, flexibility, and injury prevention' },
+  { key: 'general_fitness', label: 'General health',   desc: 'Balanced fitness — energy, strength, and wellbeing' },
 ];
 
 const LEVELS = [
-  { key: 'beginner', label: 'Beginner', icon: '🌱', desc: 'Just starting out — welcome aboard' },
-  { key: 'intermediate', label: 'Intermediate', icon: '⚡', desc: 'Training regularly, ready to level up' },
-  { key: 'advanced', label: 'Advanced', icon: '🏆', desc: 'Serious athlete, chasing peak performance' },
+  { key: 'beginner',     label: 'Getting started',  desc: "Training fewer than 3 months, or returning after a long break" },
+  { key: 'intermediate', label: 'Training regularly', desc: '3–18 months of consistent training' },
+  { key: 'advanced',     label: 'Experienced',       desc: 'Over 18 months of structured training' },
+];
+
+const TRAINING_DAYS = [2, 3, 4, 5, 6];
+
+const EQUIPMENT = [
+  { key: 'full_gym',         label: 'Full gym access',        desc: 'Barbells, cables, machines, and free weights' },
+  { key: 'dumbbells',        label: 'Dumbbells only',         desc: 'Adjustable or fixed dumbbells at home or gym' },
+  { key: 'bodyweight',       label: 'Bodyweight',             desc: 'No equipment — bodyweight training only' },
+  { key: 'resistance_bands', label: 'Resistance bands',       desc: 'Bands with or without additional weights' },
 ];
 
 const slideVariants = {
-  enter: (dir) => ({ x: dir > 0 ? 60 : -60, opacity: 0, scale: 0.98 }),
-  center: { x: 0, opacity: 1, scale: 1 },
-  exit: (dir) => ({ x: dir > 0 ? -60 : 60, opacity: 0, scale: 0.98 }),
+  enter: (dir) => ({ x: dir > 0 ? 48 : -48, opacity: 0 }),
+  center: { x: 0, opacity: 1 },
+  exit: (dir) => ({ x: dir > 0 ? -48 : 48, opacity: 0 }),
 };
 
 export default function OnboardingFlow() {
   const { user, updateUser, apiClient } = useAuth();
   const navigate = useNavigate();
   const [step, setStep] = useState(0);
-  const [dir, setDir] = useState(1);
+  const [dir,  setDir]  = useState(1);
   const [loading, setLoading] = useState(false);
+  const [earnedBadges, setEarnedBadges] = useState([]);
   const [data, setData] = useState({
     gender: '',
     dateOfBirth: '',
     fitnessGoal: '',
     experienceLevel: '',
-    referralCode: '',
+    trainingDaysPerWeek: 3,
+    equipment: 'full_gym',
+    weight: '',
+    height: '',
     phone: user?.phone || '',
   });
-  const [earnedBadges, setEarnedBadges] = useState([]);
 
-  const totalSteps = STEPS.length - 1; // exclude completion screen
-  const progress = (step / (totalSteps - 1)) * 100;
+  const totalInputSteps = STEPS.length - 2; // exclude welcome + ready
+  const inputStep = Math.max(0, step - 1);
+  const progress = step === 0 ? 0 : Math.round((inputStep / totalInputSteps) * 100);
 
-  const goNext = () => { setDir(1); setStep(s => Math.min(s + 1, STEPS.length - 1)); };
-  const goPrev = () => { setDir(-1); setStep(s => Math.max(s - 1, 0)); };
   const set = (key, val) => setData(d => ({ ...d, [key]: val }));
+  const goNext = () => { setDir(1); setStep(s => s + 1); };
+  const goPrev = () => { setDir(-1); setStep(s => s - 1); };
 
   const handleComplete = async () => {
     setLoading(true);
     try {
-      const res = await apiClient.post('/onboarding/complete', data);
+      const payload = {
+        gender: data.gender,
+        dateOfBirth: data.dateOfBirth,
+        fitnessGoal: data.fitnessGoal,
+        experienceLevel: data.experienceLevel,
+        trainingDaysPerWeek: data.trainingDaysPerWeek,
+        equipment: data.equipment,
+        weight: data.weight ? parseFloat(data.weight) : undefined,
+        height: data.height ? parseFloat(data.height) : undefined,
+        phone: data.phone,
+      };
+      const res = await apiClient.post('/onboarding/complete', payload);
       updateUser({ onboardingCompleted: true, ...res.data.data });
       setEarnedBadges(res.data.achievements || []);
-      toast.success(`+${res.data.pointsEarned} points earned! 🎉`);
+      toast.success(`Profile complete. +${res.data.pointsEarned || 100} points.`);
       goNext();
     } catch (err) {
       toast.error(err.response?.data?.message || 'Something went wrong. Try again.');
@@ -75,48 +106,48 @@ export default function OnboardingFlow() {
   return (
     <div style={{
       minHeight: '100vh',
-      background: 'var(--surface-bg)',
+      background: 'var(--bg)',
       display: 'flex', flexDirection: 'column',
       alignItems: 'center', justifyContent: 'center',
-      padding: 'var(--space-5)',
+      padding: 'clamp(16px, 4vw, 40px)',
       position: 'relative', overflow: 'hidden',
     }}>
       {/* Ambient glow */}
       <div style={{
         position: 'fixed', top: '-20%', left: '50%', transform: 'translateX(-50%)',
         width: 600, height: 600,
-        background: 'radial-gradient(circle, rgba(157,0,255,0.08) 0%, transparent 70%)',
+        background: 'radial-gradient(circle, rgba(139,92,246,0.07) 0%, transparent 70%)',
         pointerEvents: 'none',
       }} />
 
-      {/* Brand logo */}
+      {/* Logo */}
       <motion.div
         initial={{ opacity: 0, y: -10 }}
         animate={{ opacity: 1, y: 0 }}
-        style={{ marginBottom: 'var(--sp-8, 32px)', textAlign: 'center' }}
+        style={{ marginBottom: 'var(--sp-6)', textAlign: 'center' }}
       >
-        <img src={logoImg} alt="AuraFit" style={{ height: 48, width: 48, borderRadius: 12, display: 'inline-block' }} />
+        <img src={logoImg} alt="AuraFit" style={{ height: 40, width: 40, borderRadius: 10, display: 'inline-block' }} />
       </motion.div>
 
-      {/* Progress */}
-      {step > 0 && step < totalSteps && (
+      {/* Progress bar */}
+      {step > 0 && step < STEPS.length - 1 && (
         <motion.div
           initial={{ opacity: 0 }} animate={{ opacity: 1 }}
-          style={{ width: '100%', maxWidth: 'var(--container-sm)', marginBottom: 'var(--space-6)' }}
+          style={{ width: '100%', maxWidth: 480, marginBottom: 'var(--sp-5)' }}
         >
-          <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 'var(--space-2)' }}>
-            <span style={{ color: 'var(--text-muted)', fontSize: 'var(--text-xs)', fontWeight: 600 }}>
-              Step {step} of {totalSteps - 1}
+          <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 'var(--sp-2)' }}>
+            <span style={{ color: 'var(--text-3)', fontSize: 11, fontWeight: 600 }}>
+              Step {step} of {totalInputSteps}
             </span>
-            <span style={{ color: 'var(--brand-purple)', fontSize: 'var(--text-xs)', fontWeight: 700 }}>
-              {Math.round(progress)}%
+            <span style={{ color: 'var(--accent)', fontSize: 11, fontWeight: 700 }}>
+              {progress}%
             </span>
           </div>
-          <div style={{ height: 3, background: 'var(--surface-overlay)', borderRadius: 'var(--radius-pill)', overflow: 'hidden' }}>
+          <div style={{ height: 2, background: 'var(--surface-3)', borderRadius: 99, overflow: 'hidden' }}>
             <motion.div
-              style={{ height: '100%', background: 'var(--brand-gradient)', borderRadius: 'var(--radius-pill)' }}
+              style={{ height: '100%', background: 'linear-gradient(90deg, #8B5CF6, #6366F1)', borderRadius: 99 }}
               animate={{ width: `${progress}%` }}
-              transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+              transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
             />
           </div>
         </motion.div>
@@ -124,12 +155,12 @@ export default function OnboardingFlow() {
 
       {/* Card */}
       <div style={{
-        width: '100%', maxWidth: 'var(--container-sm)',
-        background: 'var(--surface-raised)',
-        border: '1px solid var(--border-default)',
-        borderRadius: 'var(--radius-2xl)',
-        overflow: 'hidden', minHeight: 420,
-        boxShadow: 'var(--shadow-xl), 0 0 0 1px var(--border-subtle)',
+        width: '100%', maxWidth: 480,
+        background: 'var(--surface-2)',
+        border: '1px solid var(--border-1)',
+        borderRadius: 20,
+        overflow: 'hidden', minHeight: 400,
+        boxShadow: 'var(--shadow-xl)',
         position: 'relative',
       }}>
         <AnimatePresence mode="wait" custom={dir}>
@@ -140,25 +171,28 @@ export default function OnboardingFlow() {
             initial="enter"
             animate="center"
             exit="exit"
-            transition={{ duration: 0.28, ease: [0.16, 1, 0.3, 1] }}
-            style={{ padding: 'clamp(28px, 5vw, 48px)' }}
+            transition={{ duration: 0.22, ease: [0.16, 1, 0.3, 1] }}
+            style={{ padding: 'clamp(24px, 5vw, 40px)' }}
           >
             {/* Step header */}
-            <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.05 }}>
-              <p style={{ color: 'var(--text-muted)', fontSize: 'var(--text-xs)', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', margin: '0 0 var(--space-1)' }}>
-                {STEPS[step].subtitle}
-              </p>
-              <h2 style={{ color: 'var(--text-primary)', fontSize: 'var(--text-3xl)', fontWeight: 800, margin: '0 0 var(--space-6)', letterSpacing: '-0.02em', lineHeight: 1.1 }}>
-                {STEPS[step].title}
-              </h2>
-            </motion.div>
+            {step < STEPS.length - 1 && (
+              <motion.div initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.04 }}>
+                <p style={{ color: 'var(--text-3)', fontSize: 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', margin: '0 0 6px' }}>
+                  {STEPS[step].sub}
+                </p>
+                <h2 style={{ color: 'var(--text-1)', fontSize: 'clamp(20px, 4vw, 26px)', fontWeight: 800, margin: '0 0 24px', letterSpacing: '-0.02em', lineHeight: 1.15 }}>
+                  {STEPS[step].title}
+                </h2>
+              </motion.div>
+            )}
 
             {step === 0 && <WelcomeStep name={user?.name} onNext={goNext} />}
             {step === 1 && <BasicsStep data={data} set={set} onNext={goNext} onBack={goPrev} />}
             {step === 2 && <GoalsStep goals={GOALS} selected={data.fitnessGoal} onSelect={v => set('fitnessGoal', v)} onNext={goNext} onBack={goPrev} />}
-            {step === 3 && <LevelStep levels={LEVELS} selected={data.experienceLevel} onSelect={v => set('experienceLevel', v)} onNext={handleComplete} onBack={goPrev} loading={loading} />}
-            {step === 4 && <ReferralStep value={data.referralCode} onChange={v => set('referralCode', v)} onNext={handleComplete} onBack={goPrev} loading={loading} />}
-            {step === STEPS.length - 1 && <CompleteStep badges={earnedBadges} name={user?.name} onFinish={() => navigate('/dashboard')} />}
+            {step === 3 && <LevelStep levels={LEVELS} selected={data.experienceLevel} onSelect={v => set('experienceLevel', v)} onNext={goNext} onBack={goPrev} />}
+            {step === 4 && <ScheduleStep data={data} set={set} onNext={goNext} onBack={goPrev} />}
+            {step === 5 && <NumbersStep data={data} set={set} onNext={handleComplete} onBack={goPrev} loading={loading} />}
+            {step === STEPS.length - 1 && <ReadyStep badges={earnedBadges} name={user?.name} data={data} onFinish={() => navigate('/dashboard')} />}
           </motion.div>
         </AnimatePresence>
       </div>
@@ -166,70 +200,47 @@ export default function OnboardingFlow() {
   );
 }
 
+/* ── Step: Welcome ────────────────────────────────────────── */
 function WelcomeStep({ name, onNext }) {
-  const features = [
-    { icon: '🤖', text: 'AI-generated workouts' },
-    { icon: '🥗', text: 'Personalized nutrition' },
-    { icon: '🏆', text: 'Gamified achievements' },
-    { icon: '📊', text: 'Progress analytics' },
-  ];
-
   return (
     <div>
-      <motion.div
-        initial={{ scale: 0.8, opacity: 0 }}
-        animate={{ scale: 1, opacity: 1 }}
-        transition={{ type: 'spring', bounce: 0.4, delay: 0.1 }}
-        style={{
-          width: 80, height: 80, borderRadius: 'var(--radius-xl)',
-          background: 'var(--brand-gradient)', display: 'flex',
-          alignItems: 'center', justifyContent: 'center',
-          fontSize: 40, marginBottom: 'var(--space-5)',
-          boxShadow: 'var(--shadow-glow-purple)',
-        }}
-      >
-        💪
-      </motion.div>
-
-      <p style={{ color: 'var(--text-secondary)', lineHeight: 'var(--leading-normal)', marginBottom: 'var(--space-6)', fontSize: 'var(--text-base)' }}>
-        Hey <strong style={{ color: 'var(--text-primary)', fontWeight: 700 }}>{name?.split(' ')[0]}</strong>!
-        {' '}Answer a few quick questions and we'll unlock your personalized fitness experience — takes under 60 seconds.
+      <p style={{ color: 'var(--text-2)', lineHeight: 1.65, marginBottom: 'var(--sp-6)', fontSize: 15 }}>
+        Hi <strong style={{ color: 'var(--text-1)', fontWeight: 700 }}>{name?.split(' ')[0]}</strong>. Answer five short questions and AuraFit generates a structured training plan and nutrition targets built specifically for you.
       </p>
 
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 'var(--space-2)', marginBottom: 'var(--space-6)' }}>
-        {features.map(f => (
-          <div key={f.text} style={{
-            display: 'flex', alignItems: 'center', gap: 10,
-            background: 'var(--surface-overlay)',
-            border: '1px solid var(--border-subtle)',
-            borderRadius: 'var(--radius-md)', padding: 'var(--space-3)',
-          }}>
-            <span style={{ fontSize: 20 }}>{f.icon}</span>
-            <span style={{ color: 'var(--text-secondary)', fontSize: 'var(--text-sm)', fontWeight: 500 }}>{f.text}</span>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 8, marginBottom: 'var(--sp-6)' }}>
+        {[
+          { label: 'Training plan', desc: 'Structured weekly programme' },
+          { label: 'Nutrition targets', desc: 'Daily calories and macros' },
+          { label: 'Class recommendations', desc: 'Sessions that match your goal' },
+          { label: 'Progress tracking', desc: 'Weekly review every Monday' },
+        ].map(f => (
+          <div key={f.label} style={{ display: 'flex', alignItems: 'center', gap: 12, background: 'var(--surface-3)', border: '1px solid var(--border-1)', borderRadius: 10, padding: '10px 14px' }}>
+            <div style={{ width: 18, height: 18, borderRadius: '50%', background: 'var(--green-dim)', border: '1px solid rgba(34,197,94,0.25)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+              <LuCheck size={10} color="var(--green)" strokeWidth={3} />
+            </div>
+            <div>
+              <span style={{ color: 'var(--text-1)', fontSize: 13, fontWeight: 600 }}>{f.label}</span>
+              <span style={{ color: 'var(--text-3)', fontSize: 12, marginLeft: 6 }}>{f.desc}</span>
+            </div>
           </div>
         ))}
       </div>
 
-      <PrimaryBtn onClick={onNext}>Get started →</PrimaryBtn>
+      <PrimaryBtn onClick={onNext}>Start setup <LuArrowRight size={14} /></PrimaryBtn>
     </div>
   );
 }
 
+/* ── Step: Basics ─────────────────────────────────────────── */
 function BasicsStep({ data, set, onNext, onBack }) {
   return (
     <div>
-      <FieldLabel>Phone number</FieldLabel>
-      <StyledInput
-        type="tel" value={data.phone}
-        onChange={e => set('phone', e.target.value)}
-        placeholder="+91 98765 43210"
-      />
-
       <FieldLabel>Gender</FieldLabel>
-      <div style={{ display: 'flex', gap: 'var(--space-2)', marginBottom: 'var(--space-5)' }}>
-        {['male', 'female', 'other'].map(g => (
-          <SelectChip key={g} selected={data.gender === g} onClick={() => set('gender', g)}>
-            {g === 'male' ? '♂ Male' : g === 'female' ? '♀ Female' : '⚥ Other'}
+      <div style={{ display: 'flex', gap: 8, marginBottom: 'var(--sp-5)' }}>
+        {[{ k: 'male', l: 'Male' }, { k: 'female', l: 'Female' }, { k: 'other', l: 'Prefer not to say' }].map(g => (
+          <SelectChip key={g.k} selected={data.gender === g.k} onClick={() => set('gender', g.k)}>
+            {g.l}
           </SelectChip>
         ))}
       </div>
@@ -246,49 +257,35 @@ function BasicsStep({ data, set, onNext, onBack }) {
   );
 }
 
+/* ── Step: Goals ──────────────────────────────────────────── */
 function GoalsStep({ goals, selected, onSelect, onNext, onBack }) {
   return (
     <div>
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-2)', marginBottom: 'var(--space-6)' }}>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 8, marginBottom: 'var(--sp-5)' }}>
         {goals.map((g, i) => (
           <motion.div
             key={g.key}
             initial={{ opacity: 0, x: -10 }}
             animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: i * 0.05 }}
+            transition={{ delay: i * 0.04 }}
             onClick={() => onSelect(g.key)}
             style={{
-              display: 'flex', alignItems: 'center', gap: 'var(--space-4)',
-              padding: 'var(--space-4)',
-              background: selected === g.key ? 'var(--brand-purple-dim)' : 'var(--surface-overlay)',
-              border: `1px solid ${selected === g.key ? 'var(--border-accent)' : 'var(--border-subtle)'}`,
-              borderRadius: 'var(--radius-lg)', cursor: 'pointer',
-              transition: `all var(--duration-fast) var(--ease-out)`,
+              display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+              padding: '13px 16px',
+              background: selected === g.key ? 'var(--accent-dim)' : 'var(--surface-3)',
+              border: `1px solid ${selected === g.key ? 'var(--accent-border)' : 'var(--border-1)'}`,
+              borderRadius: 12, cursor: 'pointer',
+              transition: 'all 0.15s ease',
             }}
           >
-            <div style={{
-              width: 44, height: 44, borderRadius: 'var(--radius-md)', flexShrink: 0,
-              background: selected === g.key ? 'var(--brand-purple-dim)' : 'var(--surface-high)',
-              border: `1px solid ${selected === g.key ? 'var(--border-accent)' : 'var(--border-subtle)'}`,
-              display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 22,
-            }}>
-              {g.icon}
-            </div>
-            <div style={{ flex: 1 }}>
-              <p style={{ color: 'var(--text-primary)', fontWeight: 600, fontSize: 'var(--text-base)', margin: '0 0 2px' }}>{g.label}</p>
-              <p style={{ color: 'var(--text-muted)', fontSize: 'var(--text-sm)', margin: 0 }}>{g.desc}</p>
+            <div>
+              <p style={{ color: selected === g.key ? 'var(--text-1)' : 'var(--text-1)', fontWeight: 600, fontSize: 14, margin: '0 0 2px' }}>{g.label}</p>
+              <p style={{ color: 'var(--text-3)', fontSize: 12, margin: 0, lineHeight: 1.4 }}>{g.desc}</p>
             </div>
             {selected === g.key && (
-              <motion.div
-                initial={{ scale: 0 }} animate={{ scale: 1 }}
-                style={{
-                  width: 22, height: 22, borderRadius: '50%', flexShrink: 0,
-                  background: 'var(--brand-gradient)',
-                  display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  fontSize: 11, color: '#fff', fontWeight: 700,
-                }}
-              >
-                ✓
+              <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }}
+                style={{ width: 20, height: 20, borderRadius: '50%', background: 'var(--accent)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                <LuCheck size={11} color="#fff" strokeWidth={3} />
               </motion.div>
             )}
           </motion.div>
@@ -299,10 +296,11 @@ function GoalsStep({ goals, selected, onSelect, onNext, onBack }) {
   );
 }
 
-function LevelStep({ levels, selected, onSelect, onNext, onBack, loading }) {
+/* ── Step: Level ──────────────────────────────────────────── */
+function LevelStep({ levels, selected, onSelect, onNext, onBack }) {
   return (
     <div>
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-2)', marginBottom: 'var(--space-6)' }}>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 8, marginBottom: 'var(--sp-5)' }}>
         {levels.map((l, i) => (
           <motion.div
             key={l.key}
@@ -311,126 +309,207 @@ function LevelStep({ levels, selected, onSelect, onNext, onBack, loading }) {
             transition={{ delay: i * 0.06 }}
             onClick={() => onSelect(l.key)}
             style={{
-              display: 'flex', alignItems: 'center', gap: 'var(--space-4)',
-              padding: 'var(--space-4)',
-              background: selected === l.key ? 'var(--brand-purple-dim)' : 'var(--surface-overlay)',
-              border: `1px solid ${selected === l.key ? 'var(--border-accent)' : 'var(--border-subtle)'}`,
-              borderRadius: 'var(--radius-lg)', cursor: 'pointer',
-              transition: `all var(--duration-fast) var(--ease-out)`,
+              display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+              padding: '13px 16px',
+              background: selected === l.key ? 'var(--accent-dim)' : 'var(--surface-3)',
+              border: `1px solid ${selected === l.key ? 'var(--accent-border)' : 'var(--border-1)'}`,
+              borderRadius: 12, cursor: 'pointer',
+              transition: 'all 0.15s ease',
             }}
           >
-            <div style={{
-              width: 44, height: 44, borderRadius: 'var(--radius-md)', flexShrink: 0,
-              background: selected === l.key ? 'var(--brand-purple-dim)' : 'var(--surface-high)',
-              border: `1px solid ${selected === l.key ? 'var(--border-accent)' : 'var(--border-subtle)'}`,
-              display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 22,
-            }}>
-              {l.icon}
-            </div>
-            <div style={{ flex: 1 }}>
-              <p style={{ color: 'var(--text-primary)', fontWeight: 600, fontSize: 'var(--text-base)', margin: '0 0 2px' }}>{l.label}</p>
-              <p style={{ color: 'var(--text-muted)', fontSize: 'var(--text-sm)', margin: 0 }}>{l.desc}</p>
+            <div>
+              <p style={{ color: 'var(--text-1)', fontWeight: 600, fontSize: 14, margin: '0 0 2px' }}>{l.label}</p>
+              <p style={{ color: 'var(--text-3)', fontSize: 12, margin: 0, lineHeight: 1.4 }}>{l.desc}</p>
             </div>
             {selected === l.key && (
-              <motion.div
-                initial={{ scale: 0 }} animate={{ scale: 1 }}
-                style={{
-                  width: 22, height: 22, borderRadius: '50%', flexShrink: 0,
-                  background: 'var(--brand-gradient)',
-                  display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  fontSize: 11, color: '#fff', fontWeight: 700,
-                }}
-              >
-                ✓
+              <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }}
+                style={{ width: 20, height: 20, borderRadius: '50%', background: 'var(--accent)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                <LuCheck size={11} color="#fff" strokeWidth={3} />
               </motion.div>
             )}
           </motion.div>
         ))}
       </div>
-      <NavRow onBack={onBack} onNext={onNext} nextLabel="Complete setup" nextDisabled={!selected || loading} loading={loading} />
+      <NavRow onBack={onBack} onNext={onNext} nextDisabled={!selected} />
     </div>
   );
 }
 
-function ReferralStep({ value, onChange, onNext, onBack, loading }) {
+/* ── Step: Schedule ───────────────────────────────────────── */
+function ScheduleStep({ data, set, onNext, onBack }) {
   return (
     <div>
-      <div style={{
-        background: 'var(--surface-overlay)', border: '1px solid var(--border-subtle)',
-        borderRadius: 'var(--radius-lg)', padding: 'var(--space-4)',
-        marginBottom: 'var(--space-5)',
-        display: 'flex', gap: 'var(--space-3)', alignItems: 'flex-start',
-      }}>
-        <span style={{ fontSize: 24, flexShrink: 0 }}>🎁</span>
-        <p style={{ color: 'var(--text-secondary)', fontSize: 'var(--text-sm)', margin: 0, lineHeight: 'var(--leading-normal)' }}>
-          Have a referral code? Both you and your friend earn <strong style={{ color: 'var(--color-gold)' }}>100 bonus points</strong> when you enter it here.
+      <FieldLabel>Training days per week</FieldLabel>
+      <div style={{ display: 'flex', gap: 8, marginBottom: 'var(--sp-6)' }}>
+        {TRAINING_DAYS.map(n => (
+          <SelectChip key={n} selected={data.trainingDaysPerWeek === n} onClick={() => set('trainingDaysPerWeek', n)}>
+            {n}
+          </SelectChip>
+        ))}
+      </div>
+      <p style={{ color: 'var(--text-3)', fontSize: 12, margin: '-12px 0 var(--sp-6)', lineHeight: 1.5 }}>
+        {data.trainingDaysPerWeek <= 2 && 'Full-body sessions. Enough to build and maintain fitness.'}
+        {data.trainingDaysPerWeek === 3 && 'Push/Pull/Legs or Full-body — the most popular structure.'}
+        {data.trainingDaysPerWeek === 4 && 'Upper/Lower split. Balanced frequency with adequate recovery.'}
+        {data.trainingDaysPerWeek >= 5 && 'High frequency. Requires careful periodisation to avoid overreaching.'}
+      </p>
+
+      <FieldLabel>Available equipment</FieldLabel>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 8, marginBottom: 'var(--sp-5)' }}>
+        {EQUIPMENT.map(eq => (
+          <div
+            key={eq.key}
+            onClick={() => set('equipment', eq.key)}
+            style={{
+              display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+              padding: '11px 14px',
+              background: data.equipment === eq.key ? 'var(--accent-dim)' : 'var(--surface-3)',
+              border: `1px solid ${data.equipment === eq.key ? 'var(--accent-border)' : 'var(--border-1)'}`,
+              borderRadius: 10, cursor: 'pointer', transition: 'all 0.15s ease',
+            }}
+          >
+            <div>
+              <p style={{ color: 'var(--text-1)', fontWeight: 600, fontSize: 13, margin: '0 0 2px' }}>{eq.label}</p>
+              <p style={{ color: 'var(--text-3)', fontSize: 12, margin: 0 }}>{eq.desc}</p>
+            </div>
+            {data.equipment === eq.key && (
+              <div style={{ width: 18, height: 18, borderRadius: '50%', background: 'var(--accent)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                <LuCheck size={10} color="#fff" strokeWidth={3} />
+              </div>
+            )}
+          </div>
+        ))}
+      </div>
+
+      <NavRow onBack={onBack} onNext={onNext} />
+    </div>
+  );
+}
+
+/* ── Step: Numbers (optional) ─────────────────────────────── */
+function NumbersStep({ data, set, onNext, onBack, loading }) {
+  return (
+    <div>
+      <div style={{ background: 'var(--surface-3)', border: '1px solid var(--border-1)', borderRadius: 10, padding: '12px 14px', marginBottom: 'var(--sp-5)' }}>
+        <p style={{ color: 'var(--text-2)', fontSize: 13, margin: 0, lineHeight: 1.6 }}>
+          Your weight and height are used to calculate your calorie targets and BMI baseline. Both are optional — you can add them from your profile later.
         </p>
       </div>
 
-      <FieldLabel>Referral code (optional)</FieldLabel>
-      <StyledInput
-        type="text" value={value}
-        onChange={e => onChange(e.target.value.toUpperCase())}
-        placeholder="e.g. PRIYA2024"
-        style={{ letterSpacing: '0.15em', fontSize: 'var(--text-lg)', textAlign: 'center', fontWeight: 700 }}
-      />
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12, marginBottom: 'var(--sp-4)' }}>
+        <div>
+          <FieldLabel>Weight (kg)</FieldLabel>
+          <StyledInput
+            type="number" value={data.weight}
+            onChange={e => set('weight', e.target.value)}
+            placeholder="e.g. 72"
+            min="30" max="200"
+            style={{ marginBottom: 0 }}
+          />
+        </div>
+        <div>
+          <FieldLabel>Height (cm)</FieldLabel>
+          <StyledInput
+            type="number" value={data.height}
+            onChange={e => set('height', e.target.value)}
+            placeholder="e.g. 175"
+            min="140" max="220"
+            style={{ marginBottom: 0 }}
+          />
+        </div>
+      </div>
 
-      <NavRow onBack={onBack} onNext={onNext} nextLabel="Complete setup" loading={loading} />
+      <NavRow onBack={onBack} onNext={onNext} nextLabel={loading ? 'Setting up your plan…' : 'Complete setup'} loading={loading} />
     </div>
   );
 }
 
-function CompleteStep({ badges, name, onFinish }) {
-  return (
-    <div style={{ textAlign: 'center' }}>
-      <motion.div
-        initial={{ scale: 0, rotate: -10 }}
-        animate={{ scale: 1, rotate: 0 }}
-        transition={{ type: 'spring', bounce: 0.5, delay: 0.1 }}
-        style={{ fontSize: 80, marginBottom: 'var(--space-4)', display: 'block' }}
-      >
-        🎉
-      </motion.div>
+/* ── Step: Ready (replaces generic "complete") ────────────── */
+function ReadyStep({ badges, name, data, onFinish }) {
+  const FIRST_STEPS = [
+    {
+      icon: LuDumbbell,
+      title: 'Generate your training plan',
+      desc: `${data.trainingDaysPerWeek}-day programme built for ${data.fitnessGoal?.replace('_', ' ') || 'your goal'}`,
+      path: '/features',
+      color: 'var(--accent)',
+    },
+    {
+      icon: LuCalendar,
+      title: 'Browse this week\'s classes',
+      desc: 'Book a session that complements your programme',
+      path: '/classes',
+      color: 'var(--green)',
+    },
+    {
+      icon: LuCheck,
+      title: 'Complete your first check-in',
+      desc: 'Start your attendance streak from today',
+      path: '/checkin',
+      color: 'var(--amber)',
+    },
+  ];
 
-      <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}>
-        <h3 style={{
-          color: 'var(--text-primary)', fontSize: 'var(--text-2xl)',
-          fontWeight: 800, margin: '0 0 var(--space-2)',
-        }}>
-          Welcome, {name?.split(' ')[0]}!
-        </h3>
-        <p style={{ color: 'var(--text-secondary)', marginBottom: 'var(--space-4)', lineHeight: 'var(--leading-normal)' }}>
-          Your profile is complete. You've earned{' '}
-          <strong style={{ color: 'var(--color-gold)' }}>100 bonus points</strong>{' '}
-          to start your journey.
+  return (
+    <div>
+      {/* Achievement earned */}
+      <motion.div
+        initial={{ opacity: 0, scale: 0.94 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
+        style={{ background: 'var(--accent-dim)', border: '1px solid var(--accent-border)', borderRadius: 14, padding: '16px 18px', marginBottom: 'var(--sp-5)' }}
+      >
+        <p style={{ color: 'var(--accent)', fontSize: 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', margin: '0 0 4px' }}>Profile complete</p>
+        <p style={{ color: 'var(--text-1)', fontWeight: 700, fontSize: 16, margin: '0 0 2px', letterSpacing: '-0.01em' }}>
+          {name?.split(' ')[0]}, your plan is configured.
+        </p>
+        <p style={{ color: 'var(--text-2)', fontSize: 13, margin: 0, lineHeight: 1.5 }}>
+          {data.trainingDaysPerWeek} days/week · {data.equipment?.replace('_', ' ')} · {data.fitnessGoal?.replace('_', ' ')}
         </p>
       </motion.div>
 
+      {/* First steps */}
+      <p style={{ color: 'var(--text-3)', fontSize: 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', margin: '0 0 10px' }}>
+        Recommended next steps
+      </p>
+
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 8, marginBottom: 'var(--sp-5)' }}>
+        {FIRST_STEPS.map((s, i) => (
+          <motion.div
+            key={s.title}
+            initial={{ opacity: 0, x: -10 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.2 + i * 0.08 }}
+            style={{ display: 'flex', alignItems: 'center', gap: 12, background: 'var(--surface-3)', border: '1px solid var(--border-1)', borderRadius: 10, padding: '11px 14px' }}
+          >
+            <div style={{ width: 32, height: 32, borderRadius: 8, background: `${s.color === 'var(--accent)' ? 'var(--accent-dim)' : s.color === 'var(--green)' ? 'var(--green-dim)' : 'var(--amber-dim)'}`, border: `1px solid ${s.color === 'var(--accent)' ? 'var(--accent-border)' : s.color === 'var(--green)' ? 'rgba(34,197,94,0.2)' : 'rgba(245,158,11,0.2)'}`, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+              <s.icon size={14} color={s.color} strokeWidth={1.8} />
+            </div>
+            <div>
+              <p style={{ color: 'var(--text-1)', fontSize: 13, fontWeight: 600, margin: '0 0 2px' }}>{s.title}</p>
+              <p style={{ color: 'var(--text-3)', fontSize: 12, margin: 0 }}>{s.desc}</p>
+            </div>
+          </motion.div>
+        ))}
+      </div>
+
       {badges.length > 0 && (
         <motion.div
-          initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.5 }}
-          style={{ marginBottom: 'var(--space-6)' }}
+          initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.6 }}
+          style={{ marginBottom: 'var(--sp-4)' }}
         >
-          <p style={{ color: 'var(--text-muted)', fontSize: 'var(--text-sm)', marginBottom: 'var(--space-3)', fontWeight: 600 }}>
-            ACHIEVEMENTS UNLOCKED
+          <p style={{ color: 'var(--text-3)', fontSize: 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', margin: '0 0 8px' }}>
+            Badges earned
           </p>
-          <div style={{ display: 'flex', gap: 'var(--space-2)', justifyContent: 'center', flexWrap: 'wrap' }}>
+          <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
             {badges.map((b, i) => (
               <motion.div
                 key={b.key}
-                initial={{ scale: 0, opacity: 0 }}
-                animate={{ scale: 1, opacity: 1 }}
-                transition={{ delay: 0.6 + i * 0.1, type: 'spring', bounce: 0.4 }}
-                style={{
-                  background: 'var(--brand-purple-dim)',
-                  border: '1px solid var(--border-accent)',
-                  borderRadius: 'var(--radius-lg)', padding: 'var(--space-3) var(--space-4)',
-                  textAlign: 'center', minWidth: 80,
-                }}
+                initial={{ scale: 0 }} animate={{ scale: 1 }}
+                transition={{ delay: 0.7 + i * 0.08, type: 'spring', bounce: 0.4 }}
+                className="pill pill--accent"
               >
-                <div style={{ fontSize: 28, marginBottom: 4 }}>{b.icon}</div>
-                <div style={{ color: 'var(--text-primary)', fontSize: 'var(--text-xs)', fontWeight: 700 }}>{b.name}</div>
+                {b.name}
               </motion.div>
             ))}
           </div>
@@ -438,14 +517,13 @@ function CompleteStep({ badges, name, onFinish }) {
       )}
 
       <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.8 }}>
-        <PrimaryBtn onClick={onFinish}>Go to dashboard →</PrimaryBtn>
+        <PrimaryBtn onClick={onFinish}>Go to your dashboard <LuArrowRight size={14} /></PrimaryBtn>
       </motion.div>
     </div>
   );
 }
 
 /* ── Shared primitives ────────────────────────────────────── */
-
 const PrimaryBtn = ({ onClick, children, disabled }) => (
   <motion.button
     whileHover={!disabled ? { scale: 1.02 } : {}}
@@ -453,14 +531,15 @@ const PrimaryBtn = ({ onClick, children, disabled }) => (
     onClick={onClick}
     disabled={disabled}
     style={{
-      width: '100%', padding: '14px',
-      background: disabled ? 'var(--surface-high)' : 'var(--brand-gradient)',
-      border: 'none', borderRadius: 'var(--radius-md)',
-      color: disabled ? 'var(--text-disabled)' : '#fff',
-      fontSize: 'var(--text-base)', fontWeight: 700,
+      width: '100%', padding: '13px',
+      background: disabled ? 'var(--surface-3)' : 'var(--text-1)',
+      border: 'none', borderRadius: 10,
+      color: disabled ? 'var(--text-4)' : 'var(--bg)',
+      fontSize: 14, fontWeight: 700,
       cursor: disabled ? 'not-allowed' : 'pointer',
-      letterSpacing: '0.01em',
-      boxShadow: disabled ? 'none' : 'var(--shadow-glow-purple)',
+      letterSpacing: '-0.01em',
+      display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 7,
+      fontFamily: 'var(--font-sans)',
     }}
   >
     {children}
@@ -469,8 +548,8 @@ const PrimaryBtn = ({ onClick, children, disabled }) => (
 
 const FieldLabel = ({ children }) => (
   <label style={{
-    display: 'block', color: 'var(--text-muted)',
-    fontSize: 'var(--text-xs)', marginBottom: 'var(--space-2)',
+    display: 'block', color: 'var(--text-3)',
+    fontSize: 11, marginBottom: 8,
     fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.07em',
   }}>
     {children}
@@ -480,18 +559,8 @@ const FieldLabel = ({ children }) => (
 const StyledInput = ({ style = {}, ...props }) => (
   <input
     {...props}
-    style={{
-      width: '100%', padding: '12px var(--space-4)',
-      background: 'var(--surface-overlay)',
-      border: '1px solid var(--border-default)',
-      borderRadius: 'var(--radius-md)',
-      color: 'var(--text-primary)', fontSize: 'var(--text-base)',
-      marginBottom: 'var(--space-5)', boxSizing: 'border-box',
-      outline: 'none', transition: 'border-color 0.2s ease',
-      ...style,
-    }}
-    onFocus={e => { e.target.style.borderColor = 'var(--brand-purple)'; e.target.style.boxShadow = '0 0 0 3px rgba(157,0,255,0.12)'; }}
-    onBlur={e => { e.target.style.borderColor = 'var(--border-default)'; e.target.style.boxShadow = 'none'; }}
+    className="field-input"
+    style={{ marginBottom: 'var(--sp-5)', ...style }}
   />
 );
 
@@ -500,36 +569,31 @@ const SelectChip = ({ selected, onClick, children }) => (
     whileTap={{ scale: 0.97 }}
     onClick={onClick}
     style={{
-      flex: 1, padding: '10px var(--space-2)', textAlign: 'center',
-      background: selected ? 'var(--brand-purple-dim)' : 'var(--surface-overlay)',
-      border: `1px solid ${selected ? 'var(--border-accent)' : 'var(--border-subtle)'}`,
-      borderRadius: 'var(--radius-md)', cursor: 'pointer',
-      color: selected ? 'var(--brand-purple)' : 'var(--text-secondary)',
-      fontSize: 'var(--text-sm)', fontWeight: selected ? 700 : 500,
-      transition: `all var(--duration-fast) var(--ease-out)`,
+      flex: 1, padding: '9px 8px', textAlign: 'center',
+      background: selected ? 'var(--accent-dim)' : 'var(--surface-3)',
+      border: `1px solid ${selected ? 'var(--accent-border)' : 'var(--border-1)'}`,
+      borderRadius: 10, cursor: 'pointer',
+      color: selected ? 'var(--accent)' : 'var(--text-2)',
+      fontSize: 13, fontWeight: selected ? 600 : 400,
+      transition: 'all 0.15s ease',
     }}
   >
     {children}
   </motion.div>
 );
 
-const NavRow = ({ onBack, onNext, nextLabel = 'Next →', nextDisabled = false, loading = false }) => (
-  <div style={{ display: 'flex', gap: 'var(--space-3)', marginTop: 'var(--space-2)' }}>
+const NavRow = ({ onBack, onNext, nextLabel = 'Continue', nextDisabled = false, loading = false }) => (
+  <div style={{ display: 'flex', gap: 10, marginTop: 8 }}>
     <button
       onClick={onBack}
-      style={{
-        flexShrink: 0, width: 48, height: 48,
-        background: 'var(--surface-overlay)',
-        border: '1px solid var(--border-default)',
-        borderRadius: 'var(--radius-md)', color: 'var(--text-secondary)',
-        cursor: 'pointer', fontSize: 20, display: 'flex',
-        alignItems: 'center', justifyContent: 'center',
-      }}
+      className="btn btn-secondary"
+      style={{ width: 44, height: 44, padding: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}
     >
-      ←
+      <LuArrowLeft size={16} strokeWidth={2} />
     </button>
     <PrimaryBtn onClick={onNext} disabled={nextDisabled || loading}>
-      {loading ? 'Saving...' : nextLabel}
+      {loading ? 'Saving…' : nextLabel}
+      {!loading && <LuArrowRight size={14} />}
     </PrimaryBtn>
   </div>
 );

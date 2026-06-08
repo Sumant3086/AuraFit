@@ -1,151 +1,98 @@
-import React from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import { LuArrowRight } from 'react-icons/lu';
-import Reveal, { RevealItem } from '../common/Reveal';
-import { ease, dur } from '../../lib/motion';
+import { LuArrowRight, LuUserCheck, LuBrain, LuQrCode, LuTrendingUp } from 'react-icons/lu';
+import SectionHeading from '../common/SectionHeading';
+
+const ease = [0.16, 1, 0.3, 1];
 
 const STEPS = [
   {
     n: '01',
-    title: 'Set your profile',
-    body: 'Tell us your goal, experience level, and available days. Takes under two minutes.',
+    icon: LuUserCheck,
+    title: 'Tell us where you are',
+    desc: 'A short intake — your goal, training history, how many days a week you can commit, and what equipment is available. Takes two minutes. No marketing survey.',
+    detail: 'Goal · History · Schedule · Equipment',
   },
   {
     n: '02',
-    title: 'Get your plan',
-    body: 'AI generates a weekly workout and nutrition plan calibrated to your body and schedule.',
+    icon: LuBrain,
+    title: 'Receive your programme',
+    desc: 'AuraFit generates a structured weekly training plan and your daily calorie and macro targets. Specific to you — not a template adjusted for your age range.',
+    detail: 'Weekly plan · Calorie target · Macro split',
   },
   {
     n: '03',
-    title: 'Check in and train',
-    body: 'QR check-ins, trainer bookings, and group classes keep you accountable on hard days.',
+    icon: LuQrCode,
+    title: 'Train with structure',
+    desc: 'Check in at the gym. Book the classes that fit your programme. Schedule a session with a trainer when you want professional eyes on your form. Every visit recorded.',
+    detail: 'Check-in · Classes · Trainer sessions',
   },
   {
     n: '04',
-    title: 'Watch the progress',
-    body: 'Body measurements, attendance, and strength gains tracked week over week.',
+    icon: LuTrendingUp,
+    title: 'Measure what changed',
+    desc: 'Log your body metrics weekly. AuraFit shows you the trend over time and delivers a performance review every Monday — specific feedback, not generic motivation.',
+    detail: 'Body metrics · Weekly trend · Monday review',
   },
 ];
 
 export default function HowItWorks() {
   return (
-    <section style={{
-      background: 'var(--bg)',
-      borderBottom: '1px solid var(--border-1)',
-      padding: 'clamp(64px,10vw,100px) clamp(20px,5vw,60px)',
-    }}>
-      <div style={{ maxWidth: 'var(--max-wide)', margin: '0 auto' }}>
+    <section className="section" style={{ background: 'var(--surface-1)', borderTop: '1px solid var(--border-1)' }}>
+      <div className="container">
+        <SectionHeading
+          label="How it works"
+          title="A clear path from day one."
+          desc="Most fitness apps give you tools without direction. AuraFit gives you a plan, a structure, and weekly feedback — so you never have to guess what to do next."
+        />
 
-        {/* Header */}
-        <motion.div
-          initial={{ opacity: 0, y: 16 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-          style={{ marginBottom: 'clamp(48px,7vw,72px)' }}
-        >
-          <p style={{
-            color: 'var(--text-3)', fontSize: 'var(--text-xs)',
-            fontWeight: 'var(--weight-medium)', letterSpacing: 'var(--tracking-wider)',
-            textTransform: 'uppercase', marginBottom: 'var(--sp-4)',
-          }}>
-            How it works
-          </p>
-          <h2 style={{
-            fontSize: 'clamp(28px,4vw,44px)',
-            fontWeight: 'var(--weight-bold)',
-            letterSpacing: 'var(--tracking-snug)',
-            color: 'var(--text-1)',
-            maxWidth: 480,
-            lineHeight: 'var(--leading-tight)',
-          }}>
-            Four steps to a real routine
-          </h2>
-        </motion.div>
-
-        {/* Steps — staggered reveal */}
-        <Reveal stagger staggerDelay={0.07}
-          style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))',
-            gap: 1,
-            background: 'var(--border-1)',
-            border: '1px solid var(--border-1)',
-            borderRadius: 'var(--r-xl)',
-            overflow: 'hidden',
-            marginBottom: 'var(--sp-12)',
-          }}
-        >
+        <div className="how-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 'clamp(16px, 2.5vw, 28px)', marginBottom: 56 }}>
           {STEPS.map((step, i) => (
-            <RevealItem key={step.n}>
-              <div
-                style={{
-                  background: 'var(--surface-1)',
-                  padding: 'var(--sp-8) var(--sp-6)',
-                  height: '100%',
-                }}
-              >
-              <p style={{
-                color: 'var(--text-3)',
-                fontSize: 'var(--text-xs)',
-                fontWeight: 'var(--weight-medium)',
-                letterSpacing: 'var(--tracking-wider)',
-                margin: '0 0 var(--sp-5)',
-              }}>
-                {step.n}
-              </p>
-              <p style={{
-                color: 'var(--text-1)',
-                fontSize: 'var(--text-md)',
-                fontWeight: 'var(--weight-semibold)',
-                letterSpacing: 'var(--tracking-normal)',
-                margin: '0 0 var(--sp-3)',
-              }}>
-                {step.title}
-              </p>
-              <p style={{
-                color: 'var(--text-2)',
-                fontSize: 'var(--text-sm)',
-                lineHeight: 'var(--leading-normal)',
-                margin: 0,
-              }}>
-                {step.body}
-              </p>
+            <motion.div key={step.n}
+              initial={{ opacity: 0, y: 24 }} whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }} transition={{ duration: 0.5, ease, delay: i * 0.08 }}
+              style={{ position: 'relative' }}>
+              {/* Connector line */}
+              {i < STEPS.length - 1 && (
+                <div style={{ position: 'absolute', top: 20, left: 'calc(100% - 14px)', width: 'calc(100% - 12px)', height: 1, background: 'linear-gradient(90deg, var(--border-2) 0%, transparent 100%)', zIndex: 0 }} />
+              )}
+              <div style={{ position: 'relative', zIndex: 1 }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 16 }}>
+                  <div style={{ width: 40, height: 40, borderRadius: 10, background: 'var(--accent-dim)', border: '1px solid var(--accent-border)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                    <step.icon size={18} color="var(--accent)" strokeWidth={1.8} />
+                  </div>
+                  <span style={{ fontSize: 11, fontWeight: 800, color: 'var(--text-4)', fontFamily: 'var(--font-mono)', letterSpacing: '0.06em' }}>{step.n}</span>
+                </div>
+                <p style={{ color: 'var(--text-1)', fontWeight: 700, fontSize: 15, margin: '0 0 8px', lineHeight: 1.3 }}>{step.title}</p>
+                <p style={{ color: 'var(--text-3)', fontSize: 13, lineHeight: 1.65, margin: '0 0 12px' }}>{step.desc}</p>
+                <p style={{ color: 'var(--text-4)', fontSize: 11, fontWeight: 600, letterSpacing: '0.04em' }}>{step.detail}</p>
               </div>
-            </RevealItem>
+            </motion.div>
           ))}
-        </Reveal>
+        </div>
 
-        {/* CTA */}
+        {/* CTA row */}
         <motion.div
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true }}
-          transition={{ delay: 0.3 }}
-        >
-          <Link to="/signup">
-            <motion.button
-              whileHover={{ opacity: 0.85 }}
-              whileTap={{ scale: 0.98 }}
-              style={{
-                display: 'inline-flex', alignItems: 'center', gap: 8,
-                background: 'var(--text-1)',
-                color: 'var(--bg)',
-                border: 'none',
-                padding: '13px 24px',
-                borderRadius: 'var(--r-md)',
-                fontSize: 'var(--text-base)',
-                fontWeight: 'var(--weight-semibold)',
-                cursor: 'pointer',
-              }}
-            >
-              Ready to build a routine?
-              <LuArrowRight size={15} />
-            </motion.button>
+          style={{ display: 'flex', justifyContent: 'center', gap: 14 }}
+          initial={{ opacity: 0, y: 12 }} whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }} transition={{ duration: 0.45, ease }}>
+          <Link to="/signup" className="btn btn-primary btn-lg">
+            Get your programme <LuArrowRight size={15} />
+          </Link>
+          <Link to="/classes" className="btn btn-secondary btn-lg">
+            See the class schedule
           </Link>
         </motion.div>
       </div>
+
+      <style>{`
+        @media (max-width: 820px) {
+          .how-grid { grid-template-columns: repeat(2, 1fr) !important; }
+        }
+        @media (max-width: 500px) {
+          .how-grid { grid-template-columns: 1fr !important; }
+        }
+      `}</style>
     </section>
   );
 }

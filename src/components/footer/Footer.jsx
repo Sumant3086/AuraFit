@@ -1,160 +1,186 @@
 import React from 'react';
-import './footer.css';
 import Logo from '../logo/Logo';
 import { Link } from 'react-router-dom';
-import { FaEnvelope } from 'react-icons/fa';
+import { LuMail, LuArrowUpRight } from 'react-icons/lu';
 
-const LINKS = {
-  product: [
-    { to: '/features', label: 'Features' },
-    { to: '/pricing', label: 'Pricing' },
-    { to: '/classes', label: 'Classes' },
-    { to: '/shop', label: 'Shop' },
-    { to: '/trainers', label: 'Trainers' },
-  ],
-  company: [
-    { to: '/contact', label: 'Contact' },
-    { to: '/community', label: 'Community' },
-    { to: '/leaderboard', label: 'Leaderboard' },
-  ],
-};
+const COLUMNS = [
+  {
+    heading: 'Platform',
+    links: [
+      { to: '/features',  label: 'AI Tools' },
+      { to: '/classes',   label: 'Classes' },
+      { to: '/trainers',  label: 'Trainers' },
+      { to: '/shop',      label: 'Shop' },
+      { to: '/pricing',   label: 'Pricing' },
+    ],
+  },
+  {
+    heading: 'Members',
+    links: [
+      { to: '/dashboard',    label: 'Dashboard' },
+      { to: '/community',    label: 'Community' },
+      { to: '/leaderboard',  label: 'Leaderboard' },
+      { to: '/achievements', label: 'Achievements' },
+    ],
+  },
+  {
+    heading: 'Company',
+    links: [
+      { to: '/contact', label: 'Contact' },
+      { to: '/signup',  label: 'Get started free' },
+    ],
+  },
+];
 
-const CONTACT_EMAIL = 'sumantyadav3086@gmail.com';
+const EMAIL = 'sumantyadav3086@gmail.com';
 
 export default function Footer() {
   return (
-    <footer style={{
-      background: 'var(--surface-raised)',
-      borderTop: '1px solid var(--border-subtle)',
-    }}>
-      <div style={{
-        maxWidth: 1280, margin: '0 auto',
-        padding: 'clamp(48px,6vw,80px) clamp(20px,4vw,60px) clamp(24px,3vw,32px)',
-      }}>
-        {/* Top row */}
-        <div style={{
-          display: 'grid',
-          gridTemplateColumns: 'minmax(200px,1fr) repeat(2,minmax(120px,auto))',
-          gap: 'clamp(32px,5vw,64px)',
-          marginBottom: 'clamp(32px,4vw,48px)',
-          flexWrap: 'wrap',
-        }} className="footer-grid">
+    <footer className="af-footer">
+      <div className="af-footer__inner">
+
+        {/* Top grid */}
+        <div className="af-footer__grid">
 
           {/* Brand column */}
-          <div>
-            <Logo size="medium" style={{ marginBottom: 16 }} />
-            <p style={{
-              color: 'var(--text-muted)', fontSize: 14,
-              lineHeight: 1.65, maxWidth: 260, margin: '0 0 20px',
-            }}>
+          <div className="af-footer__brand">
+            <Logo size="medium" />
+            <p className="af-footer__tagline">
               The AI-powered fitness platform for people who train seriously.
             </p>
-
-            {/* Contact — email only */}
-            <a
-              href={`mailto:${CONTACT_EMAIL}`}
-              style={{
-                display: 'inline-flex', alignItems: 'center', gap: 8,
-                color: 'var(--text-muted)', fontSize: 13, textDecoration: 'none',
-                padding: '8px 14px',
-                background: 'var(--surface-overlay)',
-                border: '1px solid var(--border-subtle)',
-                borderRadius: 8,
-                transition: 'border-color 0.2s, color 0.2s',
-              }}
-              onMouseEnter={e => {
-                e.currentTarget.style.borderColor = 'var(--border-strong)';
-                e.currentTarget.style.color = 'var(--text-primary)';
-              }}
-              onMouseLeave={e => {
-                e.currentTarget.style.borderColor = 'var(--border-subtle)';
-                e.currentTarget.style.color = 'var(--text-muted)';
-              }}
-            >
-              <FaEnvelope style={{ fontSize: 13, flexShrink: 0 }} />
-              {CONTACT_EMAIL}
+            <a href={`mailto:${EMAIL}`} className="af-footer__email">
+              <LuMail size={13} strokeWidth={1.5} />
+              {EMAIL}
             </a>
           </div>
 
-          {/* Product links */}
-          <div>
-            <p style={{
-              color: 'var(--text-secondary)', fontSize: 12, fontWeight: 700,
-              letterSpacing: '0.08em', textTransform: 'uppercase', margin: '0 0 16px',
-            }}>
-              Product
-            </p>
-            <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: 10 }}>
-              {LINKS.product.map(l => (
-                <li key={l.to}>
-                  <Link to={l.to} style={{
-                    color: 'var(--text-muted)', fontSize: 14, textDecoration: 'none',
-                    transition: 'color 0.15s',
-                  }}
-                    onMouseEnter={e => e.target.style.color = 'var(--text-primary)'}
-                    onMouseLeave={e => e.target.style.color = 'var(--text-muted)'}
-                  >
-                    {l.label}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          {/* Company links */}
-          <div>
-            <p style={{
-              color: 'var(--text-secondary)', fontSize: 12, fontWeight: 700,
-              letterSpacing: '0.08em', textTransform: 'uppercase', margin: '0 0 16px',
-            }}>
-              Company
-            </p>
-            <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: 10 }}>
-              {LINKS.company.map(l => (
-                <li key={l.to}>
-                  <Link to={l.to} style={{
-                    color: 'var(--text-muted)', fontSize: 14, textDecoration: 'none',
-                    transition: 'color 0.15s',
-                  }}
-                    onMouseEnter={e => e.target.style.color = 'var(--text-primary)'}
-                    onMouseLeave={e => e.target.style.color = 'var(--text-muted)'}
-                  >
-                    {l.label}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
+          {/* Link columns */}
+          {COLUMNS.map(col => (
+            <div key={col.heading}>
+              <p className="af-footer__col-heading">{col.heading}</p>
+              <ul className="af-footer__list">
+                {col.links.map(l => (
+                  <li key={l.to}>
+                    <Link to={l.to} className="af-footer__link">{l.label}</Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
         </div>
 
-        {/* Bottom row */}
-        <div style={{
-          borderTop: '1px solid var(--border-subtle)',
-          paddingTop: 'clamp(16px,2.5vw,24px)',
-          display: 'flex', justifyContent: 'space-between', alignItems: 'center',
-          flexWrap: 'wrap', gap: 12,
-        }}>
-          <p style={{ color: 'var(--text-muted)', fontSize: 13, margin: 0 }}>
+        {/* Bottom bar */}
+        <div className="af-footer__bottom">
+          <p className="af-footer__copy">
             © {new Date().getFullYear()} AuraFit. All rights reserved.
           </p>
-          <div style={{ display: 'flex', gap: 16, alignItems: 'center' }}>
-            <p style={{ color: 'var(--text-muted)', fontSize: 12, margin: 0 }}>
-              Powered by Gemini AI
-            </p>
-            <Link to="/admin/login" style={{ color: 'var(--text-muted)', fontSize: 11, opacity: 0.35 }}>
-              ·
-            </Link>
+          <div className="af-footer__bottom-right">
+            <span className="af-footer__powered">Powered by Gemini AI</span>
+            <Link to="/admin/login" style={{ opacity: 0, pointerEvents: 'none' }}>·</Link>
           </div>
         </div>
       </div>
 
       <style>{`
-        @media (max-width: 640px) {
-          .footer-grid { grid-template-columns: 1fr 1fr !important; }
-          .footer-grid > :first-child { grid-column: 1 / -1; }
+        .af-footer {
+          background: var(--surface-1);
+          border-top: 1px solid var(--border-1);
         }
-        @media (max-width: 400px) {
-          .footer-grid { grid-template-columns: 1fr !important; }
+        .af-footer__inner {
+          max-width: var(--max-full);
+          margin-inline: auto;
+          padding: clamp(48px,6vw,80px) clamp(20px,4vw,60px) clamp(24px,3vw,32px);
+        }
+        .af-footer__grid {
+          display: grid;
+          grid-template-columns: minmax(220px, 1.4fr) repeat(3, minmax(100px, 1fr));
+          gap: clamp(32px, 5vw, 64px);
+          margin-bottom: clamp(32px, 4vw, 48px);
+        }
+        .af-footer__brand { display: flex; flex-direction: column; gap: 14px; }
+        .af-footer__tagline {
+          color: var(--text-3);
+          font-size: 13px;
+          line-height: 1.65;
+          max-width: 240px;
+          margin: 0;
+        }
+        .af-footer__email {
+          display: inline-flex;
+          align-items: center;
+          gap: 7px;
+          color: var(--text-3);
+          font-size: 12.5px;
+          text-decoration: none;
+          padding: 7px 12px;
+          background: var(--surface-2);
+          border: 1px solid var(--border-1);
+          border-radius: var(--r-md);
+          transition: color var(--duration-fast), border-color var(--duration-fast);
+          width: fit-content;
+        }
+        .af-footer__email:hover {
+          color: var(--text-1);
+          border-color: var(--border-2);
+        }
+        .af-footer__col-heading {
+          color: var(--text-2);
+          font-size: 11px;
+          font-weight: 700;
+          letter-spacing: 0.09em;
+          text-transform: uppercase;
+          margin: 0 0 14px;
+        }
+        .af-footer__list {
+          list-style: none;
+          padding: 0;
+          margin: 0;
+          display: flex;
+          flex-direction: column;
+          gap: 8px;
+        }
+        .af-footer__link {
+          color: var(--text-3);
+          font-size: var(--text-sm);
+          text-decoration: none;
+          transition: color var(--duration-fast);
+          display: block;
+        }
+        .af-footer__link:hover { color: var(--text-1); }
+        .af-footer__bottom {
+          border-top: 1px solid var(--border-1);
+          padding-top: clamp(16px, 2.5vw, 24px);
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          flex-wrap: wrap;
+          gap: 10px;
+        }
+        .af-footer__copy {
+          color: var(--text-3);
+          font-size: var(--text-xs);
+          margin: 0;
+        }
+        .af-footer__bottom-right {
+          display: flex;
+          align-items: center;
+          gap: 14px;
+        }
+        .af-footer__powered {
+          color: var(--text-4);
+          font-size: 11.5px;
+        }
+        @media (max-width: 820px) {
+          .af-footer__grid {
+            grid-template-columns: 1fr 1fr;
+          }
+          .af-footer__brand {
+            grid-column: 1 / -1;
+          }
+        }
+        @media (max-width: 480px) {
+          .af-footer__grid { grid-template-columns: 1fr; }
+          .af-footer__brand { grid-column: unset; }
         }
       `}</style>
     </footer>

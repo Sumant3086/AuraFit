@@ -74,10 +74,12 @@ const AnalyticsCharts = () => {
           {
             label: 'Revenue (₹)',
             data: dates.map(date => revenueByDate[date] || 0),
-            borderColor: '#00f5ff',
-            backgroundColor: 'rgba(0, 245, 255, 0.1)',
+            borderColor: '#8B5CF6',
+            backgroundColor: 'rgba(139,92,246,0.12)',
             fill: true,
             tension: 0.4,
+            pointBackgroundColor: '#8B5CF6',
+            pointRadius: 3,
           },
         ],
       });
@@ -95,15 +97,17 @@ const AnalyticsCharts = () => {
           {
             label: 'New Users',
             data: dates.map(date => usersByDate[date] || 0),
-            backgroundColor: '#00f5ff',
+            backgroundColor: '#8B5CF6',
+            borderRadius: 4,
           },
           {
             label: 'Active Users',
             data: dates.map(date => {
               const newUsers = usersByDate[date] || 0;
-              return Math.floor(newUsers * 1.5); // Active users estimation
+              return Math.floor(newUsers * 1.5);
             }),
-            backgroundColor: '#ff00ff',
+            backgroundColor: '#06B6D4',
+            borderRadius: 4,
           },
         ],
       });
@@ -127,10 +131,10 @@ const AnalyticsCharts = () => {
         labels: ['Basic', 'Pro', 'Premium'],
         datasets: [
           {
-            data: totalMemberships > 0 
+            data: totalMemberships > 0
               ? [membershipCounts.Basic, membershipCounts.Pro, membershipCounts.Premium]
               : [0, 0, 0],
-            backgroundColor: ['#9d00ff', '#00f5ff', '#ffd700'],
+            backgroundColor: ['#8B5CF6', '#06B6D4', '#F59E0B'],
             borderWidth: 0,
           },
         ],
@@ -148,8 +152,8 @@ const AnalyticsCharts = () => {
         datasets: [{
           label: 'Revenue (₹)',
           data: Array(days).fill(0),
-          borderColor: '#00f5ff',
-          backgroundColor: 'rgba(0, 245, 255, 0.1)',
+          borderColor: '#8B5CF6',
+          backgroundColor: 'rgba(139,92,246,0.12)',
           fill: true,
           tension: 0.4,
         }],
@@ -158,14 +162,14 @@ const AnalyticsCharts = () => {
       setUserGrowthData({
         labels: dates,
         datasets: [
-          { label: 'New Users', data: Array(days).fill(0), backgroundColor: '#00f5ff' },
-          { label: 'Active Users', data: Array(days).fill(0), backgroundColor: '#ff00ff' },
+          { label: 'New Users', data: Array(days).fill(0), backgroundColor: '#8B5CF6', borderRadius: 4 },
+          { label: 'Active Users', data: Array(days).fill(0), backgroundColor: '#06B6D4', borderRadius: 4 },
         ],
       });
 
       setMembershipDistribution({
         labels: ['Basic', 'Pro', 'Premium'],
-        datasets: [{ data: [0, 0, 0], backgroundColor: ['#9d00ff', '#00f5ff', '#ffd700'], borderWidth: 0 }],
+        datasets: [{ data: [0, 0, 0], backgroundColor: ['#8B5CF6', '#06B6D4', '#F59E0B'], borderWidth: 0 }],
       });
     } finally {
       setLoading(false);
@@ -193,34 +197,35 @@ const AnalyticsCharts = () => {
     a.click();
   };
 
+  /* Chart.js doesn't support CSS vars — use neutral mid-tone values */
+  const labelColor  = '#888888';
+  const gridColor   = 'rgba(128,128,128,0.10)';
+  const tooltipBg   = '#1e1e28';
+
   const chartOptions = {
     responsive: true,
     maintainAspectRatio: false,
     plugins: {
       legend: {
-        labels: {
-          color: '#fff',
-          font: {
-            size: 12,
-          },
-        },
+        labels: { color: labelColor, font: { size: 12 } },
       },
       tooltip: {
-        backgroundColor: 'rgba(0, 0, 0, 0.8)',
-        titleColor: '#00f5ff',
-        bodyColor: '#fff',
-        borderColor: '#00f5ff',
+        backgroundColor: tooltipBg,
+        titleColor: '#c4b5fd',
+        bodyColor: '#d4d4d8',
+        borderColor: 'rgba(139,92,246,0.3)',
         borderWidth: 1,
+        padding: 10,
       },
     },
     scales: {
       x: {
-        ticks: { color: '#94a3b8' },
-        grid: { color: 'rgba(0, 245, 255, 0.1)' },
+        ticks: { color: labelColor, font: { size: 11 } },
+        grid: { color: gridColor },
       },
       y: {
-        ticks: { color: '#94a3b8' },
-        grid: { color: 'rgba(0, 245, 255, 0.1)' },
+        ticks: { color: labelColor, font: { size: 11 } },
+        grid: { color: gridColor },
       },
     },
   };
@@ -231,18 +236,13 @@ const AnalyticsCharts = () => {
     plugins: {
       legend: {
         position: 'bottom',
-        labels: {
-          color: '#fff',
-          padding: 15,
-          font: {
-            size: 12,
-          },
-        },
+        labels: { color: labelColor, padding: 15, font: { size: 12 } },
       },
       tooltip: {
-        backgroundColor: 'rgba(0, 0, 0, 0.8)',
-        titleColor: '#00f5ff',
-        bodyColor: '#fff',
+        backgroundColor: tooltipBg,
+        titleColor: '#c4b5fd',
+        bodyColor: '#d4d4d8',
+        padding: 10,
       },
     },
   };

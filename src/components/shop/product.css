@@ -204,3 +204,48 @@
         margin-bottom: 50px;
     }
   }
+
+/* ── Token migration — replace hardcoded white text ────────── */
+
+.product-name,
+.product-description,
+.product-price {
+  color: var(--text-1);
+}
+
+.product-description { color: var(--text-2); }
+
+.color-black, .color-white, .color-pink,
+.size-btn {
+  color: var(--text-1);
+  border-color: var(--border-2);
+  background-color: transparent;
+  font-family: var(--font-sans);
+}
+
+.color-black:hover, .color-white:hover, .color-pink:hover,
+.size-btn:hover {
+  background-color: var(--surface-3);
+  color: var(--text-1);
+}
+
+.active {
+  background-color: var(--text-1);
+  color: var(--bg);
+}
+
+.product-add-to-cart {
+  background: var(--accent);
+  color: #fff;
+}
+
+.product-add-to-cart.added {
+  background: var(--green);
+}
+
+[data-theme="light"] .color-black:hover,
+[data-theme="light"] .color-white:hover,
+[data-theme="light"] .color-pink:hover,
+[data-theme="light"] .size-btn:hover {
+  background-color: var(--surface-2);
+}

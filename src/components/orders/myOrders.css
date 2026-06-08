@@ -1,6 +1,6 @@
 .orders-container {
   min-height: 100vh;
-  background: linear-gradient(135deg, #0a0a0a 0%, #1a0a1a 100%);
+  background: var(--bg);
   padding: 120px 20px 50px;
 }
 
@@ -18,7 +18,7 @@
   width: 100px;
   height: 100px;
   margin: 0 auto 25px;
-  background: linear-gradient(135deg, #00f5ff 0%, #ff00ff 100%);
+  background: var(--accent);
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -34,14 +34,14 @@
   font-size: 2.5rem;
   font-weight: 800;
   margin-bottom: 15px;
-  background: linear-gradient(135deg, #00f5ff 0%, #ff00ff 100%);
+  background: var(--accent);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
 }
 
 .orders-header p {
-  color: #888;
+  color: var(--text-3);
   font-size: 1.1rem;
 }
 
@@ -60,8 +60,8 @@
 
 .filter-btn {
   padding: 12px 24px;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: var(--surface-2);
+  border: 1px solid var(--border-1);
   border-radius: 25px;
   color: white;
   font-size: 0.95rem;
@@ -71,13 +71,13 @@
 }
 
 .filter-btn:hover {
-  background: rgba(0, 245, 255, 0.1);
+  background: var(--accent-dim);
   border-color: rgba(0, 245, 255, 0.3);
-  color: #00f5ff;
+  color: var(--accent);
 }
 
 .filter-btn.active {
-  background: linear-gradient(135deg, #00f5ff 0%, #ff00ff 100%);
+  background: var(--accent);
   border-color: transparent;
   color: white;
   box-shadow: 0 5px 20px rgba(0, 245, 255, 0.4);
@@ -90,9 +90,9 @@
 }
 
 .order-card {
-  background: rgba(255, 255, 255, 0.05);
+  background: var(--surface-2);
   backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid var(--border-1);
   border-radius: 20px;
   padding: 30px;
   transition: all 0.3s ease;
@@ -120,7 +120,7 @@
 }
 
 .order-date {
-  color: #888;
+  color: var(--text-3);
   font-size: 0.9rem;
 }
 
@@ -129,7 +129,7 @@
   align-items: center;
   gap: 10px;
   padding: 10px 20px;
-  background: rgba(255, 255, 255, 0.05);
+  background: var(--surface-2);
   border-radius: 25px;
 }
 
@@ -193,7 +193,7 @@
 .item-image-placeholder {
   width: 60px;
   height: 60px;
-  background: rgba(0, 245, 255, 0.1);
+  background: var(--accent-dim);
   border: 1px solid rgba(0, 245, 255, 0.3);
   border-radius: 10px;
   display: flex;
@@ -214,12 +214,12 @@
 }
 
 .item-details p {
-  color: #888;
+  color: var(--text-3);
   font-size: 0.9rem;
 }
 
 .item-price {
-  color: #00f5ff;
+  color: var(--accent);
   font-size: 1.2rem;
   font-weight: 700;
 }
@@ -244,7 +244,7 @@
 .total-price {
   font-size: 1.5rem;
   font-weight: 800;
-  background: linear-gradient(135deg, #00f5ff 0%, #ff00ff 100%);
+  background: var(--accent);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -290,13 +290,13 @@
 }
 
 .action-btn.review {
-  background: rgba(0, 245, 255, 0.2);
-  color: #00f5ff;
-  border: 1px solid #00f5ff;
+  background: var(--accent-dim);
+  color: var(--accent);
+  border: 1px solid var(--accent-border);
 }
 
 .action-btn.review:hover {
-  background: #00f5ff;
+  background: var(--accent);
   color: white;
 }
 
@@ -336,14 +336,14 @@
 .no-orders {
   text-align: center;
   padding: 80px 20px;
-  background: rgba(255, 255, 255, 0.05);
+  background: var(--surface-2);
   border-radius: 20px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid var(--border-1);
 }
 
 .no-orders svg {
   font-size: 5rem;
-  color: #888;
+  color: var(--text-3);
   margin-bottom: 25px;
   opacity: 0.5;
 }
@@ -355,7 +355,7 @@
 }
 
 .no-orders p {
-  color: #888;
+  color: var(--text-3);
   font-size: 1.1rem;
   margin-bottom: 30px;
 }
@@ -363,7 +363,7 @@
 .shop-now-btn {
   display: inline-block;
   padding: 15px 40px;
-  background: linear-gradient(135deg, #00f5ff 0%, #ff00ff 100%);
+  background: var(--accent);
   color: white;
   text-decoration: none;
   border-radius: 25px;
@@ -421,11 +421,11 @@
 .payment-confirmation-form {
   max-width: 600px;
   margin: 0 auto;
-  background: rgba(255, 255, 255, 0.05);
+  background: var(--surface-2);
   backdrop-filter: blur(10px);
   border-radius: 20px;
   padding: 40px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid var(--border-1);
 }
 
 .form-group {
@@ -434,49 +434,52 @@
 
 .form-group label {
   display: block;
-  color: white;
+  color: var(--text-3);
   font-weight: 600;
   margin-bottom: 8px;
-  font-size: 1rem;
+  font-size: 0.875rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
 }
 
 .form-group input {
   width: 100%;
-  padding: 15px;
-  border: 2px solid rgba(255, 255, 255, 0.1);
+  padding: 13px;
+  border: 1px solid var(--border-2);
   border-radius: 10px;
-  background: rgba(255, 255, 255, 0.05);
-  color: white;
+  background: var(--surface-1);
+  color: var(--text-1);
   font-size: 1rem;
   transition: all 0.3s ease;
+  font-family: var(--font-sans);
 }
 
 .form-group input:focus {
   outline: none;
-  border-color: #00f5ff;
-  box-shadow: 0 0 20px rgba(0, 245, 255, 0.3);
+  border-color: var(--border-focus);
+  box-shadow: 0 0 0 3px var(--accent-dim);
 }
 
 .form-group input::placeholder {
-  color: #888;
+  color: var(--text-3);
 }
 
 .payment-instructions {
   margin-top: 30px;
   padding: 20px;
-  background: rgba(0, 245, 255, 0.1);
+  background: var(--accent-dim);
   border-radius: 10px;
-  border-left: 4px solid #00f5ff;
+  border-left: 4px solid var(--accent);
 }
 
 .payment-instructions h3 {
-  color: #00f5ff;
+  color: var(--accent);
   margin-bottom: 15px;
   font-size: 1.2rem;
 }
 
 .payment-instructions ul {
-  color: #ccc;
+  color: var(--text-2);
   padding-left: 20px;
 }
 
@@ -490,7 +493,7 @@
   cursor: not-allowed;
 }
 .confirm-payment-btn {
-  background: linear-gradient(135deg, #ff6b6b 0%, #ff8e8e 100%) !important;
+  background: var(--red) !important;
   color: white !important;
   text-decoration: none !important;
   display: inline-flex !important;
@@ -501,5 +504,28 @@
 
 .confirm-payment-btn:hover {
   transform: translateY(-2px) !important;
-  box-shadow: 0 8px 25px rgba(255, 107, 107, 0.4) !important;
+  box-shadow: var(--shadow-md) !important;
+}
+
+/* ── Light mode overrides ──────────────────────────────────── */
+
+[data-theme="light"] .orders-header h1,
+[data-theme="light"] .profile-header h1 {
+  color: var(--text-1);
+  -webkit-text-fill-color: transparent;
+}
+
+[data-theme="light"] .orders-card,
+[data-theme="light"] .order-card,
+[data-theme="light"] .payment-card {
+  background: var(--surface-1);
+  border-color: var(--border-2);
+}
+
+[data-theme="light"] .order-id,
+[data-theme="light"] .order-title,
+[data-theme="light"] .order-product-name,
+[data-theme="light"] .section-title,
+[data-theme="light"] .back-link {
+  color: var(--text-1);
 }

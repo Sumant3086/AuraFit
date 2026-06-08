@@ -4,10 +4,10 @@ import { useAuth } from '../../context/AuthContext';
 import toast from 'react-hot-toast';
 
 const SESSION_TYPES = [
-  { key: 'personal_training', label: 'Personal Training', icon: '🏋️', duration: '60 min' },
-  { key: 'assessment', label: 'Fitness Assessment', icon: '📊', duration: '45 min' },
-  { key: 'nutrition_consultation', label: 'Nutrition Consultation', icon: '🥗', duration: '30 min' },
-  { key: 'group_session', label: 'Group Session', icon: '👥', duration: '60 min' },
+  { key: 'personal_training',    label: 'Personal Training',      desc: 'One-on-one session focused on your programme', duration: '60 min' },
+  { key: 'assessment',           label: 'Fitness Assessment',      desc: 'Baseline measurements, movement screen, goal review', duration: '45 min' },
+  { key: 'nutrition_consultation', label: 'Nutrition Consultation', desc: 'Macro targets, meal structure, and diet review', duration: '30 min' },
+  { key: 'group_session',        label: 'Group Session',           desc: 'Small group training with personalised coaching', duration: '60 min' },
 ];
 
 const SLOTS = ['06:00', '07:00', '08:00', '09:00', '10:00', '11:00', '17:00', '18:00', '19:00', '20:00'];
@@ -94,8 +94,8 @@ export default function TrainerBooking() {
           {['book', 'my'].map(t => (
             <button key={t} onClick={() => setTab(t)} style={{
               flex: 1, padding: '10px', borderRadius: 9, border: 'none', cursor: 'pointer', fontWeight: 600, fontSize: 14,
-              background: tab === t ? 'linear-gradient(135deg, #9d00ff, #00d4ff)' : 'transparent',
-              color: tab === t ? '#fff' : '#666', transition: 'all 0.2s',
+              background: tab === t ? 'var(--accent)' : 'transparent',
+              color: tab === t ? '#fff' : 'var(--text-3)', transition: 'all 0.2s',
             }}>
               {t === 'book' ? '📅 Book Session' : `📋 My Bookings (${myBookings.length})`}
             </button>
@@ -114,7 +114,7 @@ export default function TrainerBooking() {
                     {trainers.map(t => (
                       <motion.div key={t._id} whileTap={{ scale: 0.98 }} onClick={() => { setSelected(s => ({ ...s, trainer: t })); setStep('schedule'); }}
                         style={{
-                          background: 'var(--surface-2)', border: `1px solid ${selected.trainer?._id === t._id ? '#9d00ff' : '#222'}`,
+                          background: 'var(--surface-2)', border: `1px solid ${selected.trainer?._id === t._id ? 'var(--accent-border)' : 'var(--border-2)'}`,
                           borderRadius: 14, padding: '16px 20px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 16,
                         }}>
                         <Avatar name={t.name} url={t.profilePicture} size={52} />
@@ -147,8 +147,8 @@ export default function TrainerBooking() {
                   <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
                     {SESSION_TYPES.map(s => (
                       <div key={s.key} onClick={() => setSelected(x => ({ ...x, sessionType: s.key }))} style={{
-                        padding: 12, background: selected.sessionType === s.key ? 'rgba(157,0,255,0.15)' : '#1a1a1a',
-                        border: `1px solid ${selected.sessionType === s.key ? '#9d00ff' : '#333'}`,
+                        padding: 12, background: selected.sessionType === s.key ? 'var(--accent-dim)' : 'var(--surface-3)',
+                        border: `1px solid ${selected.sessionType === s.key ? 'var(--accent-border)' : 'var(--border-2)'}`,
                         borderRadius: 10, cursor: 'pointer', textAlign: 'center',
                       }}>
                         <div style={{ fontSize: 24 }}>{s.icon}</div>
@@ -172,9 +172,9 @@ export default function TrainerBooking() {
                         return (
                           <button key={slot} onClick={() => !isBooked && setSelected(s => ({ ...s, slot }))} disabled={isBooked}
                             style={{
-                              padding: '8px 14px', borderRadius: 8, border: `1px solid ${selected.slot === slot ? '#9d00ff' : '#333'}`,
-                              background: selected.slot === slot ? 'rgba(157,0,255,0.2)' : isBooked ? '#0d0d0d' : '#1a1a1a',
-                              color: isBooked ? '#333' : selected.slot === slot ? '#9d00ff' : '#ccc',
+                              padding: '8px 14px', borderRadius: 8, border: `1px solid ${selected.slot === slot ? 'var(--accent-border)' : 'var(--border-2)'}`,
+                              background: selected.slot === slot ? 'var(--accent-dim)' : isBooked ? 'var(--surface-1)' : 'var(--surface-3)',
+                              color: isBooked ? 'var(--text-4)' : selected.slot === slot ? 'var(--accent)' : 'var(--text-2)',
                               cursor: isBooked ? 'not-allowed' : 'pointer', fontSize: 14, fontWeight: 600,
                             }}>
                             {slot} {isBooked && '×'}
@@ -193,7 +193,7 @@ export default function TrainerBooking() {
                 <motion.button whileTap={{ scale: 0.97 }} onClick={handleBook} disabled={loading || !selected.date || !selected.slot}
                   style={{
                     width: '100%', padding: 16, borderRadius: 12, border: 'none', cursor: loading ? 'wait' : 'pointer',
-                    background: 'linear-gradient(135deg, #9d00ff, #00d4ff)', color: 'var(--text-1)', fontSize: 17, fontWeight: 700,
+                    background: 'var(--accent)', color: '#fff', fontSize: 17, fontWeight: 700,
                     opacity: (!selected.date || !selected.slot) ? 0.5 : 1,
                   }}>
                   {loading ? 'Booking...' : 'Confirm Booking ✓'}
@@ -224,7 +224,7 @@ export default function TrainerBooking() {
                       <span>⏰ {b.startTime} - {b.endTime}</span>
                     </div>
                     {b.status === 'pending' && (
-                      <button onClick={() => cancelBooking(b._id)} style={{ marginTop: 12, padding: '6px 14px', background: 'transparent', border: '1px solid #ff4444', color: '#ff4444', borderRadius: 8, cursor: 'pointer', fontSize: 13 }}>
+                      <button onClick={() => cancelBooking(b._id)} style={{ marginTop: 12, padding: '6px 14px', background: 'transparent', border: '1px solid var(--red)', color: 'var(--red)', borderRadius: 8, cursor: 'pointer', fontSize: 13 }}>
                         Cancel
                       </button>
                     )}
@@ -240,22 +240,27 @@ export default function TrainerBooking() {
 }
 
 const Avatar = ({ name, url, size = 40 }) => {
-  const colors = ['#9d00ff', '#00d4ff', '#ff6b35', '#ffd700'];
+  const colors = ['#7c3aed', '#0891b2', '#d97706', '#059669'];
   const color = colors[(name?.charCodeAt(0) || 0) % colors.length];
   return url ? (
     <img src={url} alt={name} style={{ width: size, height: size, borderRadius: '50%', objectFit: 'cover', flexShrink: 0 }} />
   ) : (
-    <div style={{ width: size, height: size, borderRadius: '50%', background: `linear-gradient(135deg, ${color}, ${color}88)`, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--text-1)', fontWeight: 700, fontSize: size * 0.4, flexShrink: 0 }}>
+    <div style={{ width: size, height: size, borderRadius: '50%', background: color, display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontWeight: 700, fontSize: Math.round(size * 0.4), flexShrink: 0 }}>
       {name?.[0]?.toUpperCase()}
     </div>
   );
 };
 
 const StatusBadge = ({ status }) => {
-  const map = { pending: ['#ffd700', '#2a2000'], confirmed: ['#00c853', '#001a00'], cancelled: ['#ff4444', '#1a0000'], completed: ['#9d00ff', '#1a0028'] };
-  const [color, bg] = map[status] || ['#888', '#111'];
+  const map = {
+    pending:   { color: 'var(--amber)',  bg: 'var(--amber-dim)',  border: 'rgba(245,158,11,0.25)' },
+    confirmed: { color: 'var(--green)',  bg: 'var(--green-dim)',  border: 'rgba(34,197,94,0.25)' },
+    cancelled: { color: 'var(--red)',    bg: 'var(--red-dim)',    border: 'rgba(220,38,38,0.25)' },
+    completed: { color: 'var(--accent)', bg: 'var(--accent-dim)', border: 'var(--accent-border)' },
+  };
+  const s = map[status] || { color: 'var(--text-3)', bg: 'var(--surface-3)', border: 'var(--border-2)' };
   return (
-    <div style={{ marginLeft: 'auto', padding: '3px 10px', background: bg, border: `1px solid ${color}`, borderRadius: 20, color, fontSize: 12, fontWeight: 700, textTransform: 'capitalize' }}>
+    <div style={{ marginLeft: 'auto', padding: '3px 10px', background: s.bg, border: `1px solid ${s.border}`, borderRadius: 20, color: s.color, fontSize: 11, fontWeight: 700, textTransform: 'capitalize' }}>
       {status}
     </div>
   );
@@ -269,11 +274,11 @@ const FormGroup = ({ label, children }) => (
 );
 
 const EmptyState = ({ icon, text, onAction, actionLabel }) => (
-  <div style={{ textAlign: 'center', padding: '60px 20px', color: '#444' }}>
-    <p style={{ fontSize: 48, marginBottom: 12 }}>{icon}</p>
-    <p style={{ fontSize: 16, marginBottom: onAction ? 20 : 0 }}>{text}</p>
+  <div style={{ textAlign: 'center', padding: '60px 20px' }}>
+    <p style={{ fontSize: 40, marginBottom: 12, opacity: 0.4 }}>{icon}</p>
+    <p style={{ fontSize: 15, marginBottom: onAction ? 20 : 0, color: 'var(--text-3)' }}>{text}</p>
     {onAction && (
-      <button onClick={onAction} style={{ padding: '10px 24px', background: 'linear-gradient(135deg, #9d00ff, #00d4ff)', color: 'var(--text-1)', border: 'none', borderRadius: 10, cursor: 'pointer', fontWeight: 700 }}>
+      <button onClick={onAction} className="btn btn-primary">
         {actionLabel}
       </button>
     )}

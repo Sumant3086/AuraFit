@@ -10,9 +10,9 @@ const PERIODS = [
 ];
 
 const RANK_COLORS = {
-  1: { bg: 'linear-gradient(135deg, #f59e0b, #d97706)', glow: 'rgba(245,158,11,0.3)', medal: '🥇', label: 'Gold' },
-  2: { bg: 'linear-gradient(135deg, #94a3b8, #64748b)', glow: 'rgba(148,163,184,0.2)', medal: '🥈', label: 'Silver' },
-  3: { bg: 'linear-gradient(135deg, #cd7c54, #9a6040)', glow: 'rgba(205,124,84,0.2)', medal: '🥉', label: 'Bronze' },
+  1: { bg: '#F59E0B', glow: 'rgba(245,158,11,0.25)', label: '1st', medal: '🥇' },
+  2: { bg: '#94A3B8', glow: 'rgba(148,163,184,0.2)', label: '2nd', medal: '🥈' },
+  3: { bg: '#CD7C54', glow: 'rgba(205,124,84,0.2)',  label: '3rd', medal: '🥉' },
 };
 
 function Avatar({ name, size = 40, ring }) {
@@ -63,25 +63,26 @@ export default function Leaderboard() {
     : [];
 
   return (
-    <div style={{ background: 'var(--surface-bg)', minHeight: '100vh', paddingBottom: 80 }}>
+    <div style={{ background: 'var(--bg)', minHeight: '100vh', paddingBottom: 80 }}>
 
       {/* Hero */}
       <div style={{
-        background: 'radial-gradient(ellipse 100% 60% at 50% 0%, rgba(245,158,11,0.08) 0%, transparent 70%)',
-        borderBottom: '1px solid var(--border-subtle)',
-        padding: 'var(--space-10) var(--space-4) var(--space-8)',
+        borderBottom: '1px solid var(--border-1)',
+        padding: 'clamp(48px,8vw,72px) 0 clamp(28px,4vw,40px)',
         textAlign: 'center',
       }}>
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
-          <div style={{ fontSize: 48, marginBottom: 'var(--space-3)', lineHeight: 1 }}>🏆</div>
+          <p style={{ color: 'var(--accent)', fontSize: 11, fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', margin: '0 0 10px' }}>
+            Rankings
+          </p>
           <h1 style={{
-            color: 'var(--text-primary)', fontSize: 'var(--text-4xl)', fontWeight: 800,
-            margin: '0 0 var(--space-2)', letterSpacing: '-0.02em', lineHeight: 1.1,
+            color: 'var(--text-1)', fontSize: 'clamp(24px,4vw,34px)', fontWeight: 800,
+            margin: '0 0 6px', letterSpacing: '-0.025em',
           }}>
             Leaderboard
           </h1>
-          <p style={{ color: 'var(--text-muted)', fontSize: 'var(--text-base)', margin: '0 0 var(--space-6)' }}>
-            Compete, earn points, and claim your rank
+          <p style={{ color: 'var(--text-3)', fontSize: 14, margin: '0 0 var(--space-6)', lineHeight: 1.6, maxWidth: 340, marginInline: 'auto' }}>
+            Rankings update based on total points earned through training, check-ins, and achievements.
           </p>
 
           {/* Period filter */}
@@ -92,11 +93,11 @@ export default function Leaderboard() {
                 onClick={() => setPeriod(p.key)}
                 style={{
                   padding: '7px 18px', borderRadius: 'var(--radius-pill)', border: 'none',
-                  background: period === p.key ? 'var(--brand-gradient)' : 'transparent',
-                  color: period === p.key ? '#fff' : 'var(--text-muted)',
+                  background: period === p.key ? 'var(--text-1)' : 'transparent',
+                  color: period === p.key ? 'var(--bg)' : 'var(--text-3)',
                   fontSize: 'var(--text-sm)', fontWeight: 600, cursor: 'pointer',
                   transition: 'all var(--duration-fast)',
-                  boxShadow: period === p.key ? 'var(--shadow-glow-purple)' : 'none',
+                  fontFamily: 'var(--font-sans)',
                 }}
               >
                 {p.label}
@@ -115,8 +116,8 @@ export default function Leaderboard() {
               initial={{ opacity: 0, y: -10 }}
               animate={{ opacity: 1, y: 0 }}
               style={{
-                background: 'linear-gradient(135deg, rgba(157,0,255,0.1) 0%, rgba(0,212,255,0.06) 100%)',
-                border: '1px solid var(--border-accent)',
+                background: 'var(--accent-dim)',
+                border: '1px solid var(--accent-border)',
                 borderRadius: 'var(--radius-xl)', padding: 'var(--space-5)',
                 marginBottom: 'var(--space-5)', marginTop: 'var(--space-5)',
                 display: 'flex', gap: 'var(--space-5)', alignItems: 'center', flexWrap: 'wrap',
@@ -136,7 +137,7 @@ export default function Leaderboard() {
               <div style={{ width: 1, height: 40, background: 'var(--border-default)' }} />
               <div>
                 <p style={{ color: 'var(--text-muted)', fontSize: 'var(--text-xs)', margin: '0 0 4px' }}>Top</p>
-                <p style={{ color: 'var(--brand-cyan)', fontSize: 'var(--text-2xl)', fontWeight: 800, margin: 0 }}>{myRank.percentile}%</p>
+                <p style={{ color: 'var(--cyan-color)', fontSize: 'var(--text-2xl)', fontWeight: 800, margin: 0 }}>{myRank.percentile}%</p>
               </div>
             </motion.div>
           )}
@@ -179,7 +180,7 @@ export default function Leaderboard() {
                       display: 'flex', alignItems: 'flex-start', justifyContent: 'center',
                       paddingTop: 10,
                     }}>
-                      <span style={{ fontSize: isFirst ? 28 : 22 }}>{rc.medal}</span>
+                      <span style={{ color: '#fff', fontSize: isFirst ? 16 : 13, fontWeight: 800, letterSpacing: '-0.01em' }}>{rc.label}</span>
                     </div>
                   </motion.div>
                 );
@@ -207,9 +208,10 @@ export default function Leaderboard() {
             </div>
           ) : leaders.length === 0 ? (
             <div style={{ padding: 'var(--space-12)', textAlign: 'center' }}>
-              <div style={{ fontSize: 48, marginBottom: 'var(--space-3)' }}>🏆</div>
-              <p style={{ color: 'var(--text-secondary)', fontWeight: 600, margin: '0 0 4px' }}>No rankings yet</p>
-              <p style={{ color: 'var(--text-muted)', fontSize: 'var(--text-sm)', margin: 0 }}>Check in and earn points to appear here!</p>
+              <p style={{ color: 'var(--text-1)', fontWeight: 600, margin: '0 0 6px', fontSize: 15 }}>No rankings yet</p>
+              <p style={{ color: 'var(--text-3)', fontSize: 13, margin: 0, lineHeight: 1.6 }}>
+                Complete your first check-in to earn points and appear on the leaderboard.
+              </p>
             </div>
           ) : (
             leaders.map((l, idx) => {
@@ -251,7 +253,7 @@ export default function Leaderboard() {
                       {l.name}{isMe && <span style={{ fontWeight: 400, color: 'var(--text-muted)' }}> (you)</span>}
                     </p>
                     <div style={{ display: 'flex', gap: 'var(--space-3)' }}>
-                      {l.streak > 0 && <span style={{ color: 'var(--color-warning)', fontSize: 'var(--text-xs)' }}>🔥 {l.streak}</span>}
+                      {l.streak > 0 && <span style={{ color: 'var(--amber)', fontSize: 'var(--text-xs)' }}>🔥 {l.streak}</span>}
                       {l.badges > 0 && <span style={{ color: 'var(--brand-purple)', fontSize: 'var(--text-xs)' }}>🏅 {l.badges}</span>}
                     </div>
                   </div>
@@ -270,8 +272,8 @@ export default function Leaderboard() {
 
         {/* How to earn points */}
         <div style={{
-          background: 'linear-gradient(135deg, rgba(157,0,255,0.06) 0%, rgba(0,212,255,0.03) 100%)',
-          border: '1px solid var(--border-default)',
+          background: 'var(--accent-dim)',
+          border: '1px solid var(--accent-border)',
           borderRadius: 'var(--radius-xl)', padding: 'var(--space-5)',
           marginTop: 'var(--space-5)', textAlign: 'center',
         }}>

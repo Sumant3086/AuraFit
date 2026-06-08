@@ -22,9 +22,24 @@ const contactSchema = new mongoose.Schema({
   },
   status: {
     type: String,
-    enum: ['new', 'read', 'responded'],
+    enum: ['new', 'open', 'in_progress', 'resolved', 'closed', 'read', 'responded'],
     default: 'new'
   },
+  priority: {
+    type: String,
+    enum: ['low', 'medium', 'high', 'urgent'],
+    default: 'medium'
+  },
+  category: {
+    type: String,
+    enum: ['general', 'billing', 'membership', 'technical', 'trainer', 'complaint', 'feedback'],
+    default: 'general'
+  },
+  assignedTo: { type: String, default: '' },
+  adminNotes: { type: String, default: '' },
+  response: { type: String, default: '' },
+  respondedAt: { type: Date },
+  resolvedAt: { type: Date },
   createdAt: {
     type: Date,
     default: Date.now

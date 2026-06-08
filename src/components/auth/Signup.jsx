@@ -73,7 +73,7 @@ export default function Signup() {
         <div className="auth-header">
           <Logo size="medium" />
           <h1>Create your account</h1>
-          <p>Start training smarter in under 2 minutes</p>
+          <p>Set up your profile and get a personalised plan.</p>
         </div>
 
         <form onSubmit={handleSubmit} className="auth-form">
@@ -169,13 +169,13 @@ export default function Signup() {
         </form>
 
         <div className="auth-footer">
-          <p>Already training? <Link to="/login">Sign in</Link></p>
+          <p>Already have an account? <Link to="/login">Sign in</Link></p>
           <p style={{ marginTop: 14 }}>
             <Link to="/admin/login" style={{ color: 'var(--text-muted)', fontSize: 12 }}>Admin portal →</Link>
           </p>
         </div>
 
-        {/* Social proof */}
+        {/* Honest trust points — no fake membership counts */}
         <div className="auth-social-proof">
           <div className="proof-item">
             <span className="proof-value">Free</span>
@@ -183,13 +183,13 @@ export default function Signup() {
           </div>
           <div className="proof-sep" />
           <div className="proof-item">
-            <span className="proof-value">5k+</span>
-            <span className="proof-label">Members</span>
+            <span className="proof-value">2 min</span>
+            <span className="proof-label">Setup</span>
           </div>
           <div className="proof-sep" />
           <div className="proof-item">
-            <span className="proof-value">2 min</span>
-            <span className="proof-label">Setup</span>
+            <span className="proof-value">No card</span>
+            <span className="proof-label">required</span>
           </div>
         </div>
       </div>

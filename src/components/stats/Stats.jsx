@@ -8,25 +8,25 @@ const Stats = () => {
       icon: <FaUsers />,
       number: '5,000+',
       label: 'Active Members',
-      color: '#00f5ff'
+      color: 'var(--cyan-color)'
     },
     {
       icon: <FaDumbbell />,
       number: '35+',
       label: 'Certified Trainers',
-      color: '#ff00ff'
+      color: 'var(--accent)'
     },
     {
       icon: <FaTrophy />,
       number: '10,000+',
       label: 'Transformations',
-      color: '#00f5ff'
+      color: 'var(--green)'
     },
     {
       icon: <FaHeart />,
       number: '98%',
       label: 'Satisfaction Rate',
-      color: '#ff00ff'
+      color: 'var(--amber)'
     }
   ];
 

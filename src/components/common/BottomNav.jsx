@@ -3,16 +3,16 @@ import { Link, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '../../context/AuthContext';
 import {
-  LuHome, LuQrCode, LuUsers, LuTrophy, LuSettings,
+  LuHome, LuQrCode, LuUsers, LuTrendingUp, LuSettings,
   LuLayoutDashboard, LuTag, LuDumbbell, LuUser,
 } from 'react-icons/lu';
 
 const AUTH_ITEMS = [
-  { path: '/dashboard',    Icon: LuLayoutDashboard, label: 'Home' },
-  { path: '/checkin',      Icon: LuQrCode,          label: 'Check-in' },
-  { path: '/community',    Icon: LuUsers,            label: 'Community' },
-  { path: '/leaderboard',  Icon: LuTrophy,           label: 'Rankings' },
-  { path: '/settings',     Icon: LuSettings,         label: 'Settings' },
+  { path: '/dashboard',         Icon: LuLayoutDashboard, label: 'Home' },
+  { path: '/checkin',           Icon: LuQrCode,          label: 'Check-in' },
+  { path: '/community',         Icon: LuUsers,           label: 'Community' },
+  { path: '/progress/records',  Icon: LuTrendingUp,      label: 'Records' },
+  { path: '/settings',          Icon: LuSettings,        label: 'Settings' },
 ];
 
 const PUBLIC_ITEMS = [
@@ -39,10 +39,11 @@ export default function BottomNav() {
         style={{
           display: 'none',
           position: 'fixed', bottom: 0, left: 0, right: 0, zIndex: 100,
-          background: 'rgba(8,8,8,0.92)',
+          background: 'var(--surface-1)',
           backdropFilter: 'blur(20px) saturate(160%)',
           WebkitBackdropFilter: 'blur(20px) saturate(160%)',
-          borderTop: '1px solid var(--border-1)',
+          borderTop: '1px solid var(--border-2)',
+          boxShadow: 'var(--shadow-lg)',
           paddingBottom: 'env(safe-area-inset-bottom, 0px)',
         }}
         className="bottom-nav"

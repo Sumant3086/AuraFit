@@ -11,24 +11,23 @@ const SUGGESTED = [
 
 export default function FitnessAssistant() {
   const { apiClient, isAuthenticated } = useAuth();
-  const [open, setOpen] = useState(false);
-  const [messages, setMessages] = useState([
+  const [open, setOpen]               = useState(false);
+  const [messages, setMessages]       = useState([
     { role: 'assistant', content: "Hey! I'm AuraBot 💪 Your AI fitness coach. Ask me anything about workouts, nutrition, or recovery!" }
   ]);
-  const [input, setInput] = useState('');
-  const [loading, setLoading] = useState(false);
+  const [input, setInput]             = useState('');
+  const [loading, setLoading]         = useState(false);
   const [weeklyInsight, setWeeklyInsight] = useState(null);
   const bottomRef = useRef(null);
-  const inputRef = useRef(null);
+  const inputRef  = useRef(null);
 
   useEffect(() => {
     if (!open) return;
-    // Clear the timeout to prevent memory leak on unmount
     const timer = setTimeout(() => inputRef.current?.focus(), 100);
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
     if (!weeklyInsight && isAuthenticated) fetchWeeklyInsight();
     return () => clearTimeout(timer);
-  }, [open, isAuthenticated, weeklyInsight]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [open, isAuthenticated, weeklyInsight]); // eslint-disable-line
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -74,12 +73,14 @@ export default function FitnessAssistant() {
         aria-label="Open AI Fitness Assistant"
         style={{
           position: 'fixed', bottom: 80, right: 20, zIndex: 998,
-          width: 56, height: 56, borderRadius: '50%', border: 'none',
-          background: open ? '#1a1a1a' : 'linear-gradient(135deg, #9d00ff, #00d4ff)',
-          color: '#fff', fontSize: 24, cursor: 'pointer',
-          boxShadow: open ? '0 4px 16px rgba(0,0,0,0.4)' : '0 8px 32px rgba(157, 0, 255, 0.5)',
+          width: 52, height: 52, borderRadius: '50%', border: 'none',
+          background: open ? 'var(--surface-3)' : 'var(--accent)',
+          color: open ? 'var(--text-1)' : '#fff',
+          fontSize: 22, cursor: 'pointer',
+          boxShadow: open ? 'var(--shadow-md)' : 'var(--shadow-glow-purple)',
           display: 'flex', alignItems: 'center', justifyContent: 'center',
-          transition: 'all 0.25s',
+          transition: 'background 0.22s, box-shadow 0.22s, color 0.22s',
+          border: '1px solid var(--border-2)',
         }}
       >
         {open ? '✕' : '🤖'}
@@ -92,66 +93,67 @@ export default function FitnessAssistant() {
             initial={{ opacity: 0, y: 20, scale: 0.95 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 20, scale: 0.95 }}
-            transition={{ type: 'spring', damping: 25, stiffness: 300 }}
+            transition={{ type: 'spring', damping: 26, stiffness: 320 }}
             style={{
-              position: 'fixed', bottom: 148, right: 16, zIndex: 997,
-              width: 'min(380px, calc(100vw - 32px))',
-              maxHeight: '70vh',
-              background: '#111', borderRadius: 20,
-              border: '1px solid #222',
-              boxShadow: '0 24px 80px rgba(0,0,0,0.7)',
+              position: 'fixed', bottom: 144, right: 16, zIndex: 997,
+              width: 'min(360px, calc(100vw - 32px))',
+              maxHeight: '68vh',
+              background: 'var(--surface-2)',
+              borderRadius: 'var(--r-xl)',
+              border: '1px solid var(--border-2)',
+              boxShadow: 'var(--shadow-xl)',
               display: 'flex', flexDirection: 'column', overflow: 'hidden',
             }}
           >
             {/* Header */}
             <div style={{
-              padding: '16px 18px 14px',
-              background: 'linear-gradient(135deg, #1a0a2e, #0a1a2e)',
-              borderBottom: '1px solid #222',
+              padding: '14px 16px',
+              background: 'var(--surface-3)',
+              borderBottom: '1px solid var(--border-1)',
               display: 'flex', alignItems: 'center', gap: 10,
             }}>
               <div style={{
-                width: 38, height: 38, borderRadius: '50%',
-                background: 'linear-gradient(135deg, #9d00ff, #00d4ff)',
-                display: 'flex', alignItems: 'center', justifyContent: 'center',
-                fontSize: 20,
+                width: 36, height: 36, borderRadius: '50%', flexShrink: 0,
+                background: 'var(--accent)', border: '2px solid var(--accent-border)',
+                display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 18,
               }}>🤖</div>
               <div>
-                <p style={{ color: '#fff', fontWeight: 700, margin: 0, fontSize: 15 }}>AuraBot</p>
-                <p style={{ color: '#00d4ff', fontSize: 11, margin: 0 }}>● AI Fitness Coach • Always on</p>
+                <p style={{ color: 'var(--text-1)', fontWeight: 700, margin: 0, fontSize: 14, letterSpacing: '-0.01em' }}>AuraBot</p>
+                <p style={{ color: 'var(--green)', fontSize: 11, margin: 0, fontWeight: 600 }}>● AI Fitness Coach · Always on</p>
               </div>
             </div>
 
             {/* Messages */}
-            <div style={{ flex: 1, overflowY: 'auto', padding: '14px 14px 8px', display: 'flex', flexDirection: 'column', gap: 10 }}>
+            <div style={{ flex: 1, overflowY: 'auto', padding: '12px 12px 6px', display: 'flex', flexDirection: 'column', gap: 10, scrollbarWidth: 'thin' }}>
 
-              {/* Weekly insight card */}
+              {/* Weekly insight */}
               {weeklyInsight && messages.length === 1 && (
                 <div style={{
-                  background: 'linear-gradient(135deg, #1a0a2e, #0a1a2e)',
-                  border: '1px solid #9d00ff44',
-                  borderRadius: 14, padding: 14, fontSize: 13,
+                  background: 'var(--accent-dim)', border: '1px solid var(--accent-border)',
+                  borderRadius: 'var(--r-lg)', padding: 14, fontSize: 13,
                 }}>
-                  <p style={{ color: '#9d00ff', fontWeight: 700, margin: '0 0 8px' }}>✨ This Week's Insight</p>
-                  <p style={{ color: '#ccc', margin: '0 0 4px' }}>💪 {weeklyInsight.workoutTip}</p>
-                  <p style={{ color: '#ccc', margin: '0 0 4px' }}>🥗 {weeklyInsight.nutritionTip}</p>
-                  <p style={{ color: '#ffd700', margin: 0 }}>🎯 Goal: {weeklyInsight.weeklyGoal}</p>
+                  <p style={{ color: 'var(--accent)', fontWeight: 700, margin: '0 0 8px', fontSize: 12 }}>✨ This Week's Insight</p>
+                  <p style={{ color: 'var(--text-2)', margin: '0 0 4px', lineHeight: 1.5 }}>💪 {weeklyInsight.workoutTip}</p>
+                  <p style={{ color: 'var(--text-2)', margin: '0 0 4px', lineHeight: 1.5 }}>🥗 {weeklyInsight.nutritionTip}</p>
+                  <p style={{ color: 'var(--amber)', margin: 0, lineHeight: 1.5 }}>🎯 Goal: {weeklyInsight.weeklyGoal}</p>
                 </div>
               )}
 
               {messages.map((m, i) => (
-                <div key={i} style={{ display: 'flex', justifyContent: m.role === 'user' ? 'flex-end' : 'flex-start', gap: 8 }}>
+                <div key={i} style={{ display: 'flex', justifyContent: m.role === 'user' ? 'flex-end' : 'flex-start', gap: 7 }}>
                   {m.role === 'assistant' && (
                     <div style={{
-                      width: 28, height: 28, borderRadius: '50%', flexShrink: 0,
-                      background: 'linear-gradient(135deg, #9d00ff, #00d4ff)',
-                      display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 14,
+                      width: 26, height: 26, borderRadius: '50%', flexShrink: 0,
+                      background: 'var(--accent-dim)', border: '1px solid var(--accent-border)',
+                      display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 13,
                     }}>🤖</div>
                   )}
                   <div style={{
-                    maxWidth: '80%', padding: '10px 13px', borderRadius: m.role === 'user' ? '16px 16px 4px 16px' : '16px 16px 16px 4px',
-                    background: m.role === 'user' ? 'linear-gradient(135deg, #9d00ff, #00d4ff)' : '#1a1a1a',
-                    color: '#fff', fontSize: 14, lineHeight: 1.5,
+                    maxWidth: '80%', padding: '9px 13px', lineHeight: 1.55, fontSize: 13,
+                    borderRadius: m.role === 'user' ? '14px 14px 4px 14px' : '14px 14px 14px 4px',
+                    background: m.role === 'user' ? 'var(--accent)' : 'var(--surface-3)',
+                    color: m.role === 'user' ? '#fff' : 'var(--text-1)',
+                    border: m.role === 'user' ? 'none' : '1px solid var(--border-1)',
                   }}>
                     {m.content}
                   </div>
@@ -159,18 +161,18 @@ export default function FitnessAssistant() {
               ))}
 
               {loading && (
-                <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+                <div style={{ display: 'flex', gap: 7, alignItems: 'center' }}>
                   <div style={{
-                    width: 28, height: 28, borderRadius: '50%',
-                    background: 'linear-gradient(135deg, #9d00ff, #00d4ff)',
-                    display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 14,
+                    width: 26, height: 26, borderRadius: '50%',
+                    background: 'var(--accent-dim)', border: '1px solid var(--accent-border)',
+                    display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 13,
                   }}>🤖</div>
-                  <div style={{ background: '#1a1a1a', borderRadius: '16px 16px 16px 4px', padding: '10px 16px' }}>
+                  <div style={{ background: 'var(--surface-3)', border: '1px solid var(--border-1)', borderRadius: '14px 14px 14px 4px', padding: '10px 14px' }}>
                     <div style={{ display: 'flex', gap: 4 }}>
                       {[0,1,2].map(i => (
                         <div key={i} style={{
-                          width: 6, height: 6, borderRadius: '50%', background: '#9d00ff',
-                          animation: `bounce 1.2s ease-in-out ${i * 0.2}s infinite`,
+                          width: 5, height: 5, borderRadius: '50%', background: 'var(--accent)',
+                          animation: `chat-bounce 1.2s ease-in-out ${i * 0.2}s infinite`,
                         }} />
                       ))}
                     </div>
@@ -180,14 +182,17 @@ export default function FitnessAssistant() {
               <div ref={bottomRef} />
             </div>
 
-            {/* Suggested */}
+            {/* Suggested prompts */}
             {messages.length === 1 && !loading && (
-              <div style={{ padding: '0 14px 8px', display: 'flex', gap: 6, flexWrap: 'wrap' }}>
+              <div style={{ padding: '0 12px 8px', display: 'flex', gap: 5, flexWrap: 'wrap' }}>
                 {SUGGESTED.map(s => (
                   <button key={s} onClick={() => sendMessage(s)} style={{
-                    padding: '5px 11px', borderRadius: 14, border: '1px solid #333',
-                    background: '#0a0a0a', color: '#9d00ff', fontSize: 12, cursor: 'pointer',
-                    textAlign: 'left', lineHeight: 1.3,
+                    padding: '5px 10px', borderRadius: 'var(--r-pill)',
+                    border: '1px solid var(--accent-border)',
+                    background: 'var(--accent-dim)', color: 'var(--accent)',
+                    fontSize: 11, cursor: 'pointer', textAlign: 'left', lineHeight: 1.35,
+                    fontFamily: 'var(--font-sans)',
+                    transition: 'background 0.12s',
                   }}>
                     {s}
                   </button>
@@ -195,33 +200,38 @@ export default function FitnessAssistant() {
               </div>
             )}
 
-            {/* Input */}
+            {/* Input row */}
             <div style={{
-              padding: '12px 14px', borderTop: '1px solid #1a1a1a',
-              display: 'flex', gap: 8, alignItems: 'flex-end',
+              padding: '10px 12px', borderTop: '1px solid var(--border-1)',
+              display: 'flex', gap: 7, alignItems: 'flex-end',
+              background: 'var(--surface-2)',
             }}>
               <input
                 ref={inputRef}
                 value={input}
                 onChange={e => setInput(e.target.value)}
                 onKeyDown={e => e.key === 'Enter' && !e.shiftKey && sendMessage()}
-                placeholder="Ask AuraBot anything..."
+                placeholder="Ask AuraBot anything…"
                 disabled={loading}
                 style={{
-                  flex: 1, background: '#0a0a0a', border: '1px solid #222',
-                  borderRadius: 20, padding: '9px 14px', color: '#fff',
-                  fontSize: 14, fontFamily: 'inherit',
+                  flex: 1, background: 'var(--surface-1)', border: '1px solid var(--border-2)',
+                  borderRadius: 'var(--r-pill)', padding: '9px 14px',
+                  color: 'var(--text-1)', fontSize: 13, fontFamily: 'inherit',
+                  outline: 'none',
                 }}
+                onFocus={e => { e.target.style.borderColor = 'var(--border-focus)'; }}
+                onBlur={e => { e.target.style.borderColor = 'var(--border-2)'; }}
               />
               <button
                 onClick={() => sendMessage()}
                 disabled={!input.trim() || loading}
                 style={{
-                  width: 38, height: 38, borderRadius: '50%',
-                  background: input.trim() ? 'linear-gradient(135deg, #9d00ff, #00d4ff)' : '#1a1a1a',
-                  border: 'none', color: '#fff', cursor: input.trim() ? 'pointer' : 'default',
+                  width: 36, height: 36, borderRadius: '50%', border: 'none', flexShrink: 0,
+                  background: input.trim() ? 'var(--accent)' : 'var(--surface-3)',
+                  color: input.trim() ? '#fff' : 'var(--text-4)',
+                  cursor: input.trim() ? 'pointer' : 'default',
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  fontSize: 16, transition: 'all 0.2s', flexShrink: 0,
+                  fontSize: 16, transition: 'background 0.15s, color 0.15s',
                 }}
               >
                 ↑
@@ -232,7 +242,7 @@ export default function FitnessAssistant() {
       </AnimatePresence>
 
       <style>{`
-        @keyframes bounce {
+        @keyframes chat-bounce {
           0%, 80%, 100% { transform: scale(0.6); opacity: 0.4; }
           40% { transform: scale(1); opacity: 1; }
         }

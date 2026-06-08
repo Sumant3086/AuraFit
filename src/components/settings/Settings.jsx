@@ -142,7 +142,7 @@ export default function Settings() {
   );
 
   const Toggle = ({ label, desc, value, onChange }) => (
-    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '12px 0', borderBottom: '1px solid #111' }}>
+    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '12px 0', borderBottom: '1px solid var(--border-1)' }}>
       <div>
         <p style={{ color: 'var(--text-2)', fontSize: 15, margin: 0 }}>{label}</p>
         {desc && <p style={{ color: 'var(--text-3)', fontSize: 12, margin: '2px 0 0' }}>{desc}</p>}
@@ -151,12 +151,12 @@ export default function Settings() {
         onClick={onChange}
         style={{
           width: 48, height: 26, borderRadius: 13, border: 'none',
-          background: value ? 'linear-gradient(135deg, #9d00ff, #00d4ff)' : '#222',
+          background: value ? 'var(--accent)' : 'var(--surface-3)',
           position: 'relative', cursor: 'pointer', transition: 'background 0.2s', flexShrink: 0,
         }}
       >
         <div style={{
-          width: 20, height: 20, borderRadius: '50%', background: '#fff',
+          width: 20, height: 20, borderRadius: '50%', background: value ? '#fff' : 'var(--text-3)',
           position: 'absolute', top: 3, left: value ? 24 : 4, transition: 'left 0.2s',
         }} />
       </button>
@@ -166,7 +166,7 @@ export default function Settings() {
   return (
     <div style={{ minHeight: '100vh', background: 'var(--bg)' }}>
       {/* Header */}
-      <div style={{ background: 'linear-gradient(135deg, #1a0a2e, #0a1a2e)', padding: '28px 20px 24px' }}>
+      <div style={{ background: 'var(--surface-1)', borderBottom: '1px solid var(--border-1)', padding: '28px 20px 24px' }}>
         <div style={{ maxWidth: 800, margin: '0 auto' }}>
           <h1 style={{ color: 'var(--text-1)', fontSize: 26, fontWeight: 800, margin: '0 0 4px' }}>Settings ⚙️</h1>
           <p style={{ color: 'var(--text-3)', fontSize: 14, margin: 0 }}>Manage your account, preferences, and privacy.</p>
@@ -183,9 +183,9 @@ export default function Settings() {
               style={{
                 display: 'block', width: '100%', padding: '11px 14px', marginBottom: 4,
                 borderRadius: 10, border: 'none', textAlign: 'left', cursor: 'pointer',
-                background: tab === t.key ? '#1a1a1a' : 'transparent',
-                color: tab === t.key ? '#fff' : '#555', fontSize: 14,
-                borderLeft: tab === t.key ? '3px solid #9d00ff' : '3px solid transparent',
+                background: tab === t.key ? 'var(--surface-2)' : 'transparent',
+                color: tab === t.key ? 'var(--text-1)' : 'var(--text-3)', fontSize: 14,
+                borderLeft: tab === t.key ? '3px solid var(--accent)' : '3px solid transparent',
                 transition: 'all 0.15s',
               }}
             >
@@ -271,8 +271,8 @@ export default function Settings() {
                 />
               </div>
               <button onClick={saveProfile} disabled={saving} style={{
-                marginTop: 20, padding: '12px 28px', background: 'linear-gradient(135deg, #9d00ff, #00d4ff)',
-                border: 'none', borderRadius: 10, color: 'var(--text-1)', fontSize: 15, fontWeight: 700, cursor: 'pointer',
+                marginTop: 20, padding: '12px 28px', background: 'var(--accent)',
+                border: 'none', borderRadius: 10, color: '#fff', fontSize: 15, fontWeight: 700, cursor: 'pointer',
                 opacity: saving ? 0.7 : 1,
               }}>
                 {saving ? 'Saving...' : 'Save Profile'}
@@ -300,9 +300,9 @@ export default function Settings() {
                         onClick={() => setPrefs(p => ({ ...p, units: u }))}
                         style={{
                           flex: 1, padding: '10px', borderRadius: 10, cursor: 'pointer',
-                          background: prefs.units === u ? '#9d00ff22' : '#111',
-                          border: `1px solid ${prefs.units === u ? '#9d00ff' : '#222'}`,
-                          color: prefs.units === u ? '#9d00ff' : '#555', fontSize: 14,
+                          background: prefs.units === u ? 'var(--accent-dim)' : 'var(--surface-3)',
+                          border: `1px solid ${prefs.units === u ? 'var(--accent-border)' : 'var(--border-2)'}`,
+                          color: prefs.units === u ? 'var(--accent)' : 'var(--text-3)', fontSize: 14,
                         }}
                       >
                         {u === 'metric' ? '📐 Metric (kg, cm)' : '📏 Imperial (lbs, in)'}
@@ -321,8 +321,8 @@ export default function Settings() {
                 </div>
               </Section>
               <button onClick={savePrefs} disabled={saving} style={{
-                padding: '12px 28px', background: 'linear-gradient(135deg, #9d00ff, #00d4ff)',
-                border: 'none', borderRadius: 10, color: 'var(--text-1)', fontSize: 15, fontWeight: 700, cursor: 'pointer',
+                padding: '12px 28px', background: 'var(--accent)',
+                border: 'none', borderRadius: 10, color: '#fff', fontSize: 15, fontWeight: 700, cursor: 'pointer',
               }}>
                 {saving ? 'Saving...' : 'Save Preferences'}
               </button>
@@ -334,8 +334,8 @@ export default function Settings() {
             <>
               <Section title="Push Notifications">
                 <div style={{
-                  padding: 16, background: notifs.pushEnabled ? '#00c85322' : '#1a1a1a',
-                  border: `1px solid ${notifs.pushEnabled ? '#00c853' : '#222'}`,
+                  padding: 16, background: notifs.pushEnabled ? 'var(--green-dim)' : 'var(--surface-2)',
+                  border: `1px solid ${notifs.pushEnabled ? 'rgba(22,163,74,0.25)' : 'var(--border-2)'}`,
                   borderRadius: 12, marginBottom: 16, display: 'flex', justifyContent: 'space-between', alignItems: 'center',
                 }}>
                   <div>
@@ -346,8 +346,8 @@ export default function Settings() {
                   </div>
                   {!notifs.pushEnabled && (
                     <button onClick={enablePushNotifications} style={{
-                      padding: '9px 16px', background: 'linear-gradient(135deg, #9d00ff, #00d4ff)',
-                      border: 'none', borderRadius: 10, color: 'var(--text-1)', cursor: 'pointer', fontSize: 13, fontWeight: 700,
+                      padding: '9px 16px', background: 'var(--accent)',
+                      border: 'none', borderRadius: 10, color: '#fff', cursor: 'pointer', fontSize: 13, fontWeight: 700,
                     }}>
                       Enable
                     </button>
@@ -406,24 +406,24 @@ export default function Settings() {
                     />
                   </div>
                 ))}
-                {pwErr && <p style={{ color: '#ff4444', fontSize: 13, margin: '0 0 12px' }}>{pwErr}</p>}
+                {pwErr && <p style={{ color: 'var(--red)', fontSize: 13, margin: '0 0 12px' }}>{pwErr}</p>}
                 <button onClick={changePassword} disabled={saving} style={{
-                  padding: '12px 28px', background: 'linear-gradient(135deg, #9d00ff, #00d4ff)',
-                  border: 'none', borderRadius: 10, color: 'var(--text-1)', fontSize: 15, fontWeight: 700, cursor: 'pointer',
+                  padding: '12px 28px', background: 'var(--accent)',
+                  border: 'none', borderRadius: 10, color: '#fff', fontSize: 15, fontWeight: 700, cursor: 'pointer',
                 }}>
                   {saving ? 'Changing...' : 'Change Password'}
                 </button>
               </Section>
 
               <Section title="Account Actions">
-                <div style={{ background: '#1a0505', border: '1px solid #ff444433', borderRadius: 12, padding: 18 }}>
-                  <p style={{ color: '#ff4444', fontWeight: 700, margin: '0 0 6px' }}>⚠️ Danger Zone</p>
+                <div style={{ background: 'var(--red-dim)', border: '1px solid rgba(220,38,38,0.2)', borderRadius: 12, padding: 18 }}>
+                  <p style={{ color: 'var(--red)', fontWeight: 700, margin: '0 0 6px' }}>⚠️ Danger Zone</p>
                   <p style={{ color: 'var(--text-3)', fontSize: 13, margin: '0 0 14px' }}>
                     Deleting your account is permanent. All your data, progress, and membership will be lost.
                   </p>
                   <button onClick={deleteAccount} style={{
-                    padding: '10px 20px', background: 'transparent', border: '1px solid #ff4444',
-                    borderRadius: 10, color: '#ff4444', cursor: 'pointer', fontSize: 14,
+                    padding: '10px 20px', background: 'transparent', border: '1px solid var(--red)',
+                    borderRadius: 10, color: 'var(--red)', cursor: 'pointer', fontSize: 14,
                   }}>
                     Delete Account
                   </button>
@@ -443,7 +443,7 @@ export default function Settings() {
                     desc="Download your full fitness progress — measurements, attendance, and achievements."
                     action="Download PDF"
                     onClick={downloadReport}
-                    accent="#00d4ff"
+                    colorClass="cyan"
                   />
                   <ExportCard
                     icon="🏅"
@@ -451,7 +451,7 @@ export default function Settings() {
                     desc="Export your gamification history and earned badges."
                     action="Coming Soon"
                     onClick={() => toast('This feature is coming soon!', { icon: '🚀' })}
-                    accent="#ffd700"
+                    colorClass="amber"
                   />
                   <ExportCard
                     icon="📦"
@@ -459,7 +459,7 @@ export default function Settings() {
                     desc="Download all your orders and membership invoices."
                     action="View Orders"
                     onClick={() => window.location.href = '/my-orders'}
-                    accent="#9d00ff"
+                    colorClass="accent"
                   />
                 </div>
               </Section>
@@ -482,22 +482,31 @@ export default function Settings() {
   );
 }
 
-const ExportCard = ({ icon, title, desc, action, onClick, accent }) => (
-  <div style={{
-    background: 'var(--surface-2)', border: '1px solid var(--border-1)', borderRadius: 14,
-    padding: '16px 18px', display: 'flex', alignItems: 'center', gap: 16,
-  }}>
-    <div style={{ fontSize: 32, flexShrink: 0 }}>{icon}</div>
-    <div style={{ flex: 1 }}>
-      <p style={{ color: 'var(--text-1)', fontWeight: 700, margin: '0 0 4px', fontSize: 15 }}>{title}</p>
-      <p style={{ color: 'var(--text-3)', fontSize: 13, margin: 0 }}>{desc}</p>
-    </div>
-    <button onClick={onClick} style={{
-      padding: '9px 16px', background: `${accent}22`, border: `1px solid ${accent}44`,
-      borderRadius: 10, color: accent, cursor: 'pointer', fontSize: 13, fontWeight: 700, flexShrink: 0,
+const EXPORT_COLORS = {
+  cyan:   { color: 'var(--cyan-color)', dim: 'var(--cyan-dim)',   border: 'rgba(6,182,212,0.25)' },
+  amber:  { color: 'var(--amber)',      dim: 'var(--amber-dim)',  border: 'rgba(245,158,11,0.25)' },
+  accent: { color: 'var(--accent)',     dim: 'var(--accent-dim)', border: 'var(--accent-border)' },
+};
+
+const ExportCard = ({ icon, title, desc, action, onClick, colorClass }) => {
+  const c = EXPORT_COLORS[colorClass] || EXPORT_COLORS.accent;
+  return (
+    <div style={{
+      background: 'var(--surface-2)', border: '1px solid var(--border-1)', borderRadius: 14,
+      padding: '16px 18px', display: 'flex', alignItems: 'center', gap: 16,
     }}>
-      {action}
-    </button>
-  </div>
-);
+      <div style={{ fontSize: 28, flexShrink: 0 }}>{icon}</div>
+      <div style={{ flex: 1 }}>
+        <p style={{ color: 'var(--text-1)', fontWeight: 700, margin: '0 0 4px', fontSize: 14 }}>{title}</p>
+        <p style={{ color: 'var(--text-3)', fontSize: 13, margin: 0 }}>{desc}</p>
+      </div>
+      <button onClick={onClick} style={{
+        padding: '8px 14px', background: c.dim, border: `1px solid ${c.border}`,
+        borderRadius: 10, color: c.color, cursor: 'pointer', fontSize: 13, fontWeight: 700, flexShrink: 0,
+      }}>
+        {action}
+      </button>
+    </div>
+  );
+};
 

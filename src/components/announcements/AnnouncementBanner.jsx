@@ -2,20 +2,21 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '../../context/AuthContext';
 
+/* Token-compatible announcement type styles */
 const TYPE_STYLES = {
-  info: { bg: '#0a1628', border: '#1e3a5f', icon: 'ℹ️', label: 'Info' },
-  warning: { bg: '#1a1000', border: '#7a5900', icon: '⚠️', label: 'Notice' },
-  success: { bg: '#001a0a', border: '#006633', icon: '✅', label: 'Great News' },
-  promo: { bg: '#1a0a2e', border: '#6600cc', icon: '🎁', label: 'Special Offer' },
-  event: { bg: '#1a0a00', border: '#cc4400', icon: '🎉', label: 'Event' },
-  maintenance: { bg: '#0a0a0a', border: '#444', icon: '🔧', label: 'Maintenance' },
+  info:        { dimColor: 'var(--accent-dim)',  borderColor: 'var(--accent-border)',         textColor: 'var(--accent)',  icon: 'ℹ️', label: 'Info' },
+  warning:     { dimColor: 'var(--amber-dim)',   borderColor: 'rgba(180,83,9,0.25)',           textColor: 'var(--amber)',   icon: '⚠️', label: 'Notice' },
+  success:     { dimColor: 'var(--green-dim)',   borderColor: 'rgba(22,163,74,0.25)',          textColor: 'var(--green)',   icon: '✅', label: 'Great News' },
+  promo:       { dimColor: 'var(--accent-dim)',  borderColor: 'var(--accent-border)',          textColor: 'var(--accent)',  icon: '🎁', label: 'Special Offer' },
+  event:       { dimColor: 'var(--amber-dim)',   borderColor: 'rgba(180,83,9,0.25)',           textColor: 'var(--amber)',   icon: '🎉', label: 'Event' },
+  maintenance: { dimColor: 'var(--surface-3)',   borderColor: 'var(--border-2)',               textColor: 'var(--text-2)',  icon: '🔧', label: 'Maintenance' },
 };
 
 export default function AnnouncementBanner({ gymId }) {
   const { apiClient, user } = useAuth();
   const [announcements, setAnnouncements] = useState([]);
-  const [current, setCurrent] = useState(0);
-  const [dismissed, setDismissed] = useState(new Set());
+  const [current, setCurrent]             = useState(0);
+  const [dismissed, setDismissed]         = useState(new Set());
 
   useEffect(() => {
     const fetch = async () => {
@@ -28,7 +29,7 @@ export default function AnnouncementBanner({ gymId }) {
       } catch {}
     };
     fetch();
-    const interval = setInterval(fetch, 5 * 60 * 1000); // refresh every 5 min
+    const interval = setInterval(fetch, 5 * 60 * 1000);
     return () => clearInterval(interval);
   }, [gymId, user?.role]);
 
@@ -49,41 +50,66 @@ export default function AnnouncementBanner({ gymId }) {
     <AnimatePresence>
       <motion.div
         key={ann._id}
-        initial={{ y: -60, opacity: 0 }}
+        initial={{ y: -40, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
-        exit={{ y: -60, opacity: 0 }}
+        exit={{ y: -40, opacity: 0 }}
         style={{
-          background: style.bg, border: `1px solid ${style.border}`,
-          borderRadius: 12, padding: '12px 16px', marginBottom: 16,
-          display: 'flex', alignItems: 'flex-start', gap: 12, position: 'relative',
+          background: style.dimColor,
+          border: `1px solid ${style.borderColor}`,
+          borderRadius: 'var(--r-lg)',
+          padding: '12px 16px',
+          marginBottom: 16,
+          display: 'flex',
+          alignItems: 'flex-start',
+          gap: 12,
         }}
       >
-        <span style={{ fontSize: 20, flexShrink: 0, marginTop: 2 }}>{style.icon}</span>
+        <span style={{ fontSize: 18, flexShrink: 0, marginTop: 2 }}>{style.icon}</span>
+
         <div style={{ flex: 1, minWidth: 0 }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 4 }}>
-            {ann.pinned && <span style={{ fontSize: 10, background: '#ffd70022', color: '#ffd700', border: '1px solid #ffd70044', padding: '1px 6px', borderRadius: 4, fontWeight: 700 }}>PINNED</span>}
-            <span style={{ fontSize: 12, color: style.border, fontWeight: 700 }}>{style.label}</span>
+            {ann.pinned && (
+              <span style={{
+                fontSize: 9, background: 'var(--amber-dim)', color: 'var(--amber)',
+                border: '1px solid rgba(245,158,11,0.25)', padding: '1px 6px',
+                borderRadius: 4, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em',
+              }}>
+                Pinned
+              </span>
+            )}
+            <span style={{ fontSize: 11, color: style.textColor, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.07em' }}>
+              {style.label}
+            </span>
           </div>
-          <p style={{ color: '#fff', fontWeight: 600, margin: '0 0 4px', fontSize: 14 }}>{ann.title}</p>
-          <p style={{ color: '#888', margin: 0, fontSize: 13, lineHeight: 1.5 }}>{ann.content}</p>
+          <p style={{ color: 'var(--text-1)', fontWeight: 600, margin: '0 0 4px', fontSize: 14 }}>{ann.title}</p>
+          <p style={{ color: 'var(--text-2)', margin: 0, fontSize: 13, lineHeight: 1.55 }}>{ann.content}</p>
           {ann.ctaText && ann.ctaLink && (
-            <a href={ann.ctaLink} style={{ display: 'inline-block', marginTop: 8, color: '#9d00ff', fontSize: 13, fontWeight: 600, textDecoration: 'none' }}>
+            <a href={ann.ctaLink} style={{ display: 'inline-block', marginTop: 8, color: style.textColor, fontSize: 13, fontWeight: 600, textDecoration: 'none' }}>
               {ann.ctaText} →
             </a>
           )}
         </div>
 
-        <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexShrink: 0 }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 6, flexShrink: 0 }}>
           {visible.length > 1 && (
-            <div style={{ display: 'flex', gap: 4 }}>
+            <div style={{ display: 'flex', gap: 2 }}>
               <NavBtn onClick={() => setCurrent(c => (c - 1 + visible.length) % visible.length)}>‹</NavBtn>
               <NavBtn onClick={() => setCurrent(c => (c + 1) % visible.length)}>›</NavBtn>
             </div>
           )}
-          <button onClick={() => dismiss(ann._id)} style={{
-            background: 'none', border: '1px solid #333', color: '#555', cursor: 'pointer',
-            width: 24, height: 24, borderRadius: 4, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 14,
-          }}>×</button>
+          <button
+            onClick={() => dismiss(ann._id)}
+            style={{
+              background: 'none', border: '1px solid var(--border-2)', color: 'var(--text-3)',
+              cursor: 'pointer', width: 24, height: 24, borderRadius: 4,
+              display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 14,
+              transition: 'background 0.12s, color 0.12s',
+            }}
+            onMouseEnter={e => { e.currentTarget.style.background = 'var(--surface-3)'; e.currentTarget.style.color = 'var(--text-1)'; }}
+            onMouseLeave={e => { e.currentTarget.style.background = 'none'; e.currentTarget.style.color = 'var(--text-3)'; }}
+          >
+            ×
+          </button>
         </div>
       </motion.div>
     </AnimatePresence>
@@ -91,8 +117,17 @@ export default function AnnouncementBanner({ gymId }) {
 }
 
 const NavBtn = ({ onClick, children }) => (
-  <button onClick={onClick} style={{
-    background: '#1a1a1a', border: '1px solid #333', color: '#888', cursor: 'pointer',
-    width: 24, height: 24, borderRadius: 4, fontSize: 16, display: 'flex', alignItems: 'center', justifyContent: 'center',
-  }}>{children}</button>
+  <button
+    onClick={onClick}
+    style={{
+      background: 'var(--surface-2)', border: '1px solid var(--border-2)', color: 'var(--text-3)',
+      cursor: 'pointer', width: 24, height: 24, borderRadius: 4, fontSize: 14,
+      display: 'flex', alignItems: 'center', justifyContent: 'center',
+      transition: 'background 0.12s, color 0.12s',
+    }}
+    onMouseEnter={e => { e.currentTarget.style.background = 'var(--surface-3)'; e.currentTarget.style.color = 'var(--text-1)'; }}
+    onMouseLeave={e => { e.currentTarget.style.background = 'var(--surface-2)'; e.currentTarget.style.color = 'var(--text-3)'; }}
+  >
+    {children}
+  </button>
 );

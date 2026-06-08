@@ -1,198 +1,237 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import "./navbar.css";
 import Logo from "../logo/Logo";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, NavLink, useNavigate } from "react-router-dom";
 import { AnimatePresence, motion } from "framer-motion";
 import {
-  LuMenu, LuSun, LuMoon, LuLayoutDashboard, LuUser, LuQrCode,
+  LuMenu, LuX, LuSun, LuMoon, LuLayoutDashboard, LuUser, LuQrCode,
   LuAward, LuTrophy, LuUsers, LuCalendar, LuPackage, LuSettings,
-  LuShield, LuDumbbell, LuLogOut,
+  LuShield, LuDumbbell, LuLogOut, LuArrowRight, LuChevronDown,
 } from "react-icons/lu";
 import { useAuth } from "../../context/AuthContext";
 import { useTheme } from "../../context/ThemeContext";
 import NotificationCenter from "../notifications/NotificationCenter";
 
+const NAV_LINKS = [
+  { to: "/features",  label: "Features" },
+  { to: "/classes",   label: "Classes" },
+  { to: "/pricing",   label: "Pricing" },
+  { to: "/trainers",  label: "Trainers" },
+  { to: "/shop",      label: "Shop" },
+];
+
 const Navbar = ({ toggle }) => {
-  const [scrolled, setScrolled] = useState(false);
-  const [open, setOpen] = useState(false);
+  const [scrolled, setScrolled]   = useState(false);
+  const [userMenu, setUserMenu]   = useState(false);
+  const [mobileOpen, setMobile]   = useState(false);
   const { user, isAuthenticated, logout, isAdmin, isTrainer } = useAuth();
-  const { theme, toggleTheme } = useTheme();
-  const navigate = useNavigate();
+  const { theme, toggleTheme }    = useTheme();
+  const navigate                  = useNavigate();
 
   useEffect(() => {
-    const handler = () => setScrolled(window.scrollY >= 40);
+    const handler = () => setScrolled(window.scrollY >= 20);
     handler();
     window.addEventListener("scroll", handler, { passive: true });
     return () => window.removeEventListener("scroll", handler);
   }, []);
 
+  useEffect(() => {
+    if (mobileOpen) document.body.style.overflow = "hidden";
+    else            document.body.style.overflow = "";
+    return () => { document.body.style.overflow = ""; };
+  }, [mobileOpen]);
+
   const handleLogout = () => {
     logout();
-    setOpen(false);
-    navigate('/');
-  };
-
-  const iconBtn = {
-    width: 34, height: 34, borderRadius: 'var(--r-md)',
-    background: 'transparent',
-    border: '1px solid var(--border-1)',
-    display: 'flex', alignItems: 'center', justifyContent: 'center',
-    color: 'var(--text-2)', cursor: 'pointer',
-    transition: 'background var(--duration-fast), color var(--duration-fast)',
+    setUserMenu(false);
+    setMobile(false);
+    navigate("/");
   };
 
   return (
-    <nav className={scrolled ? "navbar-active-color" : "navbar"}>
-      {/* Left */}
-      <div className="nav-left">
-        <button className="menu-bars" onClick={toggle} aria-label="Menu">
-          <LuMenu size={18} />
-        </button>
-        <Link to="/classes" className="menu-items">Classes</Link>
-        <Link to="/pricing" className="menu-items">Pricing</Link>
-      </div>
+    <>
+      <nav className={`af-nav${scrolled ? " af-nav--scrolled" : ""}`}>
+        <div className="af-nav__inner">
 
-      {/* Center */}
-      <div className="nav-center">
-        <Link to="/">
-          <Logo size="sm" />
-        </Link>
-      </div>
+          {/* ── Left: Logo ─────────────────────────────────── */}
+          <Link to="/" className="af-nav__logo" onClick={() => setMobile(false)}>
+            <Logo size="sm" />
+          </Link>
 
-      {/* Right */}
-      <div className="nav-right">
-        <Link to="/features" className="menu-items">Features</Link>
-        <Link to="/contact"  className="menu-items">Contact</Link>
+          {/* ── Center: Nav links ───────────────────────────── */}
+          <div className="af-nav__links">
+            {NAV_LINKS.map(l => (
+              <NavLink
+                key={l.to}
+                to={l.to}
+                className={({ isActive }) => `af-nav__link${isActive ? " active" : ""}`}
+              >
+                {l.label}
+              </NavLink>
+            ))}
+          </div>
 
-        {/* Theme toggle — icon only, no emoji */}
-        <button
-          onClick={toggleTheme}
-          aria-label={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
-          style={iconBtn}
-          onMouseEnter={e => { e.currentTarget.style.background = 'var(--surface-2)'; e.currentTarget.style.color = 'var(--text-1)'; }}
-          onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = 'var(--text-2)'; }}
-        >
-          {theme === 'dark' ? <LuSun size={14} strokeWidth={1.5} /> : <LuMoon size={14} strokeWidth={1.5} />}
-        </button>
+          {/* ── Right: Actions ──────────────────────────────── */}
+          <div className="af-nav__actions">
 
-        {isAuthenticated && <NotificationCenter />}
-
-        {isAuthenticated && user ? (
-          <div style={{ position: 'relative' }}>
-            {/* Avatar button */}
+            {/* Theme toggle */}
             <button
-              onClick={() => setOpen(o => !o)}
-              style={{
-                display: 'flex', alignItems: 'center', gap: 8,
-                background: 'transparent', border: '1px solid var(--border-1)',
-                borderRadius: 'var(--r-md)', padding: '4px 10px 4px 4px',
-                cursor: 'pointer',
-              }}
-              onMouseEnter={e => e.currentTarget.style.borderColor = 'var(--border-2)'}
-              onMouseLeave={e => e.currentTarget.style.borderColor = 'var(--border-1)'}
+              className="af-nav__icon-btn"
+              onClick={toggleTheme}
+              aria-label="Toggle theme"
             >
-              {user.profilePicture ? (
-                <img src={user.profilePicture} alt={user.name}
-                  style={{ width: 24, height: 24, borderRadius: 6, objectFit: 'cover' }} />
-              ) : (
-                <div style={{
-                  width: 24, height: 24, borderRadius: 6,
-                  background: 'var(--accent)', opacity: 0.9,
-                  display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  color: '#fff', fontWeight: 700, fontSize: 11,
-                }}>
-                  {user.name?.[0]?.toUpperCase()}
-                </div>
-              )}
-              <span style={{ color: 'var(--text-1)', fontSize: 13, fontWeight: 500 }}>
-                {user.name?.split(' ')[0]}
-              </span>
+              {theme === "dark"
+                ? <LuSun size={14} strokeWidth={1.5} />
+                : <LuMoon size={14} strokeWidth={1.5} />}
             </button>
 
-            {/* Dropdown — Framer Motion */}
-            <AnimatePresence>
-            {open && (
-              <>
-                <div style={{ position: 'fixed', inset: 0, zIndex: 998 }} onClick={() => setOpen(false)} />
-                <motion.div
-                  initial={{ opacity: 0, scale: 0.96, y: -6 }}
-                  animate={{ opacity: 1, scale: 1, y: 0 }}
-                  exit={{ opacity: 0, scale: 0.97, y: -4, transition: { duration: 0.12 } }}
-                  transition={{ duration: 0.17, ease: [0.16, 1, 0.3, 1] }}
-                  style={{
-                    position: 'absolute', top: 'calc(100% + 8px)', right: 0,
-                    background: 'var(--surface-2)',
-                    border: '1px solid var(--border-2)',
-                    borderRadius: 'var(--r-lg)',
-                    minWidth: 210, zIndex: 999,
-                    boxShadow: 'var(--shadow-xl)',
-                    padding: '6px',
-                    transformOrigin: 'top right',
-                  }}
+            {isAuthenticated && <NotificationCenter />}
+
+            {isAuthenticated && user ? (
+              <div style={{ position: "relative" }}>
+                <button
+                  className="af-nav__user-btn"
+                  onClick={() => setUserMenu(o => !o)}
+                  aria-haspopup="true"
+                  aria-expanded={userMenu}
                 >
-                  {/* User info */}
-                  <div style={{ padding: '10px 12px 8px', marginBottom: 2 }}>
-                    <p style={{ color: 'var(--text-1)', fontWeight: 600, margin: 0, fontSize: 13 }}>{user.name}</p>
-                    <p style={{ color: 'var(--text-3)', fontSize: 11, margin: '2px 0 0' }}>
-                      {user.points || 0} points
-                    </p>
-                  </div>
-                  <div style={{ height: 1, background: 'var(--border-1)', margin: '0 0 4px' }} />
+                  {user.profilePicture ? (
+                    <img
+                      src={user.profilePicture}
+                      alt={user.name}
+                      style={{ width: 22, height: 22, borderRadius: 5, objectFit: "cover", flexShrink: 0 }}
+                    />
+                  ) : (
+                    <div className="af-nav__avatar">
+                      {user.name?.[0]?.toUpperCase()}
+                    </div>
+                  )}
+                  <span className="af-nav__user-name">{user.name?.split(" ")[0]}</span>
+                  <LuChevronDown
+                    size={12}
+                    style={{ transition: "transform 0.18s", transform: userMenu ? "rotate(180deg)" : "none", flexShrink: 0 }}
+                  />
+                </button>
 
-                  <DropItem to="/dashboard"       icon={LuLayoutDashboard} label="Dashboard"        onClick={() => setOpen(false)} />
-                  <DropItem to="/profile"         icon={LuUser}            label="Profile"           onClick={() => setOpen(false)} />
-                  <DropItem to="/checkin"         icon={LuQrCode}          label="Check-In"          onClick={() => setOpen(false)} />
-                  <DropItem to="/achievements"    icon={LuAward}           label="Achievements"      onClick={() => setOpen(false)} />
-                  <DropItem to="/leaderboard"     icon={LuTrophy}          label="Leaderboard"       onClick={() => setOpen(false)} />
-                  <DropItem to="/community"       icon={LuUsers}           label="Community"         onClick={() => setOpen(false)} />
-                  <DropItem to="/book-trainer"    icon={LuCalendar}        label="Book Trainer"      onClick={() => setOpen(false)} />
-                  <DropItem to="/my-orders"       icon={LuPackage}         label="Orders"            onClick={() => setOpen(false)} />
-                  <DropItem to="/settings"        icon={LuSettings}        label="Settings"          onClick={() => setOpen(false)} />
-                  {isTrainer && <DropItem to="/trainer/dashboard" icon={LuDumbbell} label="Trainer Dashboard" onClick={() => setOpen(false)} />}
-                  {isAdmin && <DropItem to="/admin/dashboard" icon={LuShield} label="Admin" onClick={() => setOpen(false)} />}
+                <AnimatePresence>
+                  {userMenu && (
+                    <>
+                      <div
+                        style={{ position: "fixed", inset: 0, zIndex: 299 }}
+                        onClick={() => setUserMenu(false)}
+                      />
+                      <motion.div
+                        className="af-nav__dropdown"
+                        initial={{ opacity: 0, scale: 0.96, y: -4 }}
+                        animate={{ opacity: 1, scale: 1, y: 0 }}
+                        exit={{ opacity: 0, scale: 0.96, y: -4 }}
+                        transition={{ duration: 0.16, ease: [0.16, 1, 0.3, 1] }}
+                      >
+                        {/* User info */}
+                        <div className="af-nav__dropdown-header">
+                          <p className="af-nav__dropdown-name">{user.name}</p>
+                          <p className="af-nav__dropdown-sub">{user.points || 0} points · Level {Math.floor((user.points || 0) / 100) + 1}</p>
+                        </div>
+                        <div className="af-nav__dropdown-divider" />
 
-                  <div style={{ height: 1, background: 'var(--border-1)', margin: '4px 0' }} />
-                  <button
-                    onClick={handleLogout}
-                    style={{
-                      width: '100%', padding: '8px 12px',
-                      background: 'none', border: 'none',
-                      color: 'var(--red)', textAlign: 'left',
-                      cursor: 'pointer', fontSize: 13,
-                      display: 'flex', alignItems: 'center', gap: 8,
-                      borderRadius: 'var(--r-md)',
-                    }}
-                    onMouseEnter={e => e.currentTarget.style.background = 'var(--surface-3)'}
-                    onMouseLeave={e => e.currentTarget.style.background = 'none'}
-                  >
-                    <LuLogOut size={14} strokeWidth={1.5} /> Sign out
-                  </button>
-                </motion.div>
-              </>
+                        <DropItem to="/dashboard"       icon={LuLayoutDashboard} label="Dashboard"       close={() => setUserMenu(false)} />
+                        <DropItem to="/profile"         icon={LuUser}            label="Profile"          close={() => setUserMenu(false)} />
+                        <DropItem to="/checkin"         icon={LuQrCode}          label="Check-In"         close={() => setUserMenu(false)} />
+                        <DropItem to="/achievements"    icon={LuAward}           label="Achievements"     close={() => setUserMenu(false)} />
+                        <DropItem to="/leaderboard"     icon={LuTrophy}          label="Leaderboard"      close={() => setUserMenu(false)} />
+                        <DropItem to="/community"       icon={LuUsers}           label="Community"        close={() => setUserMenu(false)} />
+                        <DropItem to="/book-trainer"    icon={LuCalendar}        label="Book Trainer"     close={() => setUserMenu(false)} />
+                        <DropItem to="/my-orders"       icon={LuPackage}         label="Orders"           close={() => setUserMenu(false)} />
+                        <DropItem to="/settings"        icon={LuSettings}        label="Settings"         close={() => setUserMenu(false)} />
+                        {isTrainer && <DropItem to="/trainer/dashboard" icon={LuDumbbell} label="Trainer Dashboard" close={() => setUserMenu(false)} />}
+                        {isAdmin   && <DropItem to="/admin/dashboard"   icon={LuShield}   label="Admin"             close={() => setUserMenu(false)} />}
+
+                        <div className="af-nav__dropdown-divider" />
+                        <button className="af-nav__sign-out" onClick={handleLogout}>
+                          <LuLogOut size={13} strokeWidth={1.5} />
+                          Sign out
+                        </button>
+                      </motion.div>
+                    </>
+                  )}
+                </AnimatePresence>
+              </div>
+            ) : (
+              <div className="af-nav__auth">
+                <Link to="/login" className="af-nav__sign-in">Sign in</Link>
+                <Link to="/signup" className="af-nav__cta">
+                  Get started <LuArrowRight size={13} strokeWidth={2} />
+                </Link>
+              </div>
             )}
-            </AnimatePresence>
+
+            {/* Mobile hamburger */}
+            <button
+              className="af-nav__hamburger"
+              onClick={() => setMobile(o => !o)}
+              aria-label={mobileOpen ? "Close menu" : "Open menu"}
+              aria-expanded={mobileOpen}
+            >
+              {mobileOpen ? <LuX size={18} /> : <LuMenu size={18} />}
+            </button>
           </div>
-        ) : (
-          <Link to="/login" className="login-btn">Sign in</Link>
+        </div>
+      </nav>
+
+      {/* ── Mobile overlay ──────────────────────────────────── */}
+      <AnimatePresence>
+        {mobileOpen && (
+          <motion.div
+            className="af-mobile-menu"
+            initial={{ opacity: 0, y: -8 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -8 }}
+            transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
+          >
+            <nav className="af-mobile-menu__nav">
+              {NAV_LINKS.map(l => (
+                <Link
+                  key={l.to}
+                  to={l.to}
+                  className="af-mobile-menu__link"
+                  onClick={() => setMobile(false)}
+                >
+                  {l.label}
+                </Link>
+              ))}
+            </nav>
+
+            <div className="af-mobile-menu__footer">
+              {isAuthenticated ? (
+                <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+                  <Link to="/dashboard" className="btn btn-secondary btn-lg" style={{ width: "100%", justifyContent: "center" }} onClick={() => setMobile(false)}>
+                    Dashboard
+                  </Link>
+                  <button className="btn btn-ghost btn-lg" style={{ width: "100%", color: "var(--red)" }} onClick={handleLogout}>
+                    Sign out
+                  </button>
+                </div>
+              ) : (
+                <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+                  <Link to="/signup" className="btn btn-primary btn-lg" style={{ width: "100%", justifyContent: "center" }} onClick={() => setMobile(false)}>
+                    Get started free
+                  </Link>
+                  <Link to="/login" className="btn btn-ghost btn-lg" style={{ width: "100%", justifyContent: "center" }} onClick={() => setMobile(false)}>
+                    Sign in
+                  </Link>
+                </div>
+              )}
+            </div>
+          </motion.div>
         )}
-      </div>
-    </nav>
+      </AnimatePresence>
+    </>
   );
 };
 
-const DropItem = ({ to, icon: Icon, label, onClick }) => (
-  <Link
-    to={to} onClick={onClick}
-    style={{
-      display: 'flex', alignItems: 'center', gap: 10,
-      padding: '8px 12px', color: 'var(--text-2)',
-      fontSize: 13, borderRadius: 'var(--r-md)',
-      transition: 'background var(--duration-fast), color var(--duration-fast)',
-    }}
-    onMouseEnter={e => { e.currentTarget.style.background = 'var(--surface-3)'; e.currentTarget.style.color = 'var(--text-1)'; }}
-    onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = 'var(--text-2)'; }}
-  >
-    <Icon size={14} strokeWidth={1.5} />
+const DropItem = ({ to, icon: Icon, label, close }) => (
+  <Link to={to} onClick={close} className="af-nav__dropdown-item">
+    <Icon size={13} strokeWidth={1.5} />
     {label}
   </Link>
 );

@@ -2,36 +2,35 @@
   position: fixed;
   bottom: 2rem;
   right: 2rem;
-  width: 50px;
-  height: 50px;
+  width: 44px;
+  height: 44px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #9d00ff, #7000cc);
-  color: white;
+  background: var(--accent);
+  color: #fff;
   border: none;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.25rem;
-  box-shadow: 0 4px 12px rgba(157, 0, 255, 0.4);
+  font-size: 1.1rem;
+  box-shadow: var(--shadow-glow-purple);
   z-index: 999;
-  transition: all 0.3s ease;
+  transition: opacity var(--duration-fast), transform var(--duration-fast);
 }
 
 .scroll-to-top:hover {
-  box-shadow: 0 6px 20px rgba(157, 0, 255, 0.6);
+  opacity: 0.9;
+  transform: translateY(-2px);
 }
 
-.scroll-to-top:active {
-  transform: scale(0.95);
-}
+.scroll-to-top:active { transform: scale(0.95); }
 
 @media (max-width: 768px) {
   .scroll-to-top {
     bottom: 1rem;
     right: 1rem;
-    width: 44px;
-    height: 44px;
+    width: 40px;
+    height: 40px;
     font-size: 1rem;
   }
 }

@@ -1,6 +1,6 @@
 .profile-container {
   min-height: 100vh;
-  background: linear-gradient(135deg, #0a0a0a 0%, #1a0a1a 100%);
+  background: var(--bg);
   padding: 120px 20px 50px;
   position: relative;
 }
@@ -15,10 +15,10 @@
   align-items: center;
   gap: 10px;
   padding: 12px 24px;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: var(--surface-2);
+  border: 1px solid var(--border-1);
   border-radius: 12px;
-  color: white;
+  color: var(--text-1);
   font-size: 0.95rem;
   font-weight: 600;
   text-decoration: none;
@@ -26,9 +26,9 @@
 }
 
 .back-link:hover {
-  background: rgba(0, 245, 255, 0.1);
-  border-color: rgba(0, 245, 255, 0.3);
-  color: #00f5ff;
+  background: var(--accent-dim);
+  border-color: var(--accent-border);
+  color: var(--accent);
   transform: translateX(-5px);
 }
 
@@ -41,7 +41,7 @@
   width: 100px;
   height: 100px;
   margin: 0 auto 25px;
-  background: linear-gradient(135deg, #00f5ff 0%, #ff00ff 100%);
+  background: var(--accent);
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -66,14 +66,14 @@
   font-size: 2.5rem;
   font-weight: 800;
   margin-bottom: 15px;
-  background: linear-gradient(135deg, #00f5ff 0%, #ff00ff 100%);
+  background: var(--accent);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
 }
 
 .profile-header p {
-  color: #888;
+  color: var(--text-3);
   font-size: 1.1rem;
 }
 
@@ -83,9 +83,9 @@
 }
 
 .profile-summary {
-  background: rgba(255, 255, 255, 0.05);
+  background: var(--surface-2);
   backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid var(--border-1);
   border-radius: 20px;
   padding: 30px;
   margin-bottom: 30px;
@@ -95,7 +95,7 @@
   color: white;
   font-size: 1.5rem;
   margin-bottom: 25px;
-  background: linear-gradient(135deg, #00f5ff 0%, #ff00ff 100%);
+  background: var(--accent);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -113,20 +113,20 @@
   flex-direction: column;
   gap: 8px;
   padding: 15px;
-  background: rgba(0, 245, 255, 0.05);
-  border: 1px solid rgba(0, 245, 255, 0.2);
+  background: var(--surface-2);
+  border: 1px solid var(--border-1);
   border-radius: 12px;
 }
 
 .summary-label {
-  color: #888;
+  color: var(--text-3);
   font-size: 0.85rem;
   text-transform: uppercase;
   letter-spacing: 1px;
 }
 
 .summary-value {
-  color: white;
+  color: var(--text-1);
   font-size: 1.2rem;
   font-weight: 600;
 }
@@ -134,7 +134,7 @@
 .edit-btn {
   width: 100%;
   padding: 15px;
-  background: linear-gradient(135deg, #00f5ff 0%, #ff00ff 100%);
+  background: var(--accent);
   border: none;
   border-radius: 12px;
   color: white;
@@ -154,9 +154,9 @@
 }
 
 .profile-form {
-  background: rgba(255, 255, 255, 0.05);
+  background: var(--surface-2);
   backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid var(--border-1);
   border-radius: 20px;
   padding: 40px;
 }
@@ -166,7 +166,7 @@
 }
 
 .form-section h4 {
-  color: #00f5ff;
+  color: var(--accent);
   font-size: 1.3rem;
   margin-bottom: 20px;
   font-weight: 700;
@@ -188,7 +188,7 @@
 }
 
 .form-group label {
-  color: #aaa;
+  color: var(--text-3);
   font-size: 0.9rem;
   font-weight: 600;
 }
@@ -196,20 +196,21 @@
 .form-group input,
 .form-group select {
   padding: 15px;
-  background: rgba(0, 0, 0, 0.5);
-  border: 2px solid rgba(0, 245, 255, 0.3);
+  background: var(--surface-1);
+  border: 1px solid var(--border-2);
   border-radius: 12px;
-  color: white;
+  color: var(--text-1);
   font-size: 1rem;
   transition: all 0.3s ease;
+  font-family: var(--font-sans);
 }
 
 .form-group input:focus,
 .form-group select:focus {
   outline: none;
-  border-color: #00f5ff;
-  background: rgba(0, 245, 255, 0.1);
-  box-shadow: 0 0 20px rgba(0, 245, 255, 0.3);
+  border-color: var(--border-focus);
+  background: var(--surface-1);
+  box-shadow: 0 0 0 3px var(--accent-dim);
 }
 
 .checkbox-group {
@@ -222,19 +223,19 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  color: white;
+  color: var(--text-2);
   font-size: 0.95rem;
   cursor: pointer;
   padding: 10px 15px;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: var(--surface-2);
+  border: 1px solid var(--border-1);
   border-radius: 8px;
   transition: all 0.3s ease;
 }
 
 .checkbox-label:hover {
-  background: rgba(0, 245, 255, 0.1);
-  border-color: rgba(0, 245, 255, 0.3);
+  background: var(--accent-dim);
+  border-color: var(--accent-border);
 }
 
 .checkbox-label input[type="checkbox"] {
@@ -265,19 +266,19 @@
 }
 
 .cancel-btn {
-  background: rgba(255, 68, 68, 0.2);
-  border: 1px solid #ff4444;
-  color: #ff4444;
+  background: var(--red-dim);
+  border: 1px solid rgba(220,38,38,0.25);
+  color: var(--red);
 }
 
 .cancel-btn:hover {
-  background: #ff4444;
-  color: white;
+  background: rgba(220,38,38,0.2);
+  color: var(--red);
 }
 
 .save-btn {
-  background: linear-gradient(135deg, #00f5ff 0%, #ff00ff 100%);
-  color: white;
+  background: var(--accent);
+  color: #fff;
 }
 
 .save-btn:hover {
@@ -289,9 +290,9 @@
   max-width: 900px;
   margin: 40px auto 0;
   padding: 30px;
-  background: rgba(255, 255, 255, 0.05);
+  background: var(--surface-2);
   backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid var(--border-1);
   border-radius: 20px;
 }
 
@@ -299,7 +300,7 @@
   color: white;
   font-size: 1.3rem;
   margin-bottom: 20px;
-  background: linear-gradient(135deg, #00f5ff 0%, #ff00ff 100%);
+  background: var(--accent);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -316,19 +317,19 @@
   align-items: center;
   justify-content: center;
   padding: 20px;
-  background: rgba(0, 245, 255, 0.05);
-  border: 1px solid rgba(0, 245, 255, 0.2);
+  background: var(--surface-2);
+  border: 1px solid var(--border-1);
   border-radius: 12px;
-  color: white;
+  color: var(--text-2);
   text-decoration: none;
   transition: all 0.3s ease;
 }
 
 .quick-link-card:hover {
-  background: rgba(0, 245, 255, 0.1);
-  border-color: rgba(0, 245, 255, 0.4);
-  transform: translateY(-5px);
-  box-shadow: 0 10px 30px rgba(0, 245, 255, 0.2);
+  background: var(--accent-dim);
+  border-color: var(--accent-border);
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-md);
 }
 
 .quick-link-card span {
@@ -367,4 +368,27 @@
   .quick-links-grid {
     grid-template-columns: repeat(2, 1fr);
   }
+}
+
+/* ── Light mode overrides ──────────────────────────────────── */
+
+[data-theme="light"] .profile-summary,
+[data-theme="light"] .profile-form,
+[data-theme="light"] .profile-quick-links {
+  background: var(--surface-1);
+  border-color: var(--border-2);
+}
+
+[data-theme="light"] .summary-item {
+  background: var(--surface-2);
+  border-color: var(--border-2);
+}
+
+[data-theme="light"] .profile-header p,
+[data-theme="light"] .profile-quick-links h3 {
+  color: var(--text-2);
+}
+
+[data-theme="light"] .profile-icon {
+  box-shadow: var(--shadow-glow-purple);
 }

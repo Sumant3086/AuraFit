@@ -1,86 +1,54 @@
-import React from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { LuArrowRight } from 'react-icons/lu';
 
+const ease = [0.16, 1, 0.3, 1];
+
 export default function LandingCTA() {
   return (
-    <section style={{
-      background: 'var(--surface-1)',
-      borderTop: '1px solid var(--border-1)',
-      padding: 'clamp(64px,10vw,96px) clamp(20px,5vw,60px)',
-    }}>
-      <div style={{ maxWidth: 600, margin: '0 auto', textAlign: 'center' }}>
+    <section style={{ padding: 'clamp(80px, 10vw, 128px) 0', position: 'relative', overflow: 'hidden', borderTop: '1px solid var(--border-1)' }}>
+      <div style={{ position: 'absolute', inset: 0, background: 'radial-gradient(ellipse at 50% 80%, rgba(139,92,246,0.10) 0%, transparent 70%)', pointerEvents: 'none' }} />
+
+      <div className="container-sm" style={{ textAlign: 'center', position: 'relative' }}>
         <motion.div
-          initial={{ opacity: 0, y: 16 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-        >
-          <h2 style={{
-            fontSize: 'clamp(28px,4vw,44px)',
-            fontWeight: 'var(--weight-bold)',
-            letterSpacing: 'var(--tracking-snug)',
-            color: 'var(--text-1)',
-            lineHeight: 'var(--leading-tight)',
-            marginBottom: 'var(--sp-5)',
-          }}>
-            Most people know what to do.
-            <br />
-            AuraFit helps you do it.
-          </h2>
-
-          <p style={{
-            color: 'var(--text-2)',
-            fontSize: 'clamp(15px,1.6vw,17px)',
-            lineHeight: 'var(--leading-normal)',
-            marginBottom: 'var(--sp-8)',
-          }}>
-            Free to start. No commitment required.
-          </p>
-
-          <div style={{ display: 'flex', gap: 'var(--sp-3)', justifyContent: 'center', flexWrap: 'wrap' }}>
-            <Link to="/signup">
-              <motion.button
-                whileHover={{ opacity: 0.88 }}
-                whileTap={{ scale: 0.97 }}
-                style={{
-                  display: 'inline-flex', alignItems: 'center', gap: 8,
-                  background: 'var(--text-1)',
-                  color: 'var(--bg)',
-                  border: 'none',
-                  padding: '13px 26px',
-                  borderRadius: 'var(--r-md)',
-                  fontSize: 'var(--text-base)',
-                  fontWeight: 'var(--weight-semibold)',
-                  cursor: 'pointer',
-                }}
-              >
-                Create free account
-                <LuArrowRight size={15} />
-              </motion.button>
-            </Link>
-
-            <Link to="/pricing">
-              <motion.button
-                whileHover={{ background: 'var(--surface-3)' }}
-                whileTap={{ scale: 0.97 }}
-                style={{
-                  background: 'transparent',
-                  color: 'var(--text-2)',
-                  border: '1px solid var(--border-2)',
-                  padding: '13px 26px',
-                  borderRadius: 'var(--r-md)',
-                  fontSize: 'var(--text-base)',
-                  fontWeight: 'var(--weight-medium)',
-                  cursor: 'pointer',
-                }}
-              >
-                View pricing
-              </motion.button>
-            </Link>
-          </div>
+          initial={{ opacity: 0, y: 8 }} whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }} transition={{ duration: 0.4, ease }}
+          style={{ display: 'inline-flex', alignItems: 'center', gap: 6, padding: '4px 12px', background: 'var(--accent-dim)', border: '1px solid var(--accent-border)', borderRadius: 999, marginBottom: 24 }}>
+          <span style={{ fontSize: 11, fontWeight: 700, color: 'var(--accent)', letterSpacing: '0.08em', textTransform: 'uppercase' }}>Free to start</span>
         </motion.div>
+
+        <motion.h2
+          style={{ fontSize: 'clamp(32px, 5vw, 60px)', fontWeight: 800, letterSpacing: '-0.03em', lineHeight: 1.1, color: 'var(--text-1)', margin: '0 0 20px' }}
+          initial={{ opacity: 0, y: 14 }} whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }} transition={{ duration: 0.5, ease, delay: 0.06 }}>
+          Stop guessing.<br />Start improving.
+        </motion.h2>
+
+        <motion.p
+          style={{ color: 'var(--text-2)', fontSize: 'clamp(15px, 1.8vw, 18px)', lineHeight: 1.65, maxWidth: '44ch', margin: '0 auto 36px' }}
+          initial={{ opacity: 0, y: 10 }} whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }} transition={{ duration: 0.45, ease, delay: 0.13 }}>
+          Join AuraFit, complete a two-minute intake, and receive a structured training plan built for your goal — before your first session.
+        </motion.p>
+
+        <motion.div
+          style={{ display: 'flex', gap: 14, justifyContent: 'center', flexWrap: 'wrap' }}
+          initial={{ opacity: 0, y: 10 }} whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }} transition={{ duration: 0.4, ease, delay: 0.2 }}>
+          <Link to="/signup" className="btn btn-primary btn-lg">
+            Get started free <LuArrowRight size={15} />
+          </Link>
+          <Link to="/pricing" className="btn btn-secondary btn-lg">
+            View plans
+          </Link>
+        </motion.div>
+
+        <motion.p
+          style={{ color: 'var(--text-4)', fontSize: 12, marginTop: 20 }}
+          initial={{ opacity: 0 }} whileInView={{ opacity: 1 }}
+          viewport={{ once: true }} transition={{ delay: 0.3 }}>
+          No credit card required. Cancel anytime.
+        </motion.p>
       </div>
     </section>
   );

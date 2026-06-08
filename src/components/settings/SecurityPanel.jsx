@@ -86,12 +86,12 @@ export default function SecurityPanel() {
       {loading ? (
         <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
           {[1, 2].map(i => (
-            <div key={i} style={{ background: '#111', borderRadius: 12, height: 70, animation: 'pulse 1.5s infinite' }} />
+            <div key={i} className="skeleton" style={{ borderRadius: 12, height: 70 }} />
           ))}
         </div>
       ) : sessions.length === 0 ? (
-        <div style={{ background: '#111', border: '1px solid #1a1a1a', borderRadius: 14, padding: 24, textAlign: 'center' }}>
-          <p style={{ color: '#555', fontSize: 14, margin: 0 }}>No active sessions found. Session tracking begins after next login.</p>
+        <div style={{ background: 'var(--surface-2)', border: '1px solid var(--border-2)', borderRadius: 14, padding: 24, textAlign: 'center' }}>
+          <p style={{ color: 'var(--text-3)', fontSize: 14, margin: 0 }}>No active sessions found. Session tracking begins after next login.</p>
         </div>
       ) : (
         <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
@@ -104,8 +104,8 @@ export default function SecurityPanel() {
                 exit={{ opacity: 0, x: 10 }}
                 transition={{ delay: i * 0.05 }}
                 style={{
-                  background: '#111',
-                  border: `1px solid ${i === 0 ? '#9d00ff44' : '#1a1a1a'}`,
+                  background: 'var(--surface-2)',
+                  border: `1px solid ${i === 0 ? 'var(--accent-border)' : 'var(--border-1)'}`,
                   borderRadius: 14,
                   padding: '14px 16px',
                   display: 'flex',
@@ -115,7 +115,7 @@ export default function SecurityPanel() {
               >
                 <div style={{
                   width: 40, height: 40, borderRadius: 10, flexShrink: 0,
-                  background: i === 0 ? '#9d00ff22' : '#1a1a1a',
+                  background: i === 0 ? 'var(--accent-dim)' : 'var(--surface-3)',
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
                   fontSize: 20,
                 }}>
@@ -124,12 +124,13 @@ export default function SecurityPanel() {
 
                 <div style={{ flex: 1, minWidth: 0 }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 2 }}>
-                    <p style={{ color: '#fff', fontWeight: 700, margin: 0, fontSize: 14 }}>
+                    <p style={{ color: 'var(--text-1)', fontWeight: 700, margin: 0, fontSize: 14 }}>
                       {session.deviceName || 'Unknown Device'}
                     </p>
                     {i === 0 && (
                       <span style={{
-                        background: '#00c85322', color: '#00c853',
+                        background: 'var(--green-dim)', color: 'var(--green)',
+                        border: '1px solid rgba(22,163,74,0.25)',
                         fontSize: 10, fontWeight: 700, padding: '2px 8px',
                         borderRadius: 10, textTransform: 'uppercase', letterSpacing: 0.5,
                       }}>
@@ -137,7 +138,7 @@ export default function SecurityPanel() {
                       </span>
                     )}
                   </div>
-                  <p style={{ color: '#555', fontSize: 12, margin: 0 }}>
+                  <p style={{ color: 'var(--text-3)', fontSize: 12, margin: 0 }}>
                     {session.ip && `${session.ip} • `}
                     Last active {timeAgo(session.lastActive)}
                     {session.createdAt && ` • Signed in ${timeAgo(session.createdAt)}`}
@@ -150,13 +151,13 @@ export default function SecurityPanel() {
                     disabled={revoking === session._id}
                     style={{
                       padding: '7px 14px', background: 'transparent',
-                      border: '1px solid #333', borderRadius: 10,
-                      color: '#888', cursor: 'pointer', fontSize: 12,
+                      border: '1px solid var(--border-2)', borderRadius: 10,
+                      color: 'var(--text-3)', cursor: 'pointer', fontSize: 12,
                       whiteSpace: 'nowrap', flexShrink: 0,
                       transition: 'all 0.2s',
                     }}
-                    onMouseEnter={e => { e.target.style.borderColor = '#ff4444'; e.target.style.color = '#ff4444'; }}
-                    onMouseLeave={e => { e.target.style.borderColor = '#333'; e.target.style.color = '#888'; }}
+                    onMouseEnter={e => { e.target.style.borderColor = 'var(--red)'; e.target.style.color = 'var(--red)'; }}
+                    onMouseLeave={e => { e.target.style.borderColor = 'var(--border-2)'; e.target.style.color = 'var(--text-3)'; }}
                   >
                     {revoking === session._id ? '...' : 'Revoke'}
                   </button>
@@ -168,9 +169,9 @@ export default function SecurityPanel() {
       )}
 
       {/* Security tips */}
-      <div style={{ background: '#0a1a0a', border: '1px solid #00c85322', borderRadius: 14, padding: 16, marginTop: 20 }}>
-        <p style={{ color: '#00c853', fontWeight: 700, margin: '0 0 8px', fontSize: 14 }}>🔒 Security Tips</p>
-        <ul style={{ color: '#666', fontSize: 13, lineHeight: 2, margin: 0, paddingLeft: 16 }}>
+      <div style={{ background: 'var(--green-dim)', border: '1px solid rgba(22,163,74,0.22)', borderRadius: 14, padding: 16, marginTop: 20 }}>
+        <p style={{ color: 'var(--green)', fontWeight: 700, margin: '0 0 8px', fontSize: 14 }}>🔒 Security Tips</p>
+        <ul style={{ color: 'var(--text-3)', fontSize: 13, lineHeight: 2, margin: 0, paddingLeft: 16 }}>
           <li>Revoke sessions on devices you no longer use</li>
           <li>If you see an unfamiliar location, change your password immediately</li>
           <li>Enable notifications for account activity alerts</li>
