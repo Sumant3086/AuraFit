@@ -2,31 +2,23 @@
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
+import Footer from '../footer/Footer';
+import { LuSearch, LuStar, LuCalendar } from 'react-icons/lu';
+
+const ease = [0.16, 1, 0.3, 1];
 
 const SPECIALIZATIONS = ['All', 'Strength', 'Yoga', 'HIIT', 'Boxing', 'Cardio', 'Nutrition', 'Rehabilitation'];
 
-const StarRating = ({ rating, size = 14 }) => {
-  const stars = Math.round(rating || 0);
-  return (
-    <span style={{ fontSize: size }}>
-      {Array.from({ length: 5 }, (_, i) => (
-        <span key={i} style={{ color: i < stars ? '#ffd700' : '#333' }}>★</span>
-      ))}
-    </span>
-  );
-};
-
 export default function TrainerDirectory() {
   const { apiClient } = useAuth();
-  const [trainers, setTrainers] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [search, setSearch] = useState('');
-  const [spec, setSpec] = useState('All');
-  const [debouncedSearch, setDebouncedSearch] = useState('');
+  const [trainers, setTrainers]     = useState([]);
+  const [loading, setLoading]       = useState(true);
+  const [search, setSearch]         = useState('');
+  const [spec, setSpec]             = useState('All');
+  const [debouncedSearch, setDebounced] = useState('');
 
-  // Debounce search
   useEffect(() => {
-    const t = setTimeout(() => setDebouncedSearch(search), 350);
+    const t = setTimeout(() => setDebounced(search), 350);
     return () => clearTimeout(t);
   }, [search]);
 
@@ -44,75 +36,106 @@ export default function TrainerDirectory() {
     setLoading(false);
   }, [apiClient, debouncedSearch, spec]);
 
-  useEffect(() => {
-    fetchTrainers();
-  }, [fetchTrainers]);
+  useEffect(() => { fetchTrainers(); }, [fetchTrainers]);
 
   return (
-    <div style={{ minHeight: '100vh', background: 'var(--bg)', paddingBottom: 80 }}>
-      {/* Hero */}
-      <div style={{ background: 'linear-gradient(135deg, #1a0a2e 0%, #0a1a2e 100%)', padding: '40px 20px 80px' }}>
-        <div style={{ maxWidth: 900, margin: '0 auto', textAlign: 'center' }}>
-          <p style={{ color: 'var(--accent)', fontSize: 13, fontWeight: 700, letterSpacing: 3, margin: '0 0 12px', textTransform: 'uppercase' }}>Expert Guidance</p>
-          <h1 style={{ color: 'var(--text-1)', fontSize: 36, fontWeight: 900, margin: '0 0 12px', lineHeight: 1.2 }}>
-            Meet Your <span style={{ background: 'linear-gradient(135deg, #9d00ff, #00d4ff)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>Trainers</span>
-          </h1>
-          <p style={{ color: 'var(--text-3)', fontSize: 16, margin: '0 0 32px' }}>World-class coaches to guide your transformation</p>
+    <div style={{ background: 'var(--bg)', minHeight: '100vh', paddingBottom: 80 }}>
 
-          {/* Search */}
-          <div style={{ position: 'relative', maxWidth: 480, margin: '0 auto' }}>
-            <input
-              value={search}
-              onChange={e => setSearch(e.target.value)}
-              placeholder="Search trainers by name or specialty..."
-              style={{
-                width: '100%', padding: '14px 48px 14px 18px', borderRadius: 14,
-                border: '1px solid var(--border-2)', background: 'var(--surface-2)', color: 'var(--text-1)',
-                fontSize: 15, fontFamily: 'inherit',
-              }}
-            />
-            <span style={{ position: 'absolute', right: 16, top: '50%', transform: 'translateY(-50%)', color: 'var(--text-3)', fontSize: 18 }}>🔍</span>
-          </div>
+      {/* ── Page header ──────────────────────────────────── */}
+      <div style={{ borderBottom: '1px solid var(--border-1)', padding: 'clamp(56px, 9vw, 88px) 0 clamp(36px, 5vw, 52px)' }}>
+        <div className="container">
+          <motion.div initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, ease }}>
+            <p style={{ color: 'var(--accent)', fontSize: 11, fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', margin: '0 0 12px', display: 'flex', alignItems: 'center', gap: 6 }}>
+              <span style={{ width: 20, height: 1, background: 'var(--accent)', opacity: 0.6, display: 'inline-block' }} />
+              Trainers
+            </p>
+            <h1 style={{ fontSize: 'clamp(28px, 5vw, 52px)', fontWeight: 800, letterSpacing: '-0.03em', color: 'var(--text-1)', margin: '0 0 12px', lineHeight: 1.1 }}>
+              Trained by the right person,<br />everything changes.
+            </h1>
+            <p style={{ color: 'var(--text-2)', fontSize: 'clamp(14px, 1.5vw, 16px)', maxWidth: 460, margin: '0 0 28px', lineHeight: 1.65 }}>
+              Certified coaches with specific expertise. Book a single session for form coaching, programme review, nutrition consultation, or regular personal training.
+            </p>
+
+            {/* Search */}
+            <div style={{ position: 'relative', maxWidth: 420 }}>
+              <LuSearch
+                size={14}
+                style={{ position: 'absolute', left: 14, top: '50%', transform: 'translateY(-50%)', color: 'var(--text-3)', pointerEvents: 'none' }}
+                strokeWidth={2}
+              />
+              <input
+                value={search}
+                onChange={e => setSearch(e.target.value)}
+                placeholder="Search by name or specialisation…"
+                className="field-input"
+                style={{ paddingLeft: 36 }}
+              />
+            </div>
+          </motion.div>
         </div>
       </div>
 
-      <div style={{ maxWidth: 900, margin: '-48px auto 0', padding: '0 16px' }}>
-        {/* Specialization filters */}
-        <div style={{ display: 'flex', gap: 8, overflowX: 'auto', padding: '0 0 16px', scrollbarWidth: 'none', marginBottom: 8 }}>
+      <div className="container" style={{ paddingTop: 'var(--sp-6)' }}>
+
+        {/* ── Specialisation filter ──────────────────────── */}
+        <div style={{ display: 'flex', gap: 6, overflowX: 'auto', paddingBottom: 4, marginBottom: 'var(--sp-6)', scrollbarWidth: 'none' }}>
           {SPECIALIZATIONS.map(s => (
-            <button key={s} onClick={() => setSpec(s)} style={{
-              padding: '8px 18px', borderRadius: 20, border: 'none', cursor: 'pointer', whiteSpace: 'nowrap',
-              background: spec === s ? 'linear-gradient(135deg, #9d00ff, #00d4ff)' : '#111',
-              color: spec === s ? '#fff' : '#555', fontSize: 13, transition: 'all 0.2s',
-            }}>
+            <button
+              key={s}
+              onClick={() => setSpec(s)}
+              style={{
+                padding: '6px 14px',
+                borderRadius: 'var(--r-pill)',
+                border: `1px solid ${spec === s ? 'var(--accent-border)' : 'var(--border-2)'}`,
+                background: spec === s ? 'var(--accent-dim)' : 'transparent',
+                color: spec === s ? 'var(--accent)' : 'var(--text-3)',
+                fontSize: 12,
+                fontWeight: spec === s ? 600 : 400,
+                cursor: 'pointer',
+                whiteSpace: 'nowrap',
+                transition: 'all 0.15s ease',
+                fontFamily: 'var(--font-sans)',
+              }}
+            >
               {s}
             </button>
           ))}
         </div>
 
+        {/* ── Count ─────────────────────────────────────── */}
+        {!loading && (
+          <p style={{ color: 'var(--text-3)', fontSize: 12, margin: '0 0 var(--sp-5)' }}>
+            <span style={{ color: 'var(--text-1)', fontWeight: 600 }}>{trainers.length}</span>{' '}
+            {trainers.length === 1 ? 'trainer' : 'trainers'} available
+            {spec !== 'All' ? ` in ${spec}` : ''}
+          </p>
+        )}
+
+        {/* ── Grid ──────────────────────────────────────── */}
         {loading ? (
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))', gap: 16 }}>
-            {[1,2,3,4,5,6].map(i => (
-              <div key={i} style={{ background: 'var(--surface-2)', borderRadius: 20, height: 280, animation: 'pulse 1.5s infinite' }} />
+            {[1, 2, 3, 4, 5, 6].map(i => (
+              <div key={i} style={{ background: 'var(--surface-2)', border: '1px solid var(--border-1)', borderRadius: 20, height: 260 }} className="skeleton" />
             ))}
           </div>
         ) : trainers.length === 0 ? (
-          <div style={{ textAlign: 'center', padding: '80px 20px' }}>
-            <div style={{ fontSize: 64, marginBottom: 16 }}>🏋️</div>
-            <h3 style={{ color: 'var(--text-1)', margin: '0 0 8px' }}>No trainers found</h3>
-            <p style={{ color: 'var(--text-3)', fontSize: 14 }}>Try a different search or specialization.</p>
+          <div className="empty-state">
+            <LuSearch size={36} className="empty-state-icon" />
+            <p className="empty-state-title">No trainers found</p>
+            <p className="empty-state-desc">
+              {search ? `No results for "${search}". Try a different name or clear the search.` : 'Try a different specialisation.'}
+            </p>
           </div>
         ) : (
-          <>
-            <p style={{ color: 'var(--text-3)', fontSize: 13, marginBottom: 16 }}>{trainers.length} trainer{trainers.length !== 1 ? 's' : ''} available</p>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))', gap: 16 }}>
-              {trainers.map((trainer, i) => (
-                <TrainerCard key={trainer._id} trainer={trainer} index={i} />
-              ))}
-            </div>
-          </>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))', gap: 16 }}>
+            {trainers.map((trainer, i) => (
+              <TrainerCard key={trainer._id} trainer={trainer} index={i} />
+            ))}
+          </div>
         )}
       </div>
+
+      <Footer />
     </div>
   );
 }
@@ -122,88 +145,83 @@ function TrainerCard({ trainer, index }) {
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ delay: index * 0.05 }}
-      style={{
-        background: 'var(--surface-2)', border: '1px solid var(--border-1)', borderRadius: 20,
-        overflow: 'hidden', transition: 'border 0.2s, transform 0.2s',
-      }}
-      whileHover={{ y: -4, borderColor: '#9d00ff44' }}
+      transition={{ delay: index * 0.05, duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
+      className="pf-card pf-card--interactive"
+      style={{ display: 'flex', flexDirection: 'column', gap: 0, padding: 0, overflow: 'hidden' }}
     >
-      {/* Cover + Avatar */}
-      <div style={{ height: 80, background: 'linear-gradient(135deg, #1a0a2e, #0a1a2e)', position: 'relative' }}>
-        <div style={{
-          position: 'absolute', bottom: -32, left: 20,
-          width: 64, height: 64, borderRadius: '50%',
-          border: '3px solid #111',
-          background: trainer.profilePicture ? 'transparent' : 'linear-gradient(135deg, #9d00ff, #00d4ff)',
-          display: 'flex', alignItems: 'center', justifyContent: 'center',
-          overflow: 'hidden',
-        }}>
-          {trainer.profilePicture
-            ? <img src={trainer.profilePicture} alt={trainer.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-            : <span style={{ color: 'var(--text-1)', fontSize: 24, fontWeight: 700 }}>{trainer.name?.[0]?.toUpperCase()}</span>
-          }
-        </div>
-        {trainer.rating > 0 && (
-          <div style={{
-            position: 'absolute', top: 12, right: 12,
-            background: '#ffd70022', border: '1px solid #ffd70044',
-            borderRadius: 12, padding: '4px 10px', display: 'flex', alignItems: 'center', gap: 4,
-          }}>
-            <span style={{ color: 'var(--amber)', fontSize: 13, fontWeight: 700 }}>★ {trainer.rating?.toFixed(1)}</span>
-            <span style={{ color: 'var(--text-3)', fontSize: 11 }}>({trainer.totalRatings})</span>
-          </div>
-        )}
-      </div>
+      {/* Card header stripe */}
+      <div style={{ height: 6, background: 'var(--accent-dim)', borderBottom: '1px solid var(--accent-border)' }} />
 
-      <div style={{ padding: '42px 20px 20px' }}>
-        <h3 style={{ color: 'var(--text-1)', fontSize: 18, fontWeight: 800, margin: '0 0 2px' }}>{trainer.name}</h3>
-        {trainer.specialization && (
-          <p style={{ color: 'var(--accent)', fontSize: 12, fontWeight: 700, margin: '0 0 8px', textTransform: 'uppercase', letterSpacing: 1 }}>
-            {trainer.specialization}
-          </p>
-        )}
+      <div style={{ padding: '18px 20px 20px' }}>
+        {/* Avatar + name row */}
+        <div style={{ display: 'flex', alignItems: 'flex-start', gap: 12, marginBottom: 14 }}>
+          <div style={{
+            width: 48, height: 48, borderRadius: 12, flexShrink: 0,
+            background: trainer.profilePicture ? 'transparent' : 'var(--accent-dim)',
+            border: '1px solid var(--accent-border)',
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            overflow: 'hidden',
+          }}>
+            {trainer.profilePicture
+              ? <img src={trainer.profilePicture} alt={trainer.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+              : <span style={{ color: 'var(--accent)', fontSize: 20, fontWeight: 700 }}>{trainer.name?.[0]?.toUpperCase()}</span>
+            }
+          </div>
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <h3 style={{ color: 'var(--text-1)', fontSize: 15, fontWeight: 700, margin: '0 0 3px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+              {trainer.name}
+            </h3>
+            {trainer.specialization && (
+              <p style={{ color: 'var(--accent)', fontSize: 11, fontWeight: 600, margin: 0, textTransform: 'uppercase', letterSpacing: '0.07em' }}>
+                {trainer.specialization}
+              </p>
+            )}
+          </div>
+          {trainer.rating > 0 && (
+            <div style={{ display: 'flex', alignItems: 'center', gap: 4, flexShrink: 0 }}>
+              <LuStar size={11} color="var(--amber)" fill="var(--amber)" />
+              <span style={{ color: 'var(--text-2)', fontSize: 12, fontWeight: 600 }}>{trainer.rating?.toFixed(1)}</span>
+            </div>
+          )}
+        </div>
+
+        {/* Bio */}
         {trainer.bio && (
-          <p style={{ color: 'var(--text-3)', fontSize: 13, lineHeight: 1.5, margin: '0 0 12px',
-            display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
+          <p style={{ color: 'var(--text-3)', fontSize: 13, lineHeight: 1.6, margin: '0 0 14px',
+            display: '-webkit-box', WebkitLineClamp: 3, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
             {trainer.bio}
           </p>
         )}
 
-        <div style={{ display: 'flex', gap: 12, marginBottom: 16 }}>
-          <div style={{ textAlign: 'center' }}>
-            <p style={{ color: 'var(--text-1)', fontWeight: 800, margin: 0, fontSize: 15 }}>{trainer.sessionCount || 0}</p>
-            <p style={{ color: 'var(--text-3)', fontSize: 10, margin: 0 }}>Sessions</p>
+        {/* Stats */}
+        <div style={{ display: 'flex', gap: 16, marginBottom: 16, paddingTop: 12, borderTop: '1px solid var(--border-1)' }}>
+          <div>
+            <p style={{ color: 'var(--text-1)', fontWeight: 700, margin: 0, fontSize: 14 }}>{trainer.sessionCount || 0}</p>
+            <p style={{ color: 'var(--text-3)', fontSize: 10, margin: 0, textTransform: 'uppercase', letterSpacing: '0.07em' }}>Sessions</p>
           </div>
-          <div style={{ width: 1, background: 'var(--surface-3)' }} />
-          <div style={{ textAlign: 'center' }}>
-            <p style={{ color: 'var(--text-1)', fontWeight: 800, margin: 0, fontSize: 15 }}>{trainer.totalRatings || 0}</p>
-            <p style={{ color: 'var(--text-3)', fontSize: 10, margin: 0 }}>Reviews</p>
+          <div>
+            <p style={{ color: 'var(--text-1)', fontWeight: 700, margin: 0, fontSize: 14 }}>{trainer.totalRatings || 0}</p>
+            <p style={{ color: 'var(--text-3)', fontSize: 10, margin: 0, textTransform: 'uppercase', letterSpacing: '0.07em' }}>Reviews</p>
           </div>
           {trainer.certifications?.length > 0 && (
-            <>
-              <div style={{ width: 1, background: 'var(--surface-3)' }} />
-              <div style={{ textAlign: 'center' }}>
-                <p style={{ color: 'var(--text-1)', fontWeight: 800, margin: 0, fontSize: 15 }}>{trainer.certifications.length}</p>
-                <p style={{ color: 'var(--text-3)', fontSize: 10, margin: 0 }}>Certs</p>
-              </div>
-            </>
+            <div>
+              <p style={{ color: 'var(--text-1)', fontWeight: 700, margin: 0, fontSize: 14 }}>{trainer.certifications.length}</p>
+              <p style={{ color: 'var(--text-3)', fontSize: 10, margin: 0, textTransform: 'uppercase', letterSpacing: '0.07em' }}>Certs</p>
+            </div>
           )}
         </div>
 
+        {/* CTA */}
         <Link to={`/trainers/${trainer._id}`} style={{ textDecoration: 'none', display: 'block' }}>
-          <motion.button
-            whileTap={{ scale: 0.97 }}
-            style={{
-              width: '100%', padding: '11px', background: 'linear-gradient(135deg, #9d00ff, #00d4ff)',
-              border: 'none', borderRadius: 12, color: 'var(--text-1)', cursor: 'pointer', fontSize: 14, fontWeight: 700,
-            }}
+          <button
+            className="btn btn-secondary"
+            style={{ width: '100%', justifyContent: 'center', gap: 7 }}
           >
-            View Profile & Book
-          </motion.button>
+            <LuCalendar size={13} strokeWidth={1.8} />
+            View profile & book
+          </button>
         </Link>
       </div>
     </motion.div>
   );
 }
-

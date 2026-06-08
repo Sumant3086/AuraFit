@@ -43,15 +43,17 @@ const UserDashboard = () => {
       {
         label: 'Weight (kg)',
         data: measurements.map(m => m.weight),
-        borderColor: '#00f5ff',
-        backgroundColor: 'rgba(0, 245, 255, 0.1)',
+        borderColor: '#8B5CF6',
+        backgroundColor: 'rgba(139,92,246,0.12)',
         fill: true,
         tension: 0.4,
+        pointBackgroundColor: '#8B5CF6',
+        pointRadius: 3,
       },
       {
         label: 'Target',
         data: Array(measurements.length).fill(goals.targetWeight),
-        borderColor: '#00ff88',
+        borderColor: '#22C55E',
         borderDash: [5, 5],
         fill: false,
       },
@@ -64,16 +66,16 @@ const UserDashboard = () => {
       {
         label: 'Body Fat %',
         data: measurements.slice(-7).map(m => m.bodyFat),
-        borderColor: '#ff00ff',
-        backgroundColor: 'rgba(255, 0, 255, 0.1)',
+        borderColor: '#F59E0B',
+        backgroundColor: 'rgba(245,158,11,0.12)',
         fill: true,
         tension: 0.4,
       },
       {
         label: 'Muscle Mass %',
         data: measurements.slice(-7).map(m => m.muscle),
-        borderColor: '#00ff88',
-        backgroundColor: 'rgba(0, 255, 136, 0.1)',
+        borderColor: '#22C55E',
+        backgroundColor: 'rgba(34,197,94,0.12)',
         fill: true,
         tension: 0.4,
       },
@@ -85,22 +87,23 @@ const UserDashboard = () => {
     maintainAspectRatio: false,
     plugins: {
       legend: {
-        labels: { color: '#fff', font: { size: 12 } },
+        labels: { color: '#888888', font: { size: 12 } },
       },
       tooltip: {
-        backgroundColor: 'rgba(0, 0, 0, 0.8)',
-        titleColor: '#00f5ff',
-        bodyColor: '#fff',
+        backgroundColor: '#1e1e28',
+        titleColor: '#c4b5fd',
+        bodyColor: '#d4d4d8',
+        padding: 10,
       },
     },
     scales: {
       x: {
-        ticks: { color: '#94a3b8' },
-        grid: { color: 'rgba(0, 245, 255, 0.1)' },
+        ticks: { color: '#888888', font: { size: 11 } },
+        grid: { color: 'rgba(128,128,128,0.10)' },
       },
       y: {
-        ticks: { color: '#94a3b8' },
-        grid: { color: 'rgba(0, 245, 255, 0.1)' },
+        ticks: { color: '#888888', font: { size: 11 } },
+        grid: { color: 'rgba(128,128,128,0.10)' },
       },
     },
   };

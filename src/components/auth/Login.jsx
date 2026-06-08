@@ -70,7 +70,7 @@ const Login = () => {
         </div>
 
         <form onSubmit={handleSubmit} className="auth-form">
-          {error && <div className="error-message">{error}</div>}
+          {error && <div className="error-message" role="alert" aria-live="polite">{error}</div>}
 
           <div className="form-group">
             <label>Email</label>

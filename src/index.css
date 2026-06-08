@@ -1,5 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&display=swap');
 @import './styles/tokens.css';
+@import './styles/platform.css';
 
 /* ── Base reset ───────────────────────────────────────────── */
 *, *::before, *::after {
@@ -100,6 +101,24 @@ input::placeholder, textarea::placeholder {
 /* ── Transitions for theme switch ────────────────────────── */
 body, .surface { transition: background var(--duration-base), color var(--duration-base); }
 button, a       { transition: opacity var(--duration-fast), background var(--duration-fast), border-color var(--duration-fast); }
+
+/* ── Light mode global adjustments ──────────────────────── */
+[data-theme="light"] ::-webkit-scrollbar-thumb {
+  background: var(--border-3);
+}
+
+[data-theme="light"] input::placeholder,
+[data-theme="light"] textarea::placeholder {
+  color: var(--text-4);
+}
+
+/* Form focus in light mode — use the darkened accent */
+[data-theme="light"] input:focus,
+[data-theme="light"] textarea:focus,
+[data-theme="light"] select:focus {
+  border-color: var(--accent) !important;
+  box-shadow: 0 0 0 3px var(--accent-dim) !important;
+}
 
 /* ── Remove neon from old CSS classes that might still exist ─ */
 .cyan  { color: var(--text-1); }

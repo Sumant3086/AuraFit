@@ -17,7 +17,7 @@ export default function ProtectedAdminRoute({ children }) {
         minHeight: '100vh', background: 'var(--surface-bg, #050507)',
         display: 'flex', alignItems: 'center', justifyContent: 'center',
       }}>
-        <div style={{ color: 'var(--brand-purple, #9d00ff)', fontSize: 15, fontWeight: 600 }}>
+        <div style={{ color: 'var(--accent)', fontSize: 15, fontWeight: 600 }}>
           Verifying access…
         </div>
       </div>

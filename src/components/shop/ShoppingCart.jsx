@@ -97,7 +97,7 @@ export default function ShoppingCartModal() {
         description: 'Product Purchase',
         order_id: orderResponse.data.orderId,
         prefill: { name: userData.name || '', email: userData.email || '' },
-        theme: { color: '#9d00ff' },
+        theme: { color: '#8B5CF6' },
         handler: async (response) => {
           const verifyId = toast.loading('Verifying payment…');
           try {

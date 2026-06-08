@@ -56,7 +56,11 @@ const TrainerDashboard = lazy(() => import("./components/trainer/TrainerDashboar
 
 // v2.2 features
 const TrainerDirectory = lazy(() => import("./components/trainers/TrainerDirectory"));
-const TrainerProfile = lazy(() => import("./components/trainers/TrainerProfile"));
+const TrainerProfile   = lazy(() => import("./components/trainers/TrainerProfile"));
+
+// v3.0 retention features
+const PersonalRecords  = lazy(() => import("./components/progress/PersonalRecords"));
+const MonthlyProgress  = lazy(() => import("./components/progress/MonthlyProgress"));
 
 // Lazy load shop data to avoid circular dependency
 import shopDataModule from "./components/shop/shopData";
@@ -65,16 +69,15 @@ import shopDataModule from "./components/shop/shopData";
 const PageLoader = () => (
   <div style={{
     minHeight: '100vh',
-    background: 'var(--surface-bg, #050507)',
+    background: 'var(--bg)',
     display: 'flex', alignItems: 'center', justifyContent: 'center',
   }}>
     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 16 }}>
-      <img src={logoSvg} alt="AuraFit" style={{ height: 40, width: 40, borderRadius: 10, display: 'block' }} />
-      {/* Pulse dots */}
+      <img src={logoSvg} alt="AuraFit" style={{ height: 36, width: 36, borderRadius: 9, display: 'block', opacity: 0.7 }} />
       <div style={{ display: 'flex', gap: 5 }}>
         {[0, 1, 2].map(i => (
           <div key={i} style={{
-            width: 4, height: 4, borderRadius: '50%', background: '#9d00ff',
+            width: 4, height: 4, borderRadius: '50%', background: 'var(--accent)',
             animation: `pl-dot 1.2s ease-in-out ${i * 0.2}s infinite`,
           }} />
         ))}
@@ -209,6 +212,12 @@ const AppInner = () => {
             } />
             <Route path="/trainer/dashboard" element={
               <OnboardingGuard><TrainerDashboard /></OnboardingGuard>
+            } />
+            <Route path="/progress/records" element={
+              <OnboardingGuard><PersonalRecords /></OnboardingGuard>
+            } />
+            <Route path="/progress/monthly" element={
+              <OnboardingGuard><MonthlyProgress /></OnboardingGuard>
             } />
             <Route path="/trainers" element={<TrainerDirectory />} />
             <Route path="/trainers/:id" element={<TrainerProfile />} />

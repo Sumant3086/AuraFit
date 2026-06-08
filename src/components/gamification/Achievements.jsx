@@ -4,21 +4,21 @@ import { useAuth } from '../../context/AuthContext';
 import toast from 'react-hot-toast';
 
 const TIER = {
-  bronze:   { color: '#cd7c54', bg: 'rgba(205,124,84,0.12)',  border: 'rgba(205,124,84,0.3)',  label: 'Bronze' },
-  silver:   { color: '#94a3b8', bg: 'rgba(148,163,184,0.10)', border: 'rgba(148,163,184,0.25)', label: 'Silver' },
-  gold:     { color: '#f59e0b', bg: 'rgba(245,158,11,0.12)',  border: 'rgba(245,158,11,0.35)',  label: 'Gold' },
-  platinum: { color: '#a5f3fc', bg: 'rgba(165,243,252,0.10)', border: 'rgba(165,243,252,0.25)', label: 'Platinum' },
+  bronze:   { color: '#cd7c54',              bg: 'rgba(205,124,84,0.12)',  border: 'rgba(205,124,84,0.3)',  label: 'Bronze' },
+  silver:   { color: '#64748b',              bg: 'rgba(100,116,139,0.10)', border: 'rgba(100,116,139,0.25)', label: 'Silver' },
+  gold:     { color: 'var(--amber)',         bg: 'var(--amber-dim)',        border: 'rgba(245,158,11,0.35)',  label: 'Gold' },
+  platinum: { color: 'var(--platinum-color)', bg: 'var(--platinum-bg)',    border: 'var(--platinum-border)', label: 'Platinum' },
 };
 
 const CATEGORIES = {
-  all:        { label: 'All',        icon: '✦' },
-  attendance: { label: 'Attendance', icon: '📍' },
-  workout:    { label: 'Workout',    icon: '💪' },
-  nutrition:  { label: 'Nutrition',  icon: '🥗' },
-  streak:     { label: 'Streak',     icon: '🔥' },
-  milestone:  { label: 'Milestone',  icon: '🎯' },
-  referral:   { label: 'Referral',   icon: '🤝' },
-  social:     { label: 'Social',     icon: '👥' },
+  all:        { label: 'All',        icon: '' },
+  attendance: { label: 'Attendance', icon: '' },
+  workout:    { label: 'Workout',    icon: '' },
+  nutrition:  { label: 'Nutrition',  icon: '' },
+  streak:     { label: 'Streak',     icon: '' },
+  milestone:  { label: 'Milestone',  icon: '' },
+  referral:   { label: 'Referral',   icon: '' },
+  social:     { label: 'Social',     icon: '' },
 };
 
 export default function Achievements() {
@@ -57,19 +57,16 @@ export default function Achievements() {
 
   if (loading) {
     return (
-      <div style={{ minHeight: '100vh', background: 'var(--surface-bg)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 16 }}>
-          <div style={{ fontSize: 40 }}>🏅</div>
-          <div style={{ display: 'flex', gap: 5 }}>
-            {[0,1,2].map(i => (
-              <div key={i} style={{
-                width: 6, height: 6, borderRadius: '50%', background: 'var(--brand-purple)',
-                animation: `ach-dot 1.2s ease-in-out ${i*0.2}s infinite`,
-              }} />
-            ))}
-          </div>
-          <style>{`@keyframes ach-dot { 0%,80%,100%{opacity:.2;transform:scale(.8)} 40%{opacity:1;transform:scale(1)} }`}</style>
+      <div style={{ minHeight: '100vh', background: 'var(--bg)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <div style={{ display: 'flex', gap: 5 }}>
+          {[0,1,2].map(i => (
+            <div key={i} style={{
+              width: 6, height: 6, borderRadius: '50%', background: 'var(--accent)',
+              animation: `ach-dot 1.2s ease-in-out ${i*0.2}s infinite`,
+            }} />
+          ))}
         </div>
+        <style>{`@keyframes ach-dot { 0%,80%,100%{opacity:.2;transform:scale(.8)} 40%{opacity:1;transform:scale(1)} }`}</style>
       </div>
     );
   }
@@ -78,21 +75,19 @@ export default function Achievements() {
     <div style={{ background: 'var(--surface-bg)', minHeight: '100vh', paddingBottom: 80 }}>
       {/* Hero */}
       <div style={{
-        background: 'radial-gradient(ellipse 80% 50% at 50% 0%, rgba(245,158,11,0.08) 0%, transparent 65%)',
-        borderBottom: '1px solid var(--border-subtle)',
-        padding: 'clamp(32px,5vw,60px) clamp(16px,4vw,40px) clamp(24px,4vw,40px)',
+        borderBottom: '1px solid var(--border-1)',
+        padding: 'clamp(48px,8vw,72px) 0 clamp(28px,4vw,40px)',
         textAlign: 'center',
       }}>
         <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
-          <div style={{ fontSize: 44, marginBottom: 12 }}>🏅</div>
-          <h1 style={{
-            color: 'var(--text-primary)', fontSize: 'clamp(26px,4vw,36px)', fontWeight: 800,
-            letterSpacing: '-0.02em', margin: '0 0 6px',
-          }}>
+          <p style={{ color: 'var(--accent)', fontSize: 11, fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', margin: '0 0 10px' }}>
             Achievements
+          </p>
+          <h1 style={{ color: 'var(--text-1)', fontSize: 'clamp(24px,4vw,34px)', fontWeight: 800, letterSpacing: '-0.025em', margin: '0 0 6px' }}>
+            Every milestone recorded.
           </h1>
-          <p style={{ color: 'var(--text-muted)', fontSize: 15, margin: 0 }}>
-            Every milestone you reach is permanently recorded.
+          <p style={{ color: 'var(--text-3)', fontSize: 14, margin: 0, maxWidth: 380, marginInline: 'auto', lineHeight: 1.6 }}>
+            Badges unlock as you train consistently, hit goals, and engage with the platform. There is no reset.
           </p>
         </motion.div>
       </div>
@@ -102,10 +97,10 @@ export default function Achievements() {
         {/* Stats row */}
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: 10, margin: 'clamp(20px,3vw,28px) 0' }}>
           {[
-            { label: 'Level', value: level, icon: '⭐', color: 'var(--color-gold)' },
-            { label: 'Points', value: totalPoints.toLocaleString(), icon: '💎', color: 'var(--brand-purple)' },
-            { label: 'Earned', value: `${earnedCount}/${achievements.length}`, icon: '🏅', color: 'var(--color-success)' },
-            { label: 'Streak', value: `${stats.currentStreak || user?.currentStreak || 0}d`, icon: '🔥', color: 'var(--color-warning)' },
+            { label: 'Level',  value: level,                                                    color: 'var(--accent)' },
+            { label: 'Points', value: totalPoints.toLocaleString(),                              color: 'var(--text-1)' },
+            { label: 'Earned', value: `${earnedCount}/${achievements.length}`,                  color: 'var(--green)' },
+            { label: 'Streak', value: `${stats.currentStreak || user?.currentStreak || 0}d`,   color: 'var(--amber)' },
           ].map(s => (
             <motion.div
               key={s.label}
@@ -117,7 +112,6 @@ export default function Achievements() {
                 textAlign: 'center',
               }}
             >
-              <div style={{ fontSize: 20, marginBottom: 4 }}>{s.icon}</div>
               <div style={{ color: s.color, fontSize: 'clamp(16px,2vw,20px)', fontWeight: 800, letterSpacing: '-0.02em' }}>{s.value}</div>
               <div style={{ color: 'var(--text-muted)', fontSize: 11, fontWeight: 600, marginTop: 2 }}>{s.label}</div>
             </motion.div>
@@ -150,39 +144,46 @@ export default function Achievements() {
             const meta = CATEGORIES[cat] || { label: cat, icon: '●' };
             return (
               <button key={cat} onClick={() => setFilter(cat)} style={{
-                padding: '6px 14px', borderRadius: 999, border: 'none', cursor: 'pointer',
-                fontSize: 13, fontWeight: 600, transition: 'all 0.15s',
-                background: filter === cat ? 'var(--brand-gradient)' : 'var(--surface-overlay)',
-                color: filter === cat ? '#fff' : 'var(--text-muted)',
-                boxShadow: filter === cat ? 'var(--shadow-glow-purple)' : 'none',
+                padding: '6px 14px',
+                borderRadius: 'var(--r-pill)',
+                border: `1px solid ${filter === cat ? 'var(--accent-border)' : 'var(--border-2)'}`,
+                cursor: 'pointer',
+                fontSize: 12, fontWeight: filter === cat ? 600 : 400,
+                transition: 'all 0.15s',
+                background: filter === cat ? 'var(--accent-dim)' : 'transparent',
+                color: filter === cat ? 'var(--accent)' : 'var(--text-3)',
+                fontFamily: 'var(--font-sans)',
               }}>
-                {meta.icon} {meta.label}
+                {meta.label}
               </button>
             );
           })}
           <button
             onClick={() => setEarnedOnly(!earnedOnly)}
             style={{
-              marginLeft: 'auto', padding: '6px 14px', borderRadius: 999, cursor: 'pointer',
-              fontSize: 13, fontWeight: 600, transition: 'all 0.15s',
-              background: 'transparent',
-              border: `1px solid ${earnedOnly ? 'var(--border-accent)' : 'var(--border-default)'}`,
-              color: earnedOnly ? 'var(--brand-purple)' : 'var(--text-muted)',
+              marginLeft: 'auto', padding: '6px 14px',
+              borderRadius: 'var(--r-pill)', cursor: 'pointer',
+              fontSize: 12, fontWeight: earnedOnly ? 600 : 400, transition: 'all 0.15s',
+              background: earnedOnly ? 'var(--green-dim)' : 'transparent',
+              border: `1px solid ${earnedOnly ? 'rgba(34,197,94,0.25)' : 'var(--border-2)'}`,
+              color: earnedOnly ? 'var(--green)' : 'var(--text-3)',
+              fontFamily: 'var(--font-sans)',
             }}
           >
-            {earnedOnly ? '✓ Earned only' : 'Earned only'}
+            {earnedOnly ? 'Earned' : 'All'}
           </button>
         </div>
 
         {/* Grid */}
         {visible.length === 0 ? (
           <div style={{ textAlign: 'center', padding: '64px 20px' }}>
-            <div style={{ fontSize: 52, marginBottom: 14 }}>🏅</div>
-            <h3 style={{ color: 'var(--text-primary)', fontWeight: 700, margin: '0 0 8px' }}>
-              {earnedOnly ? 'No badges earned here yet' : 'No achievements in this category'}
+            <h3 style={{ color: 'var(--text-1)', fontWeight: 700, margin: '0 0 8px', fontSize: 16 }}>
+              {earnedOnly ? 'Nothing earned in this category yet' : 'No achievements here'}
             </h3>
-            <p style={{ color: 'var(--text-muted)', fontSize: 14, margin: 0 }}>
-              {earnedOnly ? 'Keep training — you\'re closer than you think.' : 'Start training to earn your first badge.'}
+            <p style={{ color: 'var(--text-3)', fontSize: 13, margin: 0, lineHeight: 1.6, maxWidth: '34ch', marginInline: 'auto' }}>
+              {earnedOnly
+                ? 'Check in consistently and use the platform to earn your first badge in this category.'
+                : 'Start training and checking in. Your first badge unlocks with your first gym visit.'}
             </p>
           </div>
         ) : (

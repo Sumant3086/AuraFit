@@ -234,7 +234,38 @@
 }
 
 /* ── Light mode ───────────────────────────────────────────── */
+[data-theme="light"] .auth-card {
+  background: var(--surface-1);
+  border-color: var(--border-2);
+}
+
+[data-theme="light"] .input-wrapper input {
+  background: var(--surface-1);
+  border-color: var(--border-2);
+  color: var(--text-1);
+}
+
 [data-theme="light"] .auth-btn {
-  background: var(--text-1, #111111);
-  color: var(--bg, #FAFAFA);
+  background: var(--text-1);
+  color: var(--bg);
+}
+
+[data-theme="light"] .error-message {
+  color: var(--red);
+  background: var(--red-dim);
+  border-color: rgba(220,38,38,0.22);
+}
+
+[data-theme="light"] .success-message {
+  color: var(--green);
+  background: var(--green-dim);
+  border-color: rgba(22,163,74,0.22);
+}
+
+[data-theme="light"] .auth-footer a {
+  color: var(--text-1);
+}
+
+[data-theme="light"] .auth-social-proof .proof-value {
+  color: var(--text-1);
 }

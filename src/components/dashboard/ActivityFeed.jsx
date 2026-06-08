@@ -1,16 +1,16 @@
-import React, { useState, useEffect, useCallback } from 'react';
+﻿import React, { useState, useEffect, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import { useAuth } from '../../context/AuthContext';
 
-const TYPE_ICONS = {
-  checkin: '📍',
-  achievement: '🏅',
-  workout: '💪',
-  community_post: '💬',
-  level_up: '⬆️',
-  referral: '🎁',
-  streak: '🔥',
-  membership: '💎',
+const TYPE_LABELS = {
+  checkin:       'checked in',
+  achievement:   'earned an achievement',
+  workout:       'logged a workout',
+  community_post:'posted',
+  level_up:      'levelled up',
+  referral:      'referred a member',
+  streak:        'hit a streak milestone',
+  membership:    'upgraded membership',
 };
 
 function timeAgo(date) {
@@ -67,15 +67,17 @@ export default function ActivityFeed() {
   if (posts.length === 0) {
     return (
       <div>
-        <p style={{ color: 'var(--text-secondary)', fontSize: 15, fontWeight: 700, margin: '0 0 16px' }}>Community activity</p>
+        <p style={{ color: 'var(--text-2)', fontSize: 13, fontWeight: 700, margin: '0 0 12px', letterSpacing: '0.03em' }}>Community</p>
         <div style={{
-          padding: '24px 16px', textAlign: 'center',
-          background: 'var(--surface-overlay)', borderRadius: 12,
-          border: '1px dashed var(--border-default)',
+          padding: '20px 16px', textAlign: 'center',
+          background: 'var(--surface-3)', borderRadius: 10,
+          border: '1px solid var(--border-1)',
         }}>
-          <p style={{ color: 'var(--text-muted)', fontSize: 14, margin: '0 0 4px' }}>No activity yet</p>
-          <p style={{ color: 'var(--text-muted)', fontSize: 12, margin: 0 }}>
-            Post in the community to appear here
+          <p style={{ color: 'var(--text-2)', fontSize: 13, fontWeight: 500, margin: '0 0 4px' }}>
+            No community activity yet
+          </p>
+          <p style={{ color: 'var(--text-3)', fontSize: 12, margin: 0, lineHeight: 1.5 }}>
+            Post a training update or question to connect with other members.
           </p>
         </div>
       </div>
@@ -84,8 +86,8 @@ export default function ActivityFeed() {
 
   return (
     <div>
-      <p style={{ color: 'var(--text-secondary)', fontSize: 15, fontWeight: 700, margin: '0 0 12px' }}>
-        Community activity
+      <p style={{ color: 'var(--text-2)', fontSize: 13, fontWeight: 700, margin: '0 0 12px', letterSpacing: '0.03em' }}>
+        Community
       </p>
       <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
         {posts.map((post, i) => (
@@ -97,24 +99,26 @@ export default function ActivityFeed() {
             style={{
               display: 'flex', gap: 10, alignItems: 'flex-start',
               padding: '9px 10px', borderRadius: 10,
-              background: post.isMe ? 'var(--brand-purple-dim)' : 'transparent',
+              background: post.isMe ? 'var(--accent-dim)' : 'transparent',
             }}
           >
             <div style={{
-              width: 28, height: 28, borderRadius: '50%', flexShrink: 0,
-              background: post.isMe ? 'linear-gradient(135deg, #9d00ff, #00d4ff)' : 'var(--surface-overlay)',
+              width: 26, height: 26, borderRadius: 7, flexShrink: 0,
+              background: post.isMe ? 'var(--accent-dim)' : 'var(--surface-3)',
+              border: `1px solid ${post.isMe ? 'var(--accent-border)' : 'var(--border-1)'}`,
               display: 'flex', alignItems: 'center', justifyContent: 'center',
-              fontSize: 14, border: '1px solid var(--border-subtle)',
+              color: post.isMe ? 'var(--accent)' : 'var(--text-3)',
+              fontSize: 11, fontWeight: 700,
             }}>
-              {TYPE_ICONS[post.type] || '💬'}
+              {post.user?.[0]?.toUpperCase() || '?'}
             </div>
             <div style={{ flex: 1, minWidth: 0 }}>
               <p style={{
-                color: 'var(--text-secondary)', fontSize: 13, margin: 0,
-                lineHeight: 1.4, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
+                color: 'var(--text-2)', fontSize: 13, margin: 0,
+                lineHeight: 1.45, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
               }}>
-                <span style={{ color: post.isMe ? 'var(--brand-purple)' : 'var(--text-primary)', fontWeight: 600 }}>
-                  {post.isMe ? 'You' : post.user}
+                <span style={{ color: post.isMe ? 'var(--accent)' : 'var(--text-1)', fontWeight: 600 }}>
+                  {post.isMe ? 'You' : post.user?.split(' ')[0]}
                 </span>
                 {' '}{post.message}
               </p>

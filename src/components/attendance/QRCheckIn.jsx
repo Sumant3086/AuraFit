@@ -1,16 +1,19 @@
-﻿import React, { useState, useEffect, useCallback, useMemo } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '../../context/AuthContext';
 import toast from 'react-hot-toast';
+import { LuFlame, LuCheck, LuRefreshCw, LuQrCode, LuAlertCircle } from 'react-icons/lu';
+
+const ease = [0.16, 1, 0.3, 1];
 
 export default function QRCheckIn() {
   const { apiClient, user } = useAuth();
-  const [qrData, setQrData]           = useState(null);
-  const [loading, setLoading]         = useState(true);
-  const [checkInStatus, setStatus]    = useState(null);
-  const [stats, setStats]             = useState(null);
-  const [timeLeft, setTimeLeft]       = useState(60);
-  const [checkedInToday, setDone]     = useState(false);
+  const [qrData, setQrData]         = useState(null);
+  const [loading, setLoading]       = useState(true);
+  const [checkInResult, setResult]  = useState(null);
+  const [stats, setStats]           = useState(null);
+  const [timeLeft, setTimeLeft]     = useState(60);
+  const [checkedInToday, setDone]   = useState(false);
 
   const fetchQR = useCallback(async () => {
     try {
@@ -28,6 +31,7 @@ export default function QRCheckIn() {
     try {
       const res = await apiClient.get('/attendance/stats/me');
       setStats(res.data.data);
+      if (res.data.data?.checkedInToday) setDone(true);
     } catch {}
   }, [apiClient]);
 
@@ -47,266 +51,303 @@ export default function QRCheckIn() {
 
   const handleCheckIn = async () => {
     if (checkedInToday) return;
+    const wasFirstCheckIn = (stats?.total ?? 0) === 0;
     try {
       const res = await apiClient.post('/attendance/self-checkin');
-      setStatus({ success: true, streak: res.data.streak, achievements: res.data.achievements });
+      setResult({
+        success: true,
+        streak: res.data.streak,
+        pointsEarned: res.data.pointsEarned,
+        achievements: res.data.achievements || [],
+        isFirst: wasFirstCheckIn,
+      });
       setDone(true);
-      await fetchStats();
-      res.data.achievements?.forEach(a => toast.success(`🏆 ${a.name} unlocked!`));
-      toast.success(`Checked in! +${res.data.pointsEarned} points`);
+      setStats(s => s ? {
+        ...s,
+        thisWeek:  (s.thisWeek  || 0) + 1,
+        thisMonth: (s.thisMonth || 0) + 1,
+        total:     (s.total     || 0) + 1,
+      } : s);
+      res.data.achievements?.forEach(a => toast.success(`Badge unlocked: ${a.name}`));
+      if (wasFirstCheckIn) {
+        toast.success('First check-in complete. Streak started.');
+      } else {
+        toast.success(`Checked in. +${res.data.pointsEarned} points.`);
+      }
     } catch (err) {
       const msg = err.response?.data?.message;
-      if (msg?.includes('Already checked')) {
+      if (msg?.includes('Already')) {
         setDone(true);
-        toast('Already checked in today 👍');
+        toast('Already checked in today.');
       } else {
         toast.error(msg || 'Check-in failed. Please try again.');
       }
     }
   };
 
-  // Build attendance heatmap: last 30 days cross-referenced with real history
+  // 30-day heatmap
   const heatmap = useMemo(() => {
     const historySet = new Set(stats?.history?.map(h => h.date || h) || []);
     return Array.from({ length: 30 }, (_, i) => {
       const d = new Date(Date.now() - (29 - i) * 86400000);
       const dateStr = d.toISOString().split('T')[0];
-      return { date: dateStr, day: d.getDate(), checked: historySet.has(dateStr) };
+      const isToday = dateStr === new Date().toISOString().split('T')[0];
+      return { date: dateStr, day: d.getDate(), checked: historySet.has(dateStr), isToday };
     });
   }, [stats?.history]);
 
   const streak = user?.currentStreak || stats?.currentStreak || 0;
+  const isFirstEver = (stats?.total ?? 0) === 0;
 
   return (
-    <div style={{ background: 'var(--surface-bg)', minHeight: '100vh', paddingBottom: 80 }}>
-      {/* Header */}
-      <div style={{
-        background: 'linear-gradient(160deg, rgba(157,0,255,0.06) 0%, transparent 60%)',
-        borderBottom: '1px solid var(--border-subtle)',
-        padding: 'clamp(28px,5vw,48px) clamp(16px,4vw,40px)',
-        textAlign: 'center',
-      }}>
-        <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }}>
-          <h1 style={{
-            color: 'var(--text-primary)', fontSize: 'clamp(22px,3.5vw,30px)',
-            fontWeight: 800, margin: '0 0 6px', letterSpacing: '-0.02em',
-          }}>
-            Gym Check-In
-          </h1>
-          <p style={{ color: 'var(--text-muted)', fontSize: 14, margin: 0 }}>
-            Show QR at the front desk or tap to check in from the app
-          </p>
-        </motion.div>
+    <div style={{ background: 'var(--bg)', minHeight: '100vh', paddingBottom: 80 }}>
+
+      {/* ── Header ───────────────────────────────────────── */}
+      <div style={{ borderBottom: '1px solid var(--border-1)', padding: 'clamp(48px, 8vw, 72px) 0 clamp(28px, 4vw, 40px)' }}>
+        <div style={{ maxWidth: 480, margin: '0 auto', padding: '0 clamp(16px, 4vw, 24px)', textAlign: 'center' }}>
+          <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }}>
+            <p style={{ color: 'var(--accent)', fontSize: 11, fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', margin: '0 0 10px' }}>Attendance</p>
+            <h1 style={{ color: 'var(--text-1)', fontSize: 'clamp(22px, 4vw, 30px)', fontWeight: 800, margin: '0 0 8px', letterSpacing: '-0.025em' }}>
+              {checkedInToday ? 'Attendance logged' : 'Check in'}
+            </h1>
+            <p style={{ color: 'var(--text-3)', fontSize: 14, margin: 0 }}>
+              {checkedInToday
+                ? "Today's visit is recorded. See you tomorrow."
+                : 'Show this QR at the front desk, or use the button below.'}
+            </p>
+          </motion.div>
+        </div>
       </div>
 
-      <div style={{ maxWidth: 480, margin: '0 auto', padding: '0 clamp(16px,4vw,24px)' }}>
+      <div style={{ maxWidth: 480, margin: '0 auto', padding: '0 clamp(16px, 4vw, 24px)' }}>
 
-        {/* Streak badge */}
+        {/* ── Streak ───────────────────────────────────── */}
         <AnimatePresence>
           {streak > 0 && (
             <motion.div
               initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
               style={{
-                marginTop: 20,
-                background: 'rgba(245,158,11,0.08)', border: '1px solid rgba(245,158,11,0.2)',
-                borderRadius: 'var(--radius-xl)', padding: '14px 20px',
-                display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 12,
+                marginTop: 20, marginBottom: 12,
+                background: 'var(--amber-dim)', border: '1px solid rgba(245,158,11,0.2)',
+                borderRadius: 'var(--r-xl)', padding: '14px 18px',
+                display: 'flex', alignItems: 'center', gap: 12,
               }}
             >
-              <span style={{ fontSize: 28 }}>🔥</span>
+              <LuFlame size={20} color="var(--amber)" fill="var(--amber)" />
               <div>
-                <p style={{ color: 'var(--color-warning)', fontWeight: 800, fontSize: 20, margin: 0, letterSpacing: '-0.02em' }}>
+                <p style={{ color: 'var(--amber)', fontWeight: 800, fontSize: 18, margin: 0, letterSpacing: '-0.02em' }}>
                   {streak}-day streak
                 </p>
-                <p style={{ color: 'var(--text-muted)', fontSize: 12, margin: 0 }}>
-                  Don't break it — check in daily to keep it going
+                <p style={{ color: 'var(--text-3)', fontSize: 12, margin: 0 }}>
+                  Check in every training day to keep it going
                 </p>
               </div>
             </motion.div>
           )}
         </AnimatePresence>
 
-        {/* Stats */}
+        {/* First check-in guidance (before any check-ins) */}
+        {isFirstEver && !checkedInToday && (
+          <motion.div
+            initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}
+            style={{
+              marginTop: 16, marginBottom: 4,
+              background: 'var(--accent-dim)', border: '1px solid var(--accent-border)',
+              borderRadius: 'var(--r-xl)', padding: '14px 18px',
+            }}
+          >
+            <p style={{ color: 'var(--accent)', fontWeight: 700, fontSize: 13, margin: '0 0 4px' }}>First check-in</p>
+            <p style={{ color: 'var(--text-2)', fontSize: 13, margin: 0, lineHeight: 1.55 }}>
+              Checking in today starts your attendance streak — the single most reliable indicator of long-term progress.
+            </p>
+          </motion.div>
+        )}
+
+        {/* ── Stats ─────────────────────────────────────── */}
         {stats && (
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 10, margin: '16px 0' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 8, margin: '16px 0' }}>
             {[
-              { label: 'This month', value: stats.thisMonth ?? 0, icon: '📅' },
-              { label: 'This week',  value: stats.thisWeek ?? 0,  icon: '🗓️' },
-              { label: 'All time',   value: stats.total ?? 0,     icon: '💯' },
+              { label: 'This month', value: stats.thisMonth ?? 0 },
+              { label: 'This week',  value: stats.thisWeek  ?? 0 },
+              { label: 'All time',   value: stats.total     ?? 0 },
             ].map(s => (
               <div key={s.label} style={{
-                background: 'var(--surface-raised)', border: '1px solid var(--border-subtle)',
-                borderRadius: 'var(--radius-lg)', padding: '12px 10px', textAlign: 'center',
+                background: 'var(--surface-2)', border: '1px solid var(--border-1)',
+                borderRadius: 'var(--r-lg)', padding: '12px 10px', textAlign: 'center',
               }}>
-                <div style={{ fontSize: 18, marginBottom: 4 }}>{s.icon}</div>
-                <div style={{ color: 'var(--brand-purple)', fontSize: 20, fontWeight: 800 }}>{s.value}</div>
-                <div style={{ color: 'var(--text-muted)', fontSize: 11, fontWeight: 500 }}>{s.label}</div>
+                <p style={{ color: 'var(--text-1)', fontSize: 20, fontWeight: 800, margin: '0 0 4px', letterSpacing: '-0.03em' }}>{s.value}</p>
+                <p style={{ color: 'var(--text-3)', fontSize: 11, margin: 0 }}>{s.label}</p>
               </div>
             ))}
           </div>
         )}
 
-        {/* QR Card */}
+        {/* ── QR Code card ───────────────────────────────── */}
         <div style={{
-          background: 'var(--surface-raised)', border: '1px solid var(--border-default)',
-          borderRadius: 'var(--radius-2xl)', padding: 'clamp(20px,4vw,32px)',
-          textAlign: 'center', marginBottom: 16,
+          background: 'var(--surface-2)', border: '1px solid var(--border-1)',
+          borderRadius: 'var(--r-xl)', padding: 'clamp(20px, 4vw, 28px)',
+          textAlign: 'center', marginBottom: 12,
           boxShadow: 'var(--shadow-card)',
         }}>
           {loading ? (
-            <div style={{
-              height: 240, display: 'flex', flexDirection: 'column',
-              alignItems: 'center', justifyContent: 'center', gap: 14,
-            }}>
-              <div style={{ fontSize: 32 }}>📱</div>
-              <p style={{ color: 'var(--text-muted)', fontSize: 14, margin: 0 }}>Generating your QR code…</p>
+            <div style={{ height: 220, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 12 }}>
+              <LuQrCode size={36} color="var(--text-3)" strokeWidth={1.2} style={{ opacity: 0.4 }} />
+              <p style={{ color: 'var(--text-3)', fontSize: 13, margin: 0 }}>Generating QR code…</p>
             </div>
           ) : qrData?.qrDataURL ? (
             <>
-              <p style={{ color: 'var(--text-muted)', fontSize: 12, fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase', margin: '0 0 16px' }}>
-                Scan at reception
+              <p style={{ color: 'var(--text-3)', fontSize: 11, fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase', margin: '0 0 14px' }}>
+                Show at reception
               </p>
               <div style={{ position: 'relative', display: 'inline-block' }}>
-                {/* QR frame */}
-                <div style={{
-                  padding: 12, background: '#ffffff', borderRadius: 16,
-                  boxShadow: '0 4px 24px rgba(0,0,0,0.3)',
-                }}>
+                <div style={{ padding: 10, background: '#ffffff', borderRadius: 14, boxShadow: 'var(--shadow-md)' }}>
                   <img
                     src={qrData.qrDataURL}
-                    alt="Your check-in QR code"
-                    style={{ width: 'clamp(180px,50vw,220px)', height: 'auto', display: 'block', borderRadius: 8 }}
+                    alt="Your check-in QR"
+                    style={{ width: 'clamp(180px, 48vw, 210px)', height: 'auto', display: 'block', borderRadius: 6 }}
                   />
                 </div>
-                {/* Timer badge */}
+                {/* Timer — minimal, not anxiety-inducing */}
                 <div style={{
-                  position: 'absolute', bottom: -8, right: -8,
-                  width: 36, height: 36, borderRadius: '50%', border: '2px solid var(--surface-raised)',
-                  background: timeLeft <= 10 ? 'var(--color-error)' : 'var(--brand-purple)',
-                  color: 'var(--text-1)', display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  fontSize: 12, fontWeight: 800, boxShadow: '0 2px 8px rgba(0,0,0,0.3)',
+                  position: 'absolute', bottom: -10, right: -10,
+                  background: timeLeft <= 10 ? 'var(--amber)' : 'var(--surface-3)',
+                  border: `2px solid var(--surface-2)`,
+                  color: timeLeft <= 10 ? '#fff' : 'var(--text-3)',
+                  borderRadius: 'var(--r-pill)',
+                  padding: '3px 8px',
+                  fontSize: 10, fontWeight: 700,
+                  display: 'flex', alignItems: 'center', gap: 4,
                 }}>
-                  {timeLeft}
+                  <LuRefreshCw size={9} strokeWidth={2} />
+                  {timeLeft}s
                 </div>
               </div>
-              <p style={{ color: 'var(--text-muted)', fontSize: 12, margin: '16px 0 0' }}>
-                Refreshes every 60 seconds
+              <p style={{ color: 'var(--text-4)', fontSize: 11, margin: '14px 0 0' }}>
+                Refreshes automatically
               </p>
             </>
           ) : (
-            <div style={{ padding: 40, color: 'var(--text-muted)' }}>
-              <div style={{ fontSize: 40, marginBottom: 12 }}>⚠️</div>
-              <p>QR code unavailable. Please try again.</p>
-              <button onClick={fetchQR} style={{
-                padding: '10px 20px', background: 'var(--brand-gradient)',
-                border: 'none', borderRadius: 10, color: 'var(--text-1)',
-                cursor: 'pointer', fontWeight: 700, marginTop: 8,
-              }}>
-                Retry
-              </button>
+            <div style={{ padding: 32 }}>
+              <LuAlertCircle size={32} color="var(--text-3)" strokeWidth={1.2} style={{ opacity: 0.4, marginBottom: 12 }} />
+              <p style={{ color: 'var(--text-3)', fontSize: 13, margin: '0 0 14px' }}>QR code unavailable.</p>
+              <button onClick={fetchQR} className="btn btn-secondary">Retry</button>
             </div>
           )}
         </div>
 
-        {/* Self check-in button */}
+        {/* ── Check-in button ───────────────────────────── */}
         <motion.button
           whileTap={checkedInToday ? {} : { scale: 0.97 }}
           onClick={handleCheckIn}
           disabled={checkedInToday}
           style={{
-            width: '100%', padding: 'clamp(14px,2.5vw,17px)', borderRadius: 'var(--radius-xl)',
-            border: 'none', cursor: checkedInToday ? 'default' : 'pointer',
-            background: checkedInToday ? 'var(--surface-raised)' : 'var(--brand-gradient)',
-            color: checkedInToday ? 'var(--text-muted)' : '#fff',
-            fontSize: 16, fontWeight: 700, marginBottom: 20,
-            boxShadow: checkedInToday ? 'none' : 'var(--shadow-glow-purple)',
-            display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10,
+            width: '100%', padding: 'clamp(13px, 2.5vw, 16px)', borderRadius: 'var(--r-xl)',
+            border: `1px solid ${checkedInToday ? 'rgba(34,197,94,0.3)' : 'var(--border-1)'}`,
+            cursor: checkedInToday ? 'default' : 'pointer',
+            background: checkedInToday ? 'rgba(34,197,94,0.05)' : 'var(--text-1)',
+            color: checkedInToday ? 'var(--green)' : 'var(--bg)',
+            fontSize: 15, fontWeight: 700, marginBottom: 16,
+            display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 9,
+            fontFamily: 'var(--font-sans)',
+            transition: 'background 0.2s, border-color 0.2s, color 0.2s',
           }}
         >
           {checkedInToday ? (
-            <><span style={{ fontSize: 20 }}>✅</span> Checked in today — great work!</>
+            <><LuCheck size={16} strokeWidth={2.5} /> Attendance logged for today</>
           ) : (
-            <><span style={{ fontSize: 20 }}>📍</span> Check in from app</>
+            <><LuQrCode size={16} strokeWidth={1.8} /> Check in from app</>
           )}
         </motion.button>
 
-        {/* Success celebration */}
+        {/* ── Check-in success ─────────────────────────── */}
         <AnimatePresence>
-          {checkInStatus?.success && (
+          {checkInResult?.success && (
             <motion.div
-              initial={{ opacity: 0, y: 16, scale: 0.96 }}
+              initial={{ opacity: 0, y: 14, scale: 0.96 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: -10 }}
-              transition={{ type: 'spring', bounce: 0.4 }}
+              transition={{ type: 'spring', bounce: 0.35, duration: 0.5 }}
               style={{
-                background: 'rgba(16,185,129,0.08)', border: '1px solid rgba(16,185,129,0.25)',
-                borderRadius: 'var(--radius-xl)', padding: '18px 20px', marginBottom: 20,
+                background: checkInResult.isFirst ? 'var(--accent-dim)' : 'var(--green-dim)',
+                border: `1px solid ${checkInResult.isFirst ? 'var(--accent-border)' : 'rgba(34,197,94,0.25)'}`,
+                borderRadius: 'var(--r-xl)', padding: '18px 20px', marginBottom: 16,
                 textAlign: 'center',
               }}
             >
-              <div style={{ fontSize: 32, marginBottom: 6 }}>🎉</div>
-              <p style={{ color: 'var(--color-success)', fontWeight: 700, fontSize: 17, margin: '0 0 4px' }}>
-                You're in. Let's go.
-              </p>
-              {checkInStatus.streak > 1 && (
-                <p style={{ color: 'var(--color-warning)', fontWeight: 600, margin: '4px 0 0', fontSize: 14 }}>
-                  🔥 {checkInStatus.streak}-day streak!
-                </p>
+              {checkInResult.isFirst ? (
+                <>
+                  <p style={{ color: 'var(--accent)', fontWeight: 800, fontSize: 17, margin: '0 0 6px', letterSpacing: '-0.01em' }}>
+                    First check-in complete.
+                  </p>
+                  <p style={{ color: 'var(--text-2)', fontSize: 13, margin: '0 0 8px', lineHeight: 1.55 }}>
+                    Your attendance streak has started. Consistency from here is what drives results.
+                  </p>
+                  <p style={{ color: 'var(--accent)', fontSize: 13, fontWeight: 600, margin: 0 }}>
+                    +{checkInResult.pointsEarned} points
+                  </p>
+                </>
+              ) : (
+                <>
+                  <p style={{ color: 'var(--green)', fontWeight: 800, fontSize: 17, margin: '0 0 4px' }}>
+                    Checked in.
+                  </p>
+                  {checkInResult.streak > 1 && (
+                    <p style={{ color: 'var(--amber)', fontWeight: 600, margin: '4px 0 0', fontSize: 14 }}>
+                      <LuFlame size={13} style={{ verticalAlign: 'middle', marginRight: 4 }} fill="var(--amber)" />
+                      {checkInResult.streak}-day streak
+                    </p>
+                  )}
+                  {checkInResult.achievements?.map(a => (
+                    <p key={a.key} style={{ color: 'var(--amber)', margin: '6px 0 0', fontSize: 13, fontWeight: 600 }}>
+                      Badge unlocked: {a.name}
+                    </p>
+                  ))}
+                </>
               )}
-              {checkInStatus.achievements?.map(a => (
-                <p key={a.key} style={{ color: 'var(--color-gold)', margin: '6px 0 0', fontSize: 13, fontWeight: 600 }}>
-                  🏅 {a.name} unlocked
-                </p>
-              ))}
             </motion.div>
           )}
         </AnimatePresence>
 
-        {/* 30-day heatmap */}
-        {heatmap.length > 0 && (
-          <div style={{
-            background: 'var(--surface-raised)', border: '1px solid var(--border-subtle)',
-            borderRadius: 'var(--radius-xl)', padding: 'clamp(14px,2.5vw,20px)',
-          }}>
-            <p style={{
-              color: 'var(--text-secondary)', fontSize: 13, fontWeight: 700,
-              margin: '0 0 12px', letterSpacing: '0.04em',
-            }}>
-              Last 30 days
-            </p>
-            <div style={{ display: 'flex', gap: 4, flexWrap: 'wrap' }}>
-              {heatmap.map(({ date, day, checked }) => (
-                <div
-                  key={date}
-                  title={`${date}${checked ? ' — ✓ checked in' : ''}`}
-                  style={{
-                    width: 28, height: 28, borderRadius: 6,
-                    background: checked ? 'var(--brand-purple)' : 'var(--surface-overlay)',
-                    border: `1px solid ${checked ? 'rgba(157,0,255,0.5)' : 'var(--border-subtle)'}`,
-                    display: 'flex', alignItems: 'center', justifyContent: 'center',
-                    fontSize: 9, color: checked ? '#fff' : 'var(--text-muted)',
-                    fontWeight: checked ? 700 : 400,
-                    boxShadow: checked ? '0 0 8px rgba(157,0,255,0.3)' : 'none',
-                  }}
-                >
-                  {day}
-                </div>
-              ))}
+        {/* ── 30-day heatmap ─────────────────────────── */}
+        <div style={{
+          background: 'var(--surface-2)', border: '1px solid var(--border-1)',
+          borderRadius: 'var(--r-xl)', padding: 'clamp(14px, 2.5vw, 20px)',
+        }}>
+          <p style={{ color: 'var(--text-3)', fontSize: 11, fontWeight: 700, letterSpacing: '0.09em', textTransform: 'uppercase', margin: '0 0 12px' }}>
+            Last 30 days
+          </p>
+          <div style={{ display: 'flex', gap: 4, flexWrap: 'wrap' }}>
+            {heatmap.map(({ date, day, checked, isToday }) => (
+              <div
+                key={date}
+                title={`${date}${checked ? ' — checked in' : ''}`}
+                style={{
+                  width: 28, height: 28, borderRadius: 6,
+                  background: checked ? 'var(--accent)' : isToday ? 'var(--surface-3)' : 'var(--surface-3)',
+                  border: `1px solid ${checked ? 'var(--accent-border)' : isToday ? 'var(--border-2)' : 'var(--border-1)'}`,
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  fontSize: 10,
+                  color: checked ? '#fff' : isToday ? 'var(--text-1)' : 'var(--text-4)',
+                  fontWeight: checked || isToday ? 700 : 400,
+                  opacity: isToday && !checked ? 0.7 : 1,
+                }}
+              >
+                {day}
+              </div>
+            ))}
+          </div>
+          <div style={{ display: 'flex', gap: 14, marginTop: 10, alignItems: 'center' }}>
+            <div style={{ display: 'flex', gap: 5, alignItems: 'center' }}>
+              <div style={{ width: 10, height: 10, borderRadius: 2, background: 'var(--accent)' }} />
+              <span style={{ color: 'var(--text-3)', fontSize: 11 }}>Checked in</span>
             </div>
-            <div style={{ display: 'flex', gap: 12, marginTop: 10, alignItems: 'center' }}>
-              <div style={{ display: 'flex', gap: 5, alignItems: 'center' }}>
-                <div style={{ width: 10, height: 10, borderRadius: 2, background: 'var(--brand-purple)' }} />
-                <span style={{ color: 'var(--text-muted)', fontSize: 11 }}>Checked in</span>
-              </div>
-              <div style={{ display: 'flex', gap: 5, alignItems: 'center' }}>
-                <div style={{ width: 10, height: 10, borderRadius: 2, background: 'var(--surface-overlay)', border: '1px solid var(--border-subtle)' }} />
-                <span style={{ color: 'var(--text-muted)', fontSize: 11 }}>Missed</span>
-              </div>
+            <div style={{ display: 'flex', gap: 5, alignItems: 'center' }}>
+              <div style={{ width: 10, height: 10, borderRadius: 2, background: 'var(--surface-3)', border: '1px solid var(--border-1)' }} />
+              <span style={{ color: 'var(--text-3)', fontSize: 11 }}>Not recorded</span>
             </div>
           </div>
-        )}
+        </div>
       </div>
     </div>
   );
 }
-

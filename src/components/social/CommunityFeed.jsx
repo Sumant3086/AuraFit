@@ -5,20 +5,20 @@ import { useSocket } from '../../context/SocketContext';
 import toast from 'react-hot-toast';
 
 const TYPE_FILTERS = [
-  { key: '', label: 'All' },
-  { key: 'achievement', label: '🏅 Achievements' },
-  { key: 'progress', label: '📊 Progress' },
-  { key: 'motivation', label: '🔥 Motivation' },
-  { key: 'question', label: '❓ Questions' },
-  { key: 'general', label: '💬 General' },
+  { key: '',            label: 'All' },
+  { key: 'achievement', label: 'Achievements' },
+  { key: 'progress',    label: 'Progress' },
+  { key: 'motivation',  label: 'Motivation' },
+  { key: 'question',    label: 'Questions' },
+  { key: 'general',     label: 'General' },
 ];
 
 const TYPE_COLORS = {
-  achievement: '#ffd700',
-  progress: '#00d4ff',
-  motivation: '#ff6b35',
-  question: '#9d00ff',
-  general: '#00c853',
+  achievement: 'var(--amber)',
+  progress:    'var(--accent)',
+  motivation:  'var(--orange)',
+  question:    'var(--cyan-color)',
+  general:     'var(--green)',
 };
 
 export default function CommunityFeed() {
@@ -141,12 +141,12 @@ export default function CommunityFeed() {
 
   const Avatar = ({ name, avatar, size = 36 }) => (
     avatar
-      ? <img src={avatar} alt={name} style={{ width: size, height: size, borderRadius: '50%', objectFit: 'cover' }} />
+      ? <img src={avatar} alt={name} style={{ width: size, height: size, borderRadius: Math.round(size * 0.28), objectFit: 'cover', flexShrink: 0 }} />
       : <div style={{
-          width: size, height: size, borderRadius: '50%',
-          background: 'linear-gradient(135deg, #9d00ff, #00d4ff)',
+          width: size, height: size, borderRadius: Math.round(size * 0.28),
+          background: 'var(--accent-dim)', border: '1px solid var(--accent-border)',
           display: 'flex', alignItems: 'center', justifyContent: 'center',
-          color: 'var(--text-1)', fontWeight: 700, fontSize: size * 0.36, flexShrink: 0,
+          color: 'var(--accent)', fontWeight: 700, fontSize: Math.round(size * 0.36), flexShrink: 0,
         }}>
           {name?.[0]?.toUpperCase()}
         </div>
@@ -162,40 +162,58 @@ export default function CommunityFeed() {
 
   return (
     <div style={{ minHeight: '100vh', background: 'var(--bg)', paddingBottom: 80 }}>
-      {/* Hero header */}
-      <div style={{ background: 'linear-gradient(135deg, #1a0a2e 0%, #0a1a2e 100%)', padding: '28px 20px 24px' }}>
-        <div style={{ maxWidth: 700, margin: '0 auto' }}>
-          <h1 style={{ color: 'var(--text-1)', fontSize: 26, fontWeight: 800, margin: '0 0 4px' }}>Community 🏋️</h1>
-          <p style={{ color: 'var(--text-3)', fontSize: 14, margin: '0 0 20px' }}>Share your wins, ask questions, motivate others.</p>
+      {/* Page header */}
+      <div style={{ borderBottom: '1px solid var(--border-1)', padding: 'clamp(40px, 7vw, 64px) 0 clamp(24px, 4vw, 32px)', background: 'var(--surface-1)' }}>
+        <div style={{ maxWidth: 700, margin: '0 auto', padding: '0 clamp(16px, 4vw, 32px)' }}>
+          <p style={{ color: 'var(--accent)', fontSize: 11, fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', margin: '0 0 10px', display: 'flex', alignItems: 'center', gap: 6 }}>
+            <span style={{ width: 20, height: 1, background: 'var(--accent)', opacity: 0.6, display: 'inline-block' }} />
+            Community
+          </p>
+          <h1 style={{ color: 'var(--text-1)', fontSize: 'clamp(22px, 4vw, 32px)', fontWeight: 800, margin: '0 0 6px', letterSpacing: '-0.025em' }}>
+            What's working for members this week
+          </h1>
+          <p style={{ color: 'var(--text-3)', fontSize: 14, margin: '0 0 20px', lineHeight: 1.6 }}>
+            Share a result, ask a question, or post something useful for other members.
+          </p>
 
           {/* Compose button */}
           <motion.button
             whileTap={{ scale: 0.97 }}
             onClick={() => setShowCompose(true)}
             style={{
-              width: '100%', padding: '14px 20px', borderRadius: 14, border: '1px solid var(--border-2)',
-              background: 'var(--surface-2)', color: 'var(--text-3)', fontSize: 15, textAlign: 'left', cursor: 'pointer',
-              display: 'flex', alignItems: 'center', gap: 10,
+              width: '100%', padding: '12px 16px', borderRadius: 'var(--r-lg)', border: '1px solid var(--border-2)',
+              background: 'var(--surface-2)', color: 'var(--text-3)', fontSize: 14, textAlign: 'left', cursor: 'pointer',
+              display: 'flex', alignItems: 'center', gap: 10, fontFamily: 'var(--font-sans)',
+              transition: 'border-color 0.15s',
             }}
+            onMouseEnter={e => e.currentTarget.style.borderColor = 'var(--border-3)'}
+            onMouseLeave={e => e.currentTarget.style.borderColor = 'var(--border-2)'}
           >
-            <Avatar name={user?.name} avatar={user?.profilePicture} size={30} />
-            <span>Share your fitness journey...</span>
+            <Avatar name={user?.name} avatar={user?.profilePicture} size={28} />
+            <span>What are you working on?</span>
           </motion.button>
         </div>
       </div>
 
-      <div style={{ maxWidth: 700, margin: '0 auto', padding: '0 16px' }}>
+      <div style={{ maxWidth: 700, margin: '0 auto', padding: '0 clamp(16px, 4vw, 32px)' }}>
         {/* Type filters */}
-        <div style={{ display: 'flex', gap: 8, overflowX: 'auto', padding: '16px 0', scrollbarWidth: 'none' }}>
+        <div style={{ display: 'flex', gap: 6, overflowX: 'auto', padding: 'var(--sp-4) 0', scrollbarWidth: 'none' }}>
           {TYPE_FILTERS.map(f => (
             <button
               key={f.key}
               onClick={() => setFilter(f.key)}
               style={{
-                padding: '7px 14px', borderRadius: 20, border: '1px solid var(--border-2)',
-                background: filter === f.key ? 'linear-gradient(135deg, #9d00ff, #00d4ff)' : '#111',
-                color: filter === f.key ? '#fff' : '#666', fontSize: 13, cursor: 'pointer',
-                whiteSpace: 'nowrap', transition: 'all 0.2s',
+                padding: '6px 14px',
+                borderRadius: 'var(--r-pill)',
+                border: `1px solid ${filter === f.key ? 'var(--accent-border)' : 'var(--border-2)'}`,
+                background: filter === f.key ? 'var(--accent-dim)' : 'transparent',
+                color: filter === f.key ? 'var(--accent)' : 'var(--text-3)',
+                fontSize: 12,
+                fontWeight: filter === f.key ? 600 : 400,
+                cursor: 'pointer',
+                whiteSpace: 'nowrap',
+                transition: 'all 0.15s',
+                fontFamily: 'var(--font-sans)',
               }}
             >
               {f.label}
@@ -215,10 +233,9 @@ export default function CommunityFeed() {
             ))}
           </div>
         ) : posts.length === 0 ? (
-          <div style={{ textAlign: 'center', padding: '60px 20px' }}>
-            <div style={{ fontSize: 56, marginBottom: 16 }}>🤝</div>
-            <h3 style={{ color: 'var(--text-1)', margin: '0 0 8px' }}>Be the first to post!</h3>
-            <p style={{ color: 'var(--text-3)', fontSize: 14 }}>Share a win, a tip, or say hello to the community.</p>
+          <div className="empty-state">
+            <p className="empty-state-title">Nothing here yet</p>
+            <p className="empty-state-desc">Start the conversation — share a result, ask a training question, or post something useful.</p>
           </div>
         ) : (
           <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
@@ -244,12 +261,10 @@ export default function CommunityFeed() {
             {hasMore && (
               <button
                 onClick={() => fetchPosts(false)}
-                style={{
-                  padding: '12px', background: 'var(--surface-2)', border: '1px solid var(--border-2)',
-                  borderRadius: 12, color: 'var(--accent)', cursor: 'pointer', fontSize: 14, marginBottom: 16,
-                }}
+                className="btn btn-secondary"
+                style={{ width: '100%', justifyContent: 'center', marginBottom: 16 }}
               >
-                Load more...
+                Load more posts
               </button>
             )}
           </div>
@@ -282,7 +297,7 @@ export default function CommunityFeed() {
               <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 16 }}>
                 <Avatar name={user?.name} avatar={user?.profilePicture} />
                 <div>
-                  <p style={{ color: 'var(--text-1)', fontWeight: 700, margin: 0, fontSize: 15 }}>{user?.name}</p>
+                  <p style={{ color: 'var(--text-1)', fontWeight: 600, margin: 0, fontSize: 14 }}>{user?.name}</p>
                   <p style={{ color: 'var(--text-3)', fontSize: 12, margin: 0 }}>Posting to community</p>
                 </div>
               </div>
@@ -292,25 +307,24 @@ export default function CommunityFeed() {
                 autoFocus
                 value={newPost}
                 onChange={e => setNewPost(e.target.value)}
-                placeholder="What's on your mind? Share a win, tip, or question..."
-                style={{
-                  width: '100%', minHeight: 120, background: 'var(--bg)', border: '1px solid var(--border-2)',
-                  borderRadius: 12, padding: 14, color: 'var(--text-1)', fontSize: 15, resize: 'none',
-                  fontFamily: 'inherit',
-                }}
+                placeholder="A training result, a question, or something useful for other members…"
+                className="field-input"
+                style={{ minHeight: 120, resize: 'none', marginBottom: 0 }}
               />
 
-              <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', margin: '12px 0' }}>
+              <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', margin: '12px 0' }}>
                 {TYPE_FILTERS.slice(1).map(t => (
                   <button
                     key={t.key}
                     onClick={() => setPostType(t.key)}
                     style={{
-                      padding: '5px 12px', borderRadius: 16,
-                      border: `1px solid ${postType === t.key ? TYPE_COLORS[t.key] : '#222'}`,
-                      background: postType === t.key ? `${TYPE_COLORS[t.key]}22` : 'transparent',
-                      color: postType === t.key ? TYPE_COLORS[t.key] : '#555',
-                      fontSize: 12, cursor: 'pointer',
+                      padding: '5px 12px',
+                      borderRadius: 'var(--r-pill)',
+                      border: `1px solid ${postType === t.key ? 'var(--accent-border)' : 'var(--border-2)'}`,
+                      background: postType === t.key ? 'var(--accent-dim)' : 'transparent',
+                      color: postType === t.key ? 'var(--accent)' : 'var(--text-3)',
+                      fontSize: 12, cursor: 'pointer', fontFamily: 'var(--font-sans)',
+                      fontWeight: postType === t.key ? 600 : 400,
                     }}
                   >
                     {t.label}
@@ -319,22 +333,20 @@ export default function CommunityFeed() {
               </div>
 
               <div style={{ display: 'flex', gap: 10 }}>
-                <button onClick={() => setShowCompose(false)} style={{
-                  flex: 1, padding: '12px', background: 'var(--surface-3)', border: '1px solid var(--border-2)',
-                  borderRadius: 12, color: 'var(--text-3)', cursor: 'pointer', fontSize: 15,
-                }}>
+                <button
+                  onClick={() => setShowCompose(false)}
+                  className="btn btn-secondary"
+                  style={{ flex: 1, justifyContent: 'center' }}
+                >
                   Cancel
                 </button>
                 <button
                   onClick={handlePost}
                   disabled={posting || !newPost.trim()}
-                  style={{
-                    flex: 2, padding: '12px', background: newPost.trim() ? 'linear-gradient(135deg, #9d00ff, #00d4ff)' : '#1a1a1a',
-                    border: 'none', borderRadius: 12, color: newPost.trim() ? '#fff' : '#444',
-                    cursor: newPost.trim() ? 'pointer' : 'default', fontSize: 15, fontWeight: 700,
-                  }}
+                  className="btn btn-primary"
+                  style={{ flex: 2, justifyContent: 'center', opacity: !newPost.trim() ? 0.4 : 1 }}
                 >
-                  {posting ? 'Posting...' : 'Post 🚀'}
+                  {posting ? 'Posting…' : 'Post to community'}
                 </button>
               </div>
             </motion.div>
@@ -455,8 +467,12 @@ function PostCard({ post, currentUser, onLike, onDelete, onComment, commentText,
                 onClick={() => onComment(post._id)}
                 disabled={!commentText?.trim()}
                 style={{
-                  padding: '7px 14px', background: commentText?.trim() ? '#9d00ff' : '#1a1a1a',
-                  border: 'none', borderRadius: 20, color: 'var(--text-1)', cursor: 'pointer', fontSize: 13,
+                  padding: '7px 14px',
+                  background: commentText?.trim() ? 'var(--accent)' : 'var(--surface-3)',
+                  border: 'none', borderRadius: 20,
+                  color: commentText?.trim() ? '#fff' : 'var(--text-3)',
+                  cursor: 'pointer', fontSize: 13,
+                  transition: 'background 0.15s, color 0.15s',
                 }}
               >
                 Send

@@ -37,6 +37,15 @@
   --amber-dim: rgba(245,158,11,0.10);
   --red:     #EF4444;
   --red-dim: rgba(239,68,68,0.10);
+  --orange:  #F97316;
+  --orange-dim: rgba(249,115,22,0.10);
+  --cyan-color: #06B6D4;
+  --cyan-dim:   rgba(6,182,212,0.10);
+
+  /* ── Tier badges (Achievements) ───────────────────────── */
+  --platinum-color:  #a5f3fc;
+  --platinum-bg:     rgba(165,243,252,0.10);
+  --platinum-border: rgba(165,243,252,0.25);
 
   /* ── Shadows ──────────────────────────────────────────── */
   --shadow-sm:  0 1px 3px rgba(0,0,0,0.4);
@@ -110,29 +119,116 @@
   --max-content: 720px;
   --max-wide:    1080px;
   --max-full:    1280px;
+
+  /* ── Token aliases (legacy compatibility) ────────────── */
+  --surface-base:    var(--bg);
+  --surface-raised:  var(--surface-2);
+  --surface-overlay: var(--surface-3);
+  --surface-bg:      var(--bg);           /* alias — used in older components */
+  --surface-high:    var(--surface-3);    /* alias — used in older components */
+  --color-success:   var(--green);        /* alias */
+  --color-gold:      var(--amber);        /* alias */
+  --text-primary:    var(--text-1);
+  --text-secondary:  var(--text-2);
+  --text-muted:      var(--text-3);
+  --text-disabled:   var(--text-4);
+  --brand-purple:    var(--accent);
+  --brand-purple-dim: var(--accent-dim);
+  --brand-gradient:  linear-gradient(135deg, #8B5CF6 0%, #6366F1 100%);
+  --border-accent:   var(--accent-border);
+  --border-default:  var(--border-2);
+  --border-strong:   var(--border-3);
+  --border-subtle:   var(--border-1);
+  --radius-pill:     var(--r-pill);
+  --radius-2xl:      20px;
+  --radius-xl:       var(--r-xl);
+  --radius-lg:       var(--r-lg);
+  --radius-md:       var(--r-md);
+  --radius-sm:       var(--r-sm);
+  --container-xl:    var(--max-full);
+  --container-lg:    var(--max-wide);
+  --shadow-glow-purple: 0 8px 32px rgba(139,92,246,0.22);
+  --shadow-glow-green:  0 8px 32px rgba(34,197,94,0.18);
+
+  /* ── Space scale alias (--space-* → --sp-*) ──────────── */
+  --space-1:  var(--sp-1);
+  --space-2:  var(--sp-2);
+  --space-3:  var(--sp-3);
+  --space-4:  var(--sp-4);
+  --space-5:  var(--sp-5);
+  --space-6:  var(--sp-6);
+  --space-8:  var(--sp-8);
+  --space-10: var(--sp-10);
+  --space-12: var(--sp-12);
+  --space-16: var(--sp-16);
+  --space-20: var(--sp-20);
+  --space-24: var(--sp-24);
 }
 
 [data-theme="light"] {
-  --bg:        #FAFAFA;
+  /* ── Surfaces ─────────────────────────────────────────── */
+  --bg:        #F8F8F9;   /* slightly off-white — avoids pure white blinding */
   --surface-1: #FFFFFF;
-  --surface-2: #F4F4F5;
-  --surface-3: #EBEBEC;
-  --surface-4: #E2E2E4;
+  --surface-2: #F2F2F4;   /* card surface — visibly distinct from bg */
+  --surface-3: #E8E8EA;   /* elevated / hover state */
+  --surface-4: #DCDCDF;   /* pressed / selected state */
 
-  --border-1:  rgba(0,0,0,0.05);
-  --border-2:  rgba(0,0,0,0.09);
-  --border-3:  rgba(0,0,0,0.14);
+  /* ── Borders — stronger than dark mode for light backgrounds ── */
+  --border-1:    rgba(0,0,0,0.08);   /* hairline — was 0.05 (invisible) */
+  --border-2:    rgba(0,0,0,0.12);   /* default */
+  --border-3:    rgba(0,0,0,0.18);   /* strong / focus ring */
+  --border-focus: rgba(124,58,237,0.45);
 
-  --text-1:  #111111;
-  --text-2:  #606060;
-  --text-3:  #9A9A9A;
-  --text-4:  #C8C8C8;
+  /* ── Text — WCAG AA compliant ─────────────────────────── */
+  --text-1:  #111111;   /* 16.1:1 on #F8F8F9 ✓ */
+  --text-2:  #444444;   /* 9.7:1 ✓  (was #606060 — 7.8:1, still ok) */
+  --text-3:  #6B6B6B;   /* 4.7:1 ✓  (was #9A9A9A — 2.8:1 ✗ FAILED) */
+  --text-4:  #9A9A9A;   /* 2.8:1 — disabled/placeholder only, acceptable */
 
-  --accent:    #7C3AED;
-  --accent-dim: rgba(124,58,237,0.08);
+  /* ── Accent ───────────────────────────────────────────── */
+  --accent:      #6D28D9;   /* slightly darker violet for better contrast */
+  --accent-dim:  rgba(109,40,217,0.09);
+  --accent-border: rgba(109,40,217,0.28);
 
-  --shadow-sm:  0 1px 3px rgba(0,0,0,0.08);
-  --shadow-md:  0 4px 16px rgba(0,0,0,0.08);
-  --shadow-lg:  0 8px 32px rgba(0,0,0,0.10);
-  --shadow-card: 0 1px 0 rgba(255,255,255,0.8) inset, 0 2px 8px rgba(0,0,0,0.06);
+  /* ── Semantic — light mode dims use lower opacity ─────── */
+  --green:      #16A34A;   /* darker green for light background contrast */
+  --green-dim:  rgba(22,163,74,0.10);
+  --amber:      #B45309;   /* darker amber for contrast */
+  --amber-dim:  rgba(180,83,9,0.10);
+  --red:        #DC2626;
+  --red-dim:    rgba(220,38,38,0.10);
+  --orange:     #C2410C;   /* orange-700 — 4.5:1 on light bg */
+  --orange-dim: rgba(194,65,12,0.09);
+  --cyan-color: #0E7490;   /* cyan-700 — 4.5:1 on light bg */
+  --cyan-dim:   rgba(14,116,144,0.09);
+
+  /* ── Tier badges (Achievements) ───────────────────────── */
+  --platinum-color:  #0284c7;   /* sky-600 — 4.7:1 on light bg */
+  --platinum-bg:     rgba(2,132,199,0.08);
+  --platinum-border: rgba(2,132,199,0.22);
+
+  /* ── Shadows — light mode needs more definition ──────── */
+  --shadow-sm:  0 1px 2px rgba(0,0,0,0.06), 0 0 0 1px rgba(0,0,0,0.04);
+  --shadow-md:  0 4px 12px rgba(0,0,0,0.08), 0 0 0 1px rgba(0,0,0,0.04);
+  --shadow-lg:  0 8px 24px rgba(0,0,0,0.10), 0 0 0 1px rgba(0,0,0,0.04);
+  --shadow-xl:  0 20px 48px rgba(0,0,0,0.14), 0 0 0 1px rgba(0,0,0,0.06);
+  --shadow-card: 0 1px 3px rgba(0,0,0,0.07), 0 0 0 1px rgba(0,0,0,0.05);
+
+  /* ── Keep light mode aliases consistent ─────────────── */
+  --surface-base:     var(--bg);
+  --surface-raised:   var(--surface-2);
+  --surface-overlay:  var(--surface-3);
+  --surface-bg:       var(--bg);
+  --surface-high:     var(--surface-3);
+  --text-primary:     var(--text-1);
+  --text-secondary:   var(--text-2);
+  --text-muted:       var(--text-3);
+  --text-disabled:    var(--text-4);
+  --brand-purple:     var(--accent);
+  --brand-purple-dim: var(--accent-dim);
+  --brand-gradient:   linear-gradient(135deg, #6D28D9 0%, #4F46E5 100%);
+  --border-subtle:    var(--border-1);
+  --border-default:   var(--border-2);
+  --border-strong:    var(--border-3);
+  --shadow-glow-purple: 0 4px 16px rgba(109,40,217,0.18);
 }

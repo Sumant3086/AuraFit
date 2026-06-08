@@ -97,8 +97,8 @@ export default function ImageUpload({
       {/* Avatar */}
       <div style={{
         width: size, height: size, borderRadius,
-        background: preview ? 'transparent' : 'linear-gradient(135deg, #9d00ff, #00d4ff)',
-        border: dragOver ? '2px dashed #9d00ff' : '2px solid #333',
+        background: preview ? 'transparent' : 'var(--accent)',
+        border: dragOver ? '2px dashed var(--accent)' : '1px solid var(--border-2)',
         display: 'flex', alignItems: 'center', justifyContent: 'center',
         overflow: 'hidden', transition: 'all 0.2s',
         opacity: uploading ? 0.7 : 1,
